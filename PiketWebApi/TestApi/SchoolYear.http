@@ -1,0 +1,51 @@
+
+####SchoolYear
+
+Get {{url}}/schoolyear HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+####
+
+Get {{url}}/schoolyear/active HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+####
+Get {{url}}/schoolyear/1 HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+####
+####
+put {{url}}/schoolyear/7 HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+{
+    "id": 7,
+    "year": 2024,
+    "semester": 2,
+    "actived": true
+  }
+
+####
+
+POST {{url}}/schoolyear HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+{
+  "id": 0,
+  "year": 2024,
+  "semester":2
+}
+####
+
+Delete {{url}}/schoolyear/7 HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+####
+
+
+

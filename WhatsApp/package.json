@@ -1,0 +1,23 @@
+{
+  "name": "whatappvenomserver",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.3",
+    "pg": "^8.14.1",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "1.31.0"
+  }
+}

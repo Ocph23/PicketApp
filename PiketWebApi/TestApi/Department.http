@@ -1,0 +1,46 @@
+@controller=department
+
+
+Get {{url}}/{{controller}} HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+####
+
+Get {{url}}/{{controller}}/1 HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+
+####
+POST {{url}}/{{controller}} HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+{
+  "id": 0,
+  "name": "Treknik Kimia Industri",
+  "initial": "KI",
+  "description": "Jurusan Racun Meracun"
+}
+####
+
+
+put {{url}}/{{controller}}/4 HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+{
+  "id": 4,
+  "name": "Rekayasa Perangkat Lunak",
+  "initial": "RPL",
+  "description": "pemograman asad"
+}
+####
+
+
+delete {{url}}/{{controller}}/7 HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+####

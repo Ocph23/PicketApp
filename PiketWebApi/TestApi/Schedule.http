@@ -1,0 +1,41 @@
+@controller = schedule
+
+Get {{url}}/{{controller}} HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+###
+Get {{url}}/{{controller}}/byschoolyearId/3 HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+
+####
+POST {{url}}/{{controller}} HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+{
+  "id": 0,
+  "dayOfWeek": 3,
+  "teacherId":5
+}
+####
+
+put {{url}}/{{controller}}/3 HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+{
+  "id": 3,
+  "dayOfWeek": 6,
+  "teacherId": 3
+}
+####
+
+
+delete {{url}}/{{controller}}/5 HTTP/1.1
+Content-Type:application/json
+Authorization : {{token}}
+
+####

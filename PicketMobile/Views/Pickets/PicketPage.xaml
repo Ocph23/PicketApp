@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PicketMobile.Views.Pickets.PicketPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:view="clr-namespace:PicketMobile.Views.Pickets"
+            xmlns:sharedModelResponse="clr-namespace:SharedModel.Responses;assembly=SharedModel"
+             xmlns:control="clr-namespace:PicketMobile.Controls"
+            x:DataType="view:PicketPageViewModel"
+             BackgroundImageSource="background.jpg"
+             Title="Picket Hari Ini">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding UpdateCommand}" IconImageSource="{Binding AsyncCommandIcon}" IsEnabled="{Binding IsChange}" ></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <RefreshView Command="{Binding AsyncCommand}" IsRefreshing="{Binding CanSync}">
+        <ScrollView Padding="0,5">
+            <VerticalStackLayout Padding="5,0" >
+                <StackLayout Margin="0,30" HorizontalOptions="Center" IsVisible="{Binding HasPicket,  Converter={StaticResource InvertedBoolConverter}}" >
+                    <Label FontSize="Medium" Text="{Binding Message}"></Label>
+                </StackLayout>
+                <control:AddButton  IsVisible="{Binding IamPicket}" Command="{Binding AddCommand}"></control:AddButton>
+                <VerticalStackLayout IsVisible="{Binding HasPicket}">
+                    <Border Style="{StaticResource borderInput}" >
+                        <Grid ColumnDefinitions="*,auto"  Padding="5">
+                            <Label Text="Cuaca" VerticalOptions="Center"/>
+                            <Picker HorizontalOptions="End" ItemsSource="{Binding Weathers}" SelectedItem="{Binding Model.Weather}"/>
+                        </Grid>
+                    </Border>
+                    <Border Style="{StaticResource borderInput}" >
+                        <Grid ColumnDefinitions="*,auto"   >
+                            <Label Text="Jam Mulai" VerticalOptions="Center" />
+                            <TimePicker HorizontalOptions="End" Time="{Binding Model.StartAt}"/>
+                        </Grid>
+                    </Border>
+                    <Border Style="{StaticResource borderInput}" >
+                        <Grid ColumnDefinitions="*,auto"  Padding="5">
+                            <Label Text="Jumlah Pendidik" VerticalOptions="Center"/>
+                            <Entry HorizontalOptions="End"/>
+                        </Grid>
+                    </Border>
+                    <Border Style="{StaticResource borderInput}" >
+                        <Grid ColumnDefinitions="*,auto"  Padding="5">
+                            <Label Text="Jumlah Pendidik Hadir" VerticalOptions="Center"/>
+                            <Entry HorizontalOptions="End"/>
+                        </Grid>
+                    </Border>
+                    <Border Style="{StaticResource borderInput}" >
+                        <Grid ColumnDefinitions="*,auto"  Padding="5">
+                            <Label Text="Jumlah Pendidik Terlambat" VerticalOptions="Center"/>
+                            <Entry HorizontalOptions="End"/>
+                        </Grid>
+                    </Border>
+                    <Border Style="{StaticResource borderInput}" >
+                        <Grid ColumnDefinitions="*,auto"  Padding="5">
+                            <Label Text="Jumlah Pendidik Tidak Hadir" VerticalOptions="Center"/>
+                            <Entry HorizontalOptions="End"/>
+                        </Grid>
+                    </Border>
+                    <Border Style="{StaticResource borderInput}" >
+                        <Grid ColumnDefinitions="*,auto"  Padding="5">
+                            <Label Text="Jumlah Tenaga Kependidikan" VerticalOptions="Center"/>
+                            <Entry HorizontalOptions="End"/>
+                        </Grid>
+                    </Border>
+                    <Border Style="{StaticResource borderInput}" >
+                        <Grid ColumnDefinitions="*,auto"  Padding="5">
+                            <Label Text="Jumlah Tenaga Kependidikan Hadir" VerticalOptions="Center"/>
+                            <Entry HorizontalOptions="End"/>
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+
+</ContentPage>
