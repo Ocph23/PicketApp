@@ -3,11 +3,11 @@ services:
     container_name: picketwebapi
     build:
       context: .
-      dockerfile: PiketWebApi/PiketWebApi/Dockerfile
-    image: picketapi
+      dockerfile: PiketWebApi/Dockerfile
+    image: picketwebapi
     ports:
-      - 5041:5040
-      - 8081:8081
+      - 5001:5001
+      - 5002:5002
     volumes:
       - picketwebapi_data:/app/photos
     depends_on:
@@ -15,14 +15,14 @@ services:
         condition: service_healthy
         restart: true
 
-  whatappvenomserver:
-    image: 230279/whatappvenomserver
+  whatsapp:
+    image: whatsapp
     restart: always
-    # build:
-    #   context: PiketWebApi/WhatAppVenomServer
-    #   dockerfile: ./Dockerfile
-    # environment:
-    #   NODE_ENV: production
+    build:
+      context: WhatsApp
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
     depends_on:
       db:
         condition: service_healthy

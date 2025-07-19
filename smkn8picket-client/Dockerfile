@@ -3,7 +3,7 @@ FROM node:lts-alpine AS build-stage
 
 ARG VITE_API_URL
 ARG VITE_LOGO
-ENV VITE_API_URL=http://localhost:5041
+ENV VITE_API_URL=http://localhost:5001
 ENV VITE_LOGO=/smk.png
 
 ENV VITE_NAMA_SEKOLAH="SMKN 8 TIK KOTA JAYAPURA"
