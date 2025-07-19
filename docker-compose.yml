@@ -1,0 +1,72 @@
+services:
+  piketwebapi:
+    container_name: picketwebapi
+    build:
+      context: .
+      dockerfile: PiketWebApi/PiketWebApi/Dockerfile
+    image: picketapi
+    ports:
+      - 5041:5040
+      - 8081:8081
+    volumes:
+      - picketwebapi_data:/app/photos
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+
+  whatappvenomserver:
+    image: 230279/whatappvenomserver
+    restart: always
+    # build:
+    #   context: PiketWebApi/WhatAppVenomServer
+    #   dockerfile: ./Dockerfile
+    # environment:
+    #   NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    ports:
+      - 3000:3000
+
+  smkn8picketclient:
+    image: smkn8picketclient
+    restart: always
+    build:
+      context: smkn8picket-client
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+      VITE_API_URL: http://localhost:5041
+      VITE_LOGO: /smk.png
+    ports:
+      - 3100:80
+
+  db:
+    image: postgres
+    container_name: postgres_db
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: Sony@7777
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@app.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+
+volumes:
+  picketwebapi_data:
+  postgres_data:
