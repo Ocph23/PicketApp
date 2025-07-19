@@ -1,0 +1,50 @@
+@import 'tailwindcss';
+@import '../../node_modules/flowbite-vue/dist/index.css';
+
+.print-only {
+  display: none !important;
+}
+@media print {
+  nav,
+  aside,
+  #main,
+  #header,
+  #footer,
+  #right-side,
+  #sidebar {
+    display: none !important;
+  }
+
+  .min-h-screen {
+    min-height: 0px !important;
+  }
+
+  #hide > * {
+    display: none !important; /* Hide all children of #par */
+  }
+
+  #print {
+    display: block !important; /* Show only the element with id="btn" */
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  th,
+  td {
+    border: 1px solid black;
+    padding: 3px;
+    font-size: 12px;
+  }
+
+  #xbody {
+    margin-left: 0px !important;
+    padding: 0px !important;
+    box-shadow: none !important;
+  }
+}

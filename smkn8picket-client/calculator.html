@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+</head>
+
+<body style="
+display: flex;
+justify-content: center;
+align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, rgba(132, 250, 176, 1), rgba(143, 211, 244, 1));
+    ">
+  <div style="padding: 30px; width: 450px; height: 550px; background-color: rgb(206, 238, 227)">
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <h2>KALKULATOR SEDERHANA</h2>
+    </div>
+    <div>
+      <div style="display: flex; flex-direction: column; margin: 15px;">
+        <label for="">Nilai A</label>
+        <input style="height: 30px;" type="text" id="nilaiA" onchange="tangkapNilaiA()">
+      </div>
+      <div style="display: flex; flex-direction: column; margin: 15px;">
+        <label for="">Nilai B</label>
+        <input style="height: 30px;" type="text" id="nilaiB" onchange="tangkapNilaiB()">
+      </div>
+      <div style="display: flex; margin: 15px; justify-content: space-between;">
+        <button style="height: 35px; width: 75px;" onclick="tangkapOperator('+')">+</button>
+        <button style="height: 35px; width: 75px;" onclick="tangkapOperator('-')">-</button>
+        <button style="height: 35px; width: 75px;" onclick="tangkapOperator('x')">x</button>
+        <button style="height: 35px; width: 75px;" onclick="tangkapOperator('/')">/</button>
+      </div>
+      <div style="display: flex; flex-direction: column; margin: 15px;">
+        <label for="">Hasil</label>
+        <input style="height: 30px;" type="text" id="hasil">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var a, b, op, hasil;
+
+    function tangkapNilaiA() {
+      let elA = document.getElementById('nilaiA');
+      a = Number(elA.value);
+    }
+    function tangkapNilaiB() {
+      let elB = document.getElementById('nilaiB');
+      b = Number(elB.value);
+    }
+    function tangkapOperator(operator) {
+      op = operator;
+
+      //validasi kosong
+      if (a == undefined || b == undefined) {
+        alert('Nilai A dan B harus diisi');
+        return;
+      }
+
+      if (isNaN(a) || isNaN(b)) {
+        alert('Nilai A dan B harus berupa angka');
+        return;
+      }
+
+      switch (op) {
+        case '+':
+          hasil = a + b;
+          break;
+        case '-':
+          hasil = a - b;
+          break;
+        case 'x':
+          hasil = a * b;
+          break;
+        case '/':
+          //validasi bagi nol
+          if (b == 0) {
+            alert('Nilai B tidak boleh 0');
+            return;
+          }
+          hasil = a / b;
+          break;
+      }
+      printHasil();
+    }
+
+    function printHasil() {
+      var elHasil = document.getElementById('hasil');
+      elHasil.value = hasil;
+    }
+
+
+  </script>
+
+
+</body>
+
+</html>
