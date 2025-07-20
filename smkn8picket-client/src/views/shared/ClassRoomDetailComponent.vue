@@ -67,7 +67,8 @@
                 .toFormat('dd LLL yyyy')
               }}</fwb-table-cell>
             <fwb-table-cell class=" flex gap-2 items-center justify-start">
-              <router-link :to="isHomeRoomTeacher ? `/walikelas/siswa/${student.id}` : `/siswa/${student.id}/detail`">
+              <router-link
+                :to="isHomeRoomTeacher ? `/walikelas/siswa/${student.id}` : `/admin/siswa/${student.id}/detail`">
                 <DetailIcon></DetailIcon>
               </router-link>
               <button @click="confirmDelete(student)" class="transition-all duration-200">
@@ -149,7 +150,6 @@ AuthService.isHomeRoomTeacher().then((result) => {
   isHomeRoomTeacher.value = result
 });
 
-const showPrint = ref(false)
 const data = reactive({
   showDeleteModal: false,
   error: {} as ErrorResponse,
@@ -163,6 +163,7 @@ const data = reactive({
 const classroom = ref({} as ClassRoom)
 const form = ref({ id: 0, name: '' } as Student)
 const showModal = ref(false)
+const showPrint = ref(false)
 
 
 try {

@@ -25,7 +25,9 @@ const AuthService = {
   getTeacherId: (): number => {
     const authToken = localStorage.getItem('authToken')
     const auth = JSON.parse(authToken as string) as AuthResponse;
-    return auth.profile.id;
+    if (auth.profile)
+      return auth.profile.id;
+    return 0;
   },
   isAdmin: async () => {
     const authToken = localStorage.getItem('authToken')

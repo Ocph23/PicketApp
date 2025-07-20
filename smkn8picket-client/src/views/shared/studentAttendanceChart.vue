@@ -70,6 +70,8 @@ const onChangeSelectSchoolYear = () => {
 
 const series = ref<{ name: string, data: number[] }[]>([])
 const generateChart = () => {
+  if (!schoolYearSelected.value) return;
+
   StudentAttendanceService.getByStudentId(schoolYearSelected.value, props.studentId).then((attendances) => {
     const response = attendances as RequestResponse;
     const result = response.data as StudentAttendanceRequest[];
@@ -114,8 +116,8 @@ const generateChart = () => {
 
       setTimeout(() => {
         showChart.value = true;
-        console.log(chartOptions.value.xaxis.categories);
-        console.log(series);
+        // console.log(chartOptions.value.xaxis.categories);
+        // console.log(series);
         series.value = seriesx;
       }, 1000)
     }

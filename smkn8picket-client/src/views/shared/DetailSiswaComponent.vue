@@ -67,8 +67,8 @@
     </FwbTab>
     <FwbTab name="riwayat" title="Riwayat Catatan Siswa">
       <fwb-card class="m-0 p-6 !max-w-full !w-full">
-        <ComingSoonComponent />
-
+        <StudentProgressNoteView :student-id="studentId" :classroom-id="data.kelas.classRoomId">
+        </StudentProgressNoteView>
       </fwb-card>
 
     </FwbTab>
@@ -86,7 +86,7 @@ import VTInput from '@/commons/VTInput/VTInput.vue'
 import { DateTime } from 'luxon'
 import StudentAttendanceChart from './studentAttendanceChart.vue'
 import StudentAttendanceList from './studentAttendanceList.vue'
-import ComingSoonComponent from '@/components/ComingSoonComponent.vue'
+import StudentProgressNoteView from './StudentProgressNoteView.vue'
 
 
 const props = defineProps({
@@ -118,6 +118,7 @@ const data = reactive({
   kelas: {} as {
     classRoomName: string
     departmenName: string
+    classRoomId: number
   },
   error: {} as ErrorResponse,
 })
@@ -135,6 +136,7 @@ try {
           data.kelas = response.data as {
             classRoomName: string
             departmenName: string
+            classRoomId: number
           }
         }
       })

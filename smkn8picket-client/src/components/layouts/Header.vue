@@ -62,7 +62,7 @@ onMounted(() => {
   isDark.value = initUserTheme == 'dark-theme' ? true : false;
   setTheme(initUserTheme);
   AuthService.getUser().then((res) => {
-    user.value.name = res.profile.name;
+    user.value.name = !res.profile ? res.userName : res.profile.name;
   })
 
 

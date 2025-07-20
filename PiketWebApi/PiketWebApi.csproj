@@ -11,9 +11,13 @@
 
   <ItemGroup>
     <Compile Remove="Models\**" />
+    <Compile Remove="NewFolder\**" />
     <Content Remove="Models\**" />
+    <Content Remove="NewFolder\**" />
     <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
     <None Remove="Models\**" />
+    <None Remove="NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,7 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="NewFolder\" />
     <Folder Include="photos\" />
   </ItemGroup>
 

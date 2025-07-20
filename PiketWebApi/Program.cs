@@ -137,6 +137,7 @@ builder.Services.AddScoped<ISchoolYearService, SchoolYearService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<ITeacherService, TeacherService>();
 builder.Services.AddScoped<IStudentAttendaceService, StudentAttendaceService>();
+builder.Services.AddScoped<IStudentProgressNoteService, StudentProgressNoteService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddProblemDetails();
@@ -191,6 +192,7 @@ app.MapGroup("/api/picket").MapPickerApi().WithOpenApi();
 app.MapGroup("/api/report").MapReportApi().WithOpenApi();
 app.MapGroup("/api/dashboard").MapDashboardApi().WithOpenApi();
 app.MapGroup("/api/studentattendance").MapStudentAttendanceApi().WithOpenApi();
+app.MapGroup("/api/studentprogressnote").MapStudentProgressNoteApi().WithOpenApi();
 
 
 app.Run();

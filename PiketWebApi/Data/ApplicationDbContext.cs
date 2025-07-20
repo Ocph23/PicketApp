@@ -16,6 +16,7 @@ namespace PiketWebApi.Data
         public DbSet<Student> Students { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Picket> Picket{ get; set; }
+        public DbSet<StudentProgressNote> StudentProgressNotes { get; set; }
         public DbSet<StudentAttendance> StudentAttendaces { get; set; }
         public DbSet<TeacherAttendance> TeacherAttendances{ get; set; }
     }
