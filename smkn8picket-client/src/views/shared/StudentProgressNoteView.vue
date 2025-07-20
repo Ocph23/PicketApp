@@ -18,10 +18,11 @@
     <fwb-table>
       <fwb-table-head>
         <fwb-table-head-cell>No</fwb-table-head-cell>
-        <fwb-table-head-cell>Tanggal</fwb-table-head-cell>
-        <fwb-table-head-cell>TA</fwb-table-head-cell>
+        <fwb-table-head-cell>Jenis</fwb-table-head-cell>
         <fwb-table-head-cell>Catatan</fwb-table-head-cell>
         <fwb-table-head-cell>Pemberi Catatan</fwb-table-head-cell>
+        <fwb-table-head-cell>TA</fwb-table-head-cell>
+        <fwb-table-head-cell>Tanggal</fwb-table-head-cell>
         <fwb-table-head-cell>Update</fwb-table-head-cell>
         <fwb-table-head-cell></fwb-table-head-cell>
       </fwb-table-head>
@@ -30,13 +31,18 @@
           <fwb-table-cell>
             {{ index + 1 }}
           </fwb-table-cell>
-          <fwb-table-cell>{{ item.createdAt ? DateTime.fromJSDate(new Date(item.createdAt))
-            .toFormat("dd-MM-yyyy HH:mm:ss") :
-            "-" }}</fwb-table-cell>
-          <fwb-table-cell>{{ item.schoolYearName }}</fwb-table-cell>
+          <fwb-table-cell>
+            <span :class="getStudentProgressNoteTypeClass(item.progressType)">
+              {{ Helper.studentProgressNoteType(item.progressType) }}
+            </span>
+          </fwb-table-cell>
           <fwb-table-cell>{{ item.note.length > 50 ? item.note.slice(0, 50) + '...' : item.note }}</fwb-table-cell>
           <fwb-table-cell>{{ item.teacherName }}</fwb-table-cell>
 
+          <fwb-table-cell>{{ item.schoolYearName }}</fwb-table-cell>
+          <fwb-table-cell>{{ item.createdAt ? DateTime.fromJSDate(new Date(item.createdAt))
+            .toFormat("dd-MM-yyyy HH:mm:ss") :
+            "-" }}</fwb-table-cell>
           <fwb-table-cell>{{ item.updatedAt ? DateTime.fromJSDate(new Date(item.updatedAt))
             .toFormat("dd-MM-yyyy HH:mm:ss") :
             "-" }}</fwb-table-cell>
@@ -59,6 +65,10 @@
           <div class="form-control">
             <fwb-input :disabled="form.id > 0" v-model="form.createdAt" type="datetime-local" label="Tanggal" />
           </div>
+          <div class="form-control">
+            <FwbSelect v-model="form.progressType" label="Jenis Perkembangan"
+              :options="Helper.studentProgressNoteTypes" />
+          </div>
           <div class="form-control mt-5">
             <FwbTextarea class="min-h-[350px]" :disabled="form.id > 0" v-model="form.note" type="text"
               label="Catatan Perkembangan" />
@@ -78,9 +88,8 @@
 </template>
 
 <script setup lang="ts">
-import type { ErrorResponse, RequestResponse } from '@/commons';
-import type { SchoolYear } from '@/models';
-import { ClassRoomService, SchoolYearService, ToastService } from '@/services';
+import { Helper, type ErrorResponse, type RequestResponse } from '@/commons';
+import { ClassRoomService, ToastService } from '@/services';
 import { ref } from 'vue';
 import PageHeader from '@/components/PageHeader.vue'
 import { DateTime } from 'luxon';
@@ -92,7 +101,8 @@ import {
   FwbTableHeadCell,
   FwbTableHead,
   FwbButton, FwbModal, FwbHeading, FwbInput,
-  FwbTextarea
+  FwbTextarea,
+  FwbSelect
 
 } from 'flowbite-vue'
 import _ from 'lodash';
@@ -124,7 +134,9 @@ const datas = ref<StudentProgressNoteResponse[]>([])
 const teacherId = AuthService.getTeacherId();
 const canAdd = ref(false);
 
-const form = ref<StudentProgressNoteRequest>({ teacherId: teacherId, studentId: props.studentId } as StudentProgressNoteRequest)
+const form = ref<StudentProgressNoteRequest>({ id: 0, teacherId: teacherId, studentId: props.studentId } as StudentProgressNoteRequest)
+
+
 
 
 StudentProgressNoteService.getByStudentId(props.studentId).then((response: RequestResponse) => {
@@ -138,10 +150,10 @@ StudentProgressNoteService.getByStudentId(props.studentId).then((response: Reque
     ClassRoomService.getById(props.classroomId).then((response: RequestResponse) => {
       if (response.isSuccess) {
         const classroom = response.data as {
-          homeroomid: number
+          homeRoomTeacherId: number
           classRoomId: number
         }
-        if (classroom.homeroomid == teacherId) {
+        if (classroom.homeRoomTeacherId == teacherId) {
           canAdd.value = true;
         }
       }
@@ -193,7 +205,32 @@ const addStudentProgress = async () => {
 }
 
 
+const getStudentProgressNoteTypeClass = (progressType: number) => {
 
+  const className = 'text-white rounded-xl px-3 py-1 ';
+
+  switch (progressType) {
+    case 0:
+
+      return className + 'bg-blue-400';
+
+    case 1:
+
+      return className + 'bg-teal-400';
+
+    case 2:
+
+      return className + 'bg-red-400';
+
+    case 3:
+
+      return className + 'bg-amber-400';
+
+    default:
+      break;
+  }
+
+}
 
 </script>
 

@@ -41,4 +41,13 @@
         Keluar,
         TanpaStatus
     }
+
+
+    public enum StudentProgressNoteType
+    {
+        Informasi,
+        Prestasi,
+        Pelanggaran,
+        Lainnya
+    }
 }

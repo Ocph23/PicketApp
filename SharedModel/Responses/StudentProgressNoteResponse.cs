@@ -14,6 +14,7 @@ namespace SharedModel.Responses
         string? StudentName,
         int TeacherId,
         string? TeacherName,
+        StudentProgressNoteType ProgressType,
         string Note,
         DateTime CreatedAt,
         DateTime? UpdatedAt

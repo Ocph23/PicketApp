@@ -61,6 +61,27 @@ const Helper = {
     }
   },
 
+  studentProgressNoteTypes: [
+    { value: 0, name: 'Informasi' },
+    { value: 1, name: 'Prestasi' },
+    { value: 2, name: 'Pelanggaran' },
+    { value: 3, name: 'Lainnya' }],
+
+  studentProgressNoteType: (type: number) => {
+    switch (type) {
+      case 0:
+        return 'Informasi'
+      case 1:
+        return 'Prestasi'
+      case 2:
+        return 'Pelanggaran'
+      case 3:
+        return 'Lainnya'
+      default:
+        return 'Informasi'
+    }
+  },
+
   getWeartherString: (value: number) => {
     switch (value) {
       case 0:

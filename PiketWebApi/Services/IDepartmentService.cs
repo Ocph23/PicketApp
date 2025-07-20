@@ -16,11 +16,8 @@ namespace PiketWebApi.Services
 
     public class DepartmentService : IDepartmentService
     {
-        private readonly IHttpContextAccessor http;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext dbContext;
-        private readonly ISchoolYearService schoolYearService;
-        private static Picket picketToday;
 
         public DepartmentService( UserManager<ApplicationUser> _userManager,
             ApplicationDbContext _dbContext)

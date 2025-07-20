@@ -33,7 +33,6 @@ namespace PiketWebApi.Services
         private readonly IPicketService picketService;
         private readonly IHttpClientFactory factory;
         private readonly HttpClient waAppClient;
-        private readonly ISchoolYearService schoolYearService;
 
         public DateTime CreatedAt { get; private set; }
 
@@ -322,13 +321,10 @@ namespace PiketWebApi.Services
                                  Description = a == null ? null : a.Description
                              };
 
-                return result.ToList();
-
-
+                return await Task.FromResult(result.ToList());
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
                 throw;
             }
         }

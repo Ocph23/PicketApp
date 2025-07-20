@@ -10,7 +10,8 @@ namespace SharedModel.Requests
         int StudentId,
         int TeacherId,
         int SchoolYearId,
-        string Note
+        string Note,
+          StudentProgressNoteType ProgressType
         );
 
 }

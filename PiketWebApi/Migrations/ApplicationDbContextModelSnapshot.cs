@@ -480,11 +480,11 @@ namespace PiketWebApi.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
                     b.Property<DateOnly>("DateOfBorn")
                         .HasColumnType("date");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .HasColumnType("text");
@@ -574,6 +574,9 @@ namespace PiketWebApi.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("text");
 
+                    b.Property<int>("ProgressType")
+                        .HasColumnType("integer");
+
                     b.Property<int>("SchoolYearId")
                         .HasColumnType("integer");
 
@@ -599,11 +602,11 @@ namespace PiketWebApi.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
                     b.Property<DateOnly>("DateOfBorn")
                         .HasColumnType("date");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .HasColumnType("text");

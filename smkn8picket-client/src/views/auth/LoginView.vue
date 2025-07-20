@@ -92,6 +92,10 @@ const login = async () => {
         }
       }
       localStorage.setItem('authToken', JSON.stringify(auth))
+    } else {
+      const error = response.error as ErrorResponse
+      errorMessage.value = error.message
+      ToastService.dangerToast(error.message || 'Periksa kembali username dan password')
     }
   } catch (error) {
     const err = error as ErrorResponse

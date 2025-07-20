@@ -71,7 +71,7 @@
             </fwb-table-cell>
           </fwb-table-row>
           <fwb-table-row>
-            <fwb-table-cell colspan="7" class="!px-0 !py-0">
+            <fwb-table-cell colspan="8" class="!px-0 !py-0">
               <PaginationView v-if="paginateState.paginateResult" :paginate="data.paginate" @onChangePage="getData">
               </PaginationView>
             </fwb-table-cell>

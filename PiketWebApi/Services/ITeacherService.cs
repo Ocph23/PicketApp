@@ -23,7 +23,6 @@ namespace PiketWebApi.Services
         private readonly IHttpContextAccessor http;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext dbContext;
-        private static Picket picketToday;
 
         public TeacherService(IHttpContextAccessor _http, UserManager<ApplicationUser> _userManager,
             ApplicationDbContext _dbContext)
@@ -123,7 +122,7 @@ namespace PiketWebApi.Services
                 result.PlaceOfBorn = model.PlaceOfBorn;
                 result.Name = model.Name;
                 result.Photo = model.Photo;
-                result.Description = model.Description;
+                result.Address = model.Address;
                 dbContext.SaveChanges();
                 trans.Commit();
                 return await Task.FromResult(true);

@@ -1,3 +1,5 @@
+import type { StudentProgressNoteType } from "../Enums/StudentProgressNoteType";
+
 export default interface StudentProgressNoteResponse {
   id: number;
   schoolYearId: number;
@@ -6,6 +8,7 @@ export default interface StudentProgressNoteResponse {
   studentName?: string
   teacherId: number
   teacherName?: string
+  progressType: StudentProgressNoteType
   note: string;
   createdAt: Date
   updatedAt?: Date

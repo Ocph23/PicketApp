@@ -12,8 +12,8 @@ using PiketWebApi.Data;
 namespace PiketWebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250201121013_attendance")]
-    partial class attendance
+    [Migration("20250720132453__initial")]
+    partial class _initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -404,6 +404,9 @@ namespace PiketWebApi.Migrations
                     b.Property<TimeSpan?>("EndAt")
                         .HasColumnType("interval");
 
+                    b.Property<int>("SchoolYearId")
+                        .HasColumnType("integer");
+
                     b.Property<TimeSpan?>("StartAt")
                         .HasColumnType("interval");
 
@@ -415,6 +418,8 @@ namespace PiketWebApi.Migrations
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("Date");
+
+                    b.HasIndex("SchoolYearId");
 
                     b.ToTable("Picket");
                 });
@@ -478,11 +483,11 @@ namespace PiketWebApi.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
                     b.Property<DateOnly>("DateOfBorn")
                         .HasColumnType("date");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .HasColumnType("text");
@@ -500,11 +505,17 @@ namespace PiketWebApi.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<string>("ParentPhoneNumber")
+                        .HasColumnType("text");
+
                     b.Property<string>("Photo")
                         .HasColumnType("text");
 
                     b.Property<string>("PlaceOfBorn")
                         .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");
@@ -552,6 +563,40 @@ namespace PiketWebApi.Migrations
                     b.ToTable("StudentAttendaces");
                 });
 
+            modelBuilder.Entity("PiketWebApi.Data.StudentProgressNote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ProgressType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SchoolYearId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StudentProgressNotes");
+                });
+
             modelBuilder.Entity("PiketWebApi.Data.Teacher", b =>
                 {
                     b.Property<int>("Id")
@@ -560,11 +605,11 @@ namespace PiketWebApi.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
                     b.Property<DateOnly>("DateOfBorn")
                         .HasColumnType("date");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .HasColumnType("text");
@@ -760,7 +805,15 @@ namespace PiketWebApi.Migrations
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
+                    b.HasOne("PiketWebApi.Data.SchoolYear", "SchoolYear")
+                        .WithMany()
+                        .HasForeignKey("SchoolYearId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("SchoolYear");
                 });
 
             modelBuilder.Entity("PiketWebApi.Data.Schedule", b =>

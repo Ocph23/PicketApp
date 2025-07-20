@@ -1,7 +1,10 @@
 <!-- Toast.vue -->
 <template>
-  <div v-for="toast in toastList" :key="toast.id" class="toast">
-    <ToastView :message="toast.message" :type="toast.type" :duration="toast.duration"></ToastView>
+  <div class="toast">
+    <div v-for="toast in toastList" :key="toast.id" class="flex flex-col">
+      <ToastView :message="toast.message" :type="toast.type" :duration="toast.duration"></ToastView>
+    </div>
+
   </div>
 </template>
 
@@ -25,8 +28,6 @@ const toastList = computed(() => ToastService.toasts);
   font-size: 16px;
   cursor: pointer;
   transition: opacity 0.3s ease;
-  width: 400px;
-  height: 200px;
   z-index: 9999999;
 }
 </style>

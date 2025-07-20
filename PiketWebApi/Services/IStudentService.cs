@@ -31,7 +31,6 @@ public class StudentService : IStudentService
     private readonly ApplicationDbContext dbContext;
     private readonly ISchoolYearService schoolYearService;
     private readonly ILogger<StudentService> logger;
-    private static Picket picketToday;
 
     public StudentService(IHttpContextAccessor _http, UserManager<ApplicationUser> _userManager,
         ApplicationDbContext _dbContext, ISchoolYearService _schoolYearService, ILogger<StudentService> _logger)

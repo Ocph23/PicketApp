@@ -24,11 +24,10 @@ namespace PiketWebApi.Services
         private readonly ISchoolYearService schoolYearService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext dbContext;
-        private static Picket picketToday;
 
         public StudentProgressNoteService(
-            IHttpContextAccessor _http, 
-            ISchoolYearService _schoolYearService, 
+            IHttpContextAccessor _http,
+            ISchoolYearService _schoolYearService,
             UserManager<ApplicationUser> _userManager,
             ApplicationDbContext _dbContext)
         {
@@ -68,6 +67,7 @@ namespace PiketWebApi.Services
                     return Error.NotFound("Data guru tidak ditemukan.");
                 }
 
+                result.ProgressType = req.ProgressType;
                 result.Note = req.Note;
                 result.UpdatedAt = DateTime.Now.ToUniversalTime();
                 var validator = new Validators.StudentProgressNoteValidator();
@@ -88,8 +88,8 @@ namespace PiketWebApi.Services
             try
             {
                 var schoolYearResult = await schoolYearService.GetActiveSchoolYear();
-                if (schoolYearResult.IsError) 
-                    return  Error.NotFound("Tahun ajaran aktif tidak ditemukan/belum ada");
+                if (schoolYearResult.IsError)
+                    return Error.NotFound("Tahun ajaran aktif tidak ditemukan/belum ada");
 
                 var model = new StudentProgressNote
                 {
@@ -97,7 +97,8 @@ namespace PiketWebApi.Services
                     CreatedAt = DateTime.Now.ToUniversalTime(),
                     SchoolYearId = schoolYearResult.Value.Id,
                     TeacherId = req.TeacherId,
-                    StudentId = req.StudentId,    
+                    StudentId = req.StudentId,
+                    ProgressType = req.ProgressType
                 };
 
                 var validator = new Validators.StudentProgressNoteValidator();
@@ -127,10 +128,8 @@ namespace PiketWebApi.Services
                              join tc in dbContext.Teachers on p.TeacherId equals tc.Id
                              select new StudentProgressNoteResponse(
                                  p.Id, p.SchoolYearId, $"{sy.Name} {sy.SemesterName}",
-                                 p.StudentId, st.Name, p.TeacherId, tc.Name, p.Note, p.CreatedAt, p.UpdatedAt
+                                 p.StudentId, st.Name, p.TeacherId, tc.Name, p.ProgressType, p.Note, p.CreatedAt, p.UpdatedAt
                                  );
-                if (!result.Any())
-                    return Error.NotFound("NotFound", "Data guru tidak ditemukan");
                 return result.ToList();
             }
             catch (Exception)
@@ -150,7 +149,7 @@ namespace PiketWebApi.Services
                              join tc in dbContext.Teachers on p.TeacherId equals tc.Id
                              select new StudentProgressNoteResponse(
                                  p.Id, p.SchoolYearId, $"{sy.Name} {sy.SemesterName}",
-                                 p.StudentId, st.Name, p.TeacherId, tc.Name, p.Note, p.CreatedAt, p.UpdatedAt
+                                 p.StudentId, st.Name, p.TeacherId, tc.Name, p.ProgressType, p.Note, p.CreatedAt, p.UpdatedAt
                                  );
                 if (!result.Any())
                     return Error.NotFound("NotFound", "Data guru tidak ditemukan");
@@ -173,10 +172,8 @@ namespace PiketWebApi.Services
                              join tc in dbContext.Teachers on p.TeacherId equals tc.Id
                              select new StudentProgressNoteResponse(
                                  p.Id, p.SchoolYearId, $"{sy.Name} {sy.SemesterName}",
-                                 p.StudentId, st.Name, p.TeacherId, tc.Name, p.Note, p.CreatedAt, p.UpdatedAt
+                                 p.StudentId, st.Name, p.TeacherId, tc.Name, p.ProgressType, p.Note, p.CreatedAt, p.UpdatedAt
                                  );
-                if (!result.Any())
-                    return Error.NotFound("NotFound", "Data guru tidak ditemukan");
                 return result.ToList();
             }
             catch (Exception)

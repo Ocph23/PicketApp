@@ -1,3 +1,4 @@
+import type { StudentProgressNoteType } from "../Enums/StudentProgressNoteType"
 
 export default interface StudentProgressNoteRequest {
   id: number
@@ -6,4 +7,5 @@ export default interface StudentProgressNoteRequest {
   note: string
   createdAt: Date | string
   updatedAt?: Date
+  progressType: StudentProgressNoteType
 }
