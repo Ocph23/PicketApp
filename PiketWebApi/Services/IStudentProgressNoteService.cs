@@ -61,6 +61,13 @@ namespace PiketWebApi.Services
         {
             try
             {
+                var schoolYearResult = await schoolYearService.GetActiveSchoolYear();
+                if (schoolYearResult.IsError)
+                    return Error.NotFound("Tahun ajaran aktif tidak ditemukan/belum ada");
+
+                if(schoolYearResult.Value.Id != req.SchoolYearId)
+                    return Error.Conflict("Tahun ajaran progress ini sudah tidak aktif, data tidak dapat diubah");
+
                 var result = dbContext.StudentProgressNotes.SingleOrDefault(x => x.Id == id);
                 if (result == null)
                 {

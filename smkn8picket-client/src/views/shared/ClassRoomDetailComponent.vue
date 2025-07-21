@@ -1,27 +1,30 @@
 <template>
   <div class="no-print">
     <PageHeader title="Detail Kelas"> </PageHeader>
-    <fwb-card class="!max-w-1/2  bg-white p-4 rounded-lg shadow-md">
-      <div class="flex gap-1 flex-col">
-        <div class="flex">
-          <label class="w-32 dark:text-gray-100">Nama Kelas</label>
-          <label for="className" class="dark:text-gray-100 capitalize">: {{ classroom.className }}-{{
-            classroom.departmentInitial }}</label>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <fwb-card class="!max-w-full bg-red-100 p-4 rounded-lg shadow-md">
+        <div class="flex gap-1 flex-col">
+          <div class="flex">
+            <label class="w-32 dark:text-gray-100">Nama Kelas</label>
+            <label for="className" class="dark:text-gray-100 capitalize">: {{ classroom.className }}-{{
+              classroom.departmentInitial }}</label>
+          </div>
+          <div class="flex">
+            <label class="w-32 dark:text-gray-100">Nama Jurusan</label>
+            <label for="className" class="dark:text-gray-100 capitalize">: {{ classroom.departmentName }}</label>
+          </div>
+          <div class="flex">
+            <label class="w-32 dark:text-gray-100">Wali Kelas</label>
+            <label for="className" class="dark:text-gray-100 capitalize">: {{ classroom.homeRoomTeacherName }}</label>
+          </div>
+          <div class="flex">
+            <label class="w-32 dark:text-gray-100">Ketua Kelas</label>
+            <label for="className" class="dark:text-gray-100 capitalize">: {{ classroom.classLeaderName }}</label>
+          </div>
         </div>
-        <div class="flex">
-          <label class="w-32 dark:text-gray-100">Nama Jurusan</label>
-          <label for="className" class="dark:text-gray-100 capitalize">: {{ classroom.departmentName }}</label>
-        </div>
-        <div class="flex">
-          <label class="w-32 dark:text-gray-100">Wali Kelas</label>
-          <label for="className" class="dark:text-gray-100 capitalize">: {{ classroom.homeRoomTeacherName }}</label>
-        </div>
-        <div class="flex">
-          <label class="w-32 dark:text-gray-100">Ketua Kelas</label>
-          <label for="className" class="dark:text-gray-100 capitalize">: {{ classroom.classLeaderName }}</label>
-        </div>
-      </div>
-    </fwb-card>
+      </fwb-card>
+
+    </div>
 
     <!-- Modal -->
 
@@ -30,13 +33,14 @@
 
     <div class="flex justify-between items-center">
       <h1 class="text-2xl font-semibold"></h1>
-      <div class="flex flex-column justify-center items-center "> <button @click="showModal = true"
-          class="transition rounded text-black m-3 mr-5 w-6 items-center text-center">
+      <div class="flex flex-column justify-center items-center ">
+        <button v-if="classroom.schoolYearId == schoolYearActive?.id" @click="() => showModal = true"
+          class="transition rounded text-black m-3  w-6 items-center text-center">
           <AddIcon class="w-7 h-7" />
         </button>
-        <fwb-button :color="'yellow'" type="submit" class="flex flex-row items-center justify-center p-2"
+        <fwb-button :color="'yellow'" type="submit" class="flex flex-row items-center justify-center p-0"
           @click="print">
-          <PrinterIcon class="w-3 h-3"></PrinterIcon>
+          <PrinterIcon class="w-7 h-7 text-amber-300"></PrinterIcon>
         </fwb-button>
       </div>
     </div>
@@ -81,29 +85,27 @@
     </div>
   </div>
 
-  <fwb-modal v-if="showModal" :size="'md'" not-escapable persistent class="no-print modal modal-open opacity-[99%] z-50"
-    @close="showModal = false">
-    <template #header>
-      <fwb-heading tag="h3">Tambah Siswa</fwb-heading>
-    </template>
-    <template #body>
-      <form @submit.prevent="addClassroom">
+  <form @submit.prevent="addClassroom">
+    <fwb-modal v-if="showModal" :size="'md'" not-escapable persistent
+      class="no-print modal modal-open opacity-[99%] z-50" @close="showModal = false">
+      <template #header>
+        <fwb-heading tag="h3">Tambah Siswa</fwb-heading>
+      </template>
+      <template #body>
         <div class="form-control">
           <AutoComplete placeholder="cari siswa" label="Ketua Kelas" :service="'student'" v-model="form">
           </AutoComplete>
         </div>
-        <div class="flex justify-end mt-5 gap-2">
+      </template>
+      <template #footer>
+        <div class="flex justify-end gap-2">
           <fwb-button :color="'alternative'" type="button" @click="showModal = false">Cancel</fwb-button>
           <fwb-button :color="'green'" type="submit">Tambah</fwb-button>
 
         </div>
-      </form>
-    </template>
-    <template #footer>
-
-    </template>
-
-  </fwb-modal>
+      </template>
+    </fwb-modal>
+  </form>
 
   <classroommemberprint :classroom="classroom" v-if="showPrint"></classroommemberprint>
 
@@ -111,11 +113,11 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { DialogService, ToastService, ClassRoomService } from '@/services'
+import { DialogService, ToastService, ClassRoomService, SchoolYearService } from '@/services'
 import AutoComplete from '@/components/AutoComplete.vue'
 import { Helper, type ErrorResponse } from '@/commons'
 import { AddIcon, DeleteIcon } from '@/components/icons'
-import type { ClassRoom, Student } from '@/models'
+import { SchoolYear, type ClassRoom, type Student } from '@/models'
 import type ErrorResult from '@/models/Responses/ErrorResponse'
 import PageHeader from '@/components/PageHeader.vue'
 import classroommemberprint from './classroommemberprint.vue'
@@ -133,9 +135,9 @@ import {
   FwbTableRow,
 } from 'flowbite-vue'
 import { PrinterIcon } from '@heroicons/vue/24/solid'
-import PrintStore from '@/stores/PrintModelStore';
 import { DateTime } from 'luxon'
 import AuthService from '@/services/AuthService'
+import PrintStore from '@/stores/PrintModelStore';
 const printStore = PrintStore();
 
 const props = defineProps({
@@ -145,9 +147,15 @@ const props = defineProps({
   },
 })
 
+const schoolYearActive = ref<SchoolYear>()
+
 const isHomeRoomTeacher = ref(false)
 AuthService.isHomeRoomTeacher().then((result) => {
   isHomeRoomTeacher.value = result
+  SchoolYearService.getActive().then((response) => {
+    if (response.isSuccess)
+      schoolYearActive.value = response.data as SchoolYear
+  })
 });
 
 const data = reactive({

@@ -37,7 +37,7 @@ const AuthService = {
   isHomeRoomTeacher: async () => {
     const authToken = localStorage.getItem('authToken')
     const auth = JSON.parse(authToken as string) as AuthResponse;
-    return auth.loginAs === 'WaliKelas' || auth.loginAs === 'HomeRoomTeacher';
+    return auth.roles.includes("HomeRoomTeacher");
   },
   isPiket: async () => {
     const authToken = localStorage.getItem('authToken')

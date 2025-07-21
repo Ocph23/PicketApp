@@ -40,13 +40,16 @@
                 <div class="mb-4">
                   <fwb-input label="Parent Phone Number" type="text" v-model="data.form.parentPhoneNumber" />
                 </div>
-                <div class="mb-4">
+                <div class="mb-4" v-if="data.kelas.classRoomId">
                   <fwb-input label="Kelas" type="text" v-model="data.kelas.classRoomName" />
                 </div>
-                <div class="mb-4">
+                <div class="mb-4" v-if="data.kelas.classRoomId">
                   <fwb-input label="Jurusan" type="text" v-model="data.kelas.departmenName" />
                 </div>
-
+                <div class="mb-4 " v-if="!data.kelas.classRoomId">
+                  <fwb-input class="text-red-500 font-bold" label="Kelas" type="text"
+                    model-value="Belum terdaftar dalam kelas" disabled />
+                </div>
               </div>
             </form>
 

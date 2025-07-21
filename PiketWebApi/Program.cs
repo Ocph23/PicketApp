@@ -9,12 +9,22 @@ using PiketWebApi;
 using PiketWebApi.Api;
 using PiketWebApi.Data;
 using PiketWebApi.Exceptions;
+using PiketWebApi.Mcp;
 using PiketWebApi.Services;
 using System.Security.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+
+
+///add mcp 
+///
+
+builder.Services.AddMcpServer()
+    .WithHttpTransport()
+    .WithStdioServerTransport()
+    .WithTools<StudentTools>();
 
 if (builder.Environment.IsProduction())
 {
@@ -194,5 +204,5 @@ app.MapGroup("/api/dashboard").MapDashboardApi().WithOpenApi();
 app.MapGroup("/api/studentattendance").MapStudentAttendanceApi().WithOpenApi();
 app.MapGroup("/api/studentprogressnote").MapStudentProgressNoteApi().WithOpenApi();
 
-
+app.MapMcp("/api/mcp");
 app.Run();

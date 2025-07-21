@@ -195,7 +195,8 @@ const addStudentProgress = async () => {
         showModal.value = false
         ToastService.successToast('Data berhasil ubah')
       } else {
-        ToastService.dangerToast('Data gagal diubah')
+
+        ToastService.dangerToast(Helper.readDetailError(response.error!))
       }
     }
   } catch (error) {

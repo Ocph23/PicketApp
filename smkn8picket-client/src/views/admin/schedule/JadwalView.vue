@@ -1,18 +1,23 @@
 <template>
   <AdminLayout>
-    <div class="">
+    <div class="no-print">
       <h2
         class="max-w-lg text-center mb-6 text-3xl font-bold leading-none tracking-tight text-gray-900 dark:text-white sm:text-4xl md:mx-auto">
         Jadwal Picket
 
       </h2>
-      <h6
-        class="text-center mb-6 text-xl font-bold leading-none tracking-tight text-gray-900 dark:text-white  md:mx-auto">
+      <h6 class="text-center text-xl font-bold leading-none tracking-tight text-gray-900 dark:text-white  md:mx-auto">
         <span v-if="data.schoolYear" class="relative inline-block">
-          Tahun Ajaran : {{ data.schoolYear.year }}/{{ data.schoolYear.year + 1 }}, Semester : {{
-            data.schoolYear.semester }}
+          Tahun Ajaran : {{ data.schoolYear.name }} {{ data.schoolYear.semesterName }}
         </span>
       </h6>
+
+      <div class="flex justify-end">
+        <fwb-button :color="'yellow'" type="submit" class="flex flex-row items-center justify-center p-0"
+          @click="print">
+          <PrinterIcon class="w-7 h-7 text-amber-400"></PrinterIcon>
+        </fwb-button>
+      </div>
 
       <div class="grid grid-cols-2 gap-2">
         <div v-for="item in dayOfWeeks" :key="item.name" class="my-2">
@@ -127,6 +132,9 @@
       </fwb-modal>
     </div>
   </AdminLayout>
+
+  <PiketSchedulePrint :schedules="schedules" :school-year="data.schoolYear" v-if="showPrint"></PiketSchedulePrint>
+
 </template>
 
 <script setup lang="ts">
@@ -139,7 +147,7 @@ import type { Schedule, SchoolYear, Teacher } from '@/models'
 import type ScheduleRequest from '@/models/Requests/ScheduleRequest'
 import { groupBy } from 'lodash'
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
-import { UserPlusIcon } from '@heroicons/vue/24/solid'
+import { UserPlusIcon, PrinterIcon } from '@heroicons/vue/24/solid'
 import {
   FwbButton,
   FwbHeading,
@@ -151,6 +159,10 @@ import {
   FwbTableHeadCell,
   FwbTableRow,
 } from 'flowbite-vue'
+
+import PrintStore from '@/stores/PrintModelStore';
+import PiketSchedulePrint from '@/views/shared/PiketSchedulePrint.vue'
+const printStore = PrintStore();
 
 const route = useRoute()
 const modal = ref(false)
@@ -277,5 +289,16 @@ const deleteData = (schedule: Schedule) => {
   })
 }
 
+
+const showPrint = ref(false)
+
+const print = () => {
+  // printStore.setStudentClassMember(classroom.value.students)
+  showPrint.value = true
+  setTimeout(() => {
+    window.print()
+    showPrint.value = false
+  }, 1000)
+}
 
 </script>

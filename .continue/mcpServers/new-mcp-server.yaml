@@ -1,0 +1,12 @@
+name: HTTP MCP Server
+version: 0.0.1
+schema: v1
+mcpServers:
+  - name: Local HTTP MCP
+    type: http
+    args:
+      - -v
+      - http://localhost:5003/api/mcp
+    headers:
+      Content-Type: application/json
+   

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PicketMcpClient": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -78,7 +78,12 @@ const login = async () => {
       }
 
       if (loginAs.value === 'WaliKelas') {
-        router.push('/walikelas')
+        if (auth.roles.includes('HomeRoomTeacher'))
+          router.push('/walikelas')
+        else {
+          ToastService.dangerToast('Maaf anda belum terdaftar sebagai wali kelas')
+          return
+        }
       }
 
       if (loginAs.value === 'Administrator') {
