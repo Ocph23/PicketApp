@@ -15,39 +15,39 @@
             <form>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="mb-4">
-                  <fwb-input label="NIS" type="text" v-model="data.form.nis" required />
+                  <VTInput label="NIS" type="text" v-model="data.form.nis" required />
                 </div>
                 <div class="mb-4">
-                  <fwb-input label="NISN" type="text" v-model="data.form.nisn" required />
+                  <VTInput label="NISN" type="text" v-model="data.form.nisn" required />
                 </div>
                 <div class="mb-4">
-                  <fwb-input label="Nama" type="text" v-model="data.form.name" required />
+                  <VTInput label="Nama" type="text" v-model="data.form.name" required />
                 </div>
                 <div class="mb-4">
                   <fwb-select :options="Helper.genders" label="Jenis Kelamin" type="text" v-model="data.form.gender"
                     required />
                 </div>
                 <div class="mb-4">
-                  <fwb-input label="Tempat Lahir" type="text" v-model="data.form.placeOfBorn" required />
+                  <VTInput label="Tempat Lahir" type="text" v-model="data.form.placeOfBorn" required />
                 </div>
                 <div class="mb-4">
                   <VTInput label="Tanggal Lahir" type="date" v-model="data.form.dateOfBorn" required />
                 </div>
 
                 <div class="mb-4">
-                  <fwb-input label="email" type="email" v-model="data.form.email" />
+                  <VTInput label="email" type="email" v-model="data.form.email" />
                 </div>
                 <div class="mb-4">
-                  <fwb-input label="Parent Phone Number" type="text" v-model="data.form.parentPhoneNumber" />
+                  <VTInput label="Parent Phone Number" type="text" v-model="data.form.parentPhoneNumber" />
                 </div>
                 <div class="mb-4" v-if="data.kelas.classRoomId">
-                  <fwb-input label="Kelas" type="text" v-model="data.kelas.classRoomName" />
+                  <VTInput label="Kelas" type="text" v-model="data.kelas.classRoomName" />
                 </div>
                 <div class="mb-4" v-if="data.kelas.classRoomId">
-                  <fwb-input label="Jurusan" type="text" v-model="data.kelas.departmenName" />
+                  <VTInput label="Jurusan" type="text" v-model="data.kelas.departmenName" />
                 </div>
                 <div class="mb-4 " v-if="!data.kelas.classRoomId">
-                  <fwb-input class="text-red-500 font-bold" label="Kelas" type="text"
+                  <VTInput class="text-red-500 font-bold" label="Kelas" type="text"
                     model-value="Belum terdaftar dalam kelas" disabled />
                 </div>
               </div>
@@ -82,14 +82,14 @@
 import { ref, reactive } from 'vue'
 import { StudentService } from '@/services'
 import { Helper, type ErrorResponse, } from '@/commons'
-import { FwbCard, FwbInput, FwbSelect, FwbTabs, FwbTab } from 'flowbite-vue'
+import { FwbCard, FwbSelect, FwbTabs, FwbTab } from 'flowbite-vue'
 import PageHeader from '@/components/PageHeader.vue'
 import type { Student } from '@/models'
-import VTInput from '@/commons/VTInput/VTInput.vue'
 import { DateTime } from 'luxon'
 import StudentAttendanceChart from './studentAttendanceChart.vue'
 import StudentAttendanceList from './studentAttendanceList.vue'
 import StudentProgressNoteView from './StudentProgressNoteView.vue'
+import { VTInput } from '@ocph23/vtocph23'
 
 
 const props = defineProps({

@@ -33,11 +33,10 @@ import { useRouter } from 'vue-router'
 import AuthService from '@/services/AuthService'
 import axios from 'axios'
 import type { LoginRequest } from '@/models/Requests'
-import type { AuthResponse, Schedule } from '@/models'
+import type { AuthResponse, } from '@/models'
 import { FwbCard, FwbHeading, FwbInput } from 'flowbite-vue'
-import VTInput from '@/commons/VTInput/VTInput.vue'
-import { ScheduleService, ToastService } from '@/services'
 import { Helper } from '@/commons'
+import { ToastService } from '@/services'
 
 const loginRequest = ref({} as LoginRequest)
 const errorMessage = ref('')

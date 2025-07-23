@@ -3,15 +3,14 @@
     <FwbCard class="p-5 w-[50%] md:w-[75%] sm:w-full">
       <form @submit.prevent="login" class="max-w-sm w-full p-6 rounded-lg">
         <div class="flex justify-center mb-6">
-          <img :src="Helper.infoSekolah.logo" class="h-28 w-auto" alt="SMK Logo" />
+          <img :src="Helper.infoSekolah.logo" class="w-1/2 sm:w-1/4" alt="SMK Logo" />
         </div>
         <div class="mb-8">
-          <FwbInput label="User Name" v-model="loginRequest.username" required></FwbInput>
+          <VTInput label="User Name" v-model="loginRequest.username" required></VTInput>
         </div>
         <div class="mb-4">
-          <FwbInput :type="'password'" label="Password" v-model="loginRequest.password" required></FwbInput>
+          <VTInput :type="'password'" label="Password" v-model="loginRequest.password" required></VTInput>
         </div>
-
         <div class="mb-4">
           <FwbSelect :placeholder="'Select Role'" label="Login As" v-model="loginAs" :options="[
             { value: 'Piket', name: 'Piket' },
@@ -42,10 +41,10 @@ import AuthService from '@/services/AuthService'
 import axios from 'axios'
 import type { LoginRequest } from '@/models/Requests'
 import type { AuthResponse, Schedule } from '@/models'
-import { FwbCard, FwbHeading, FwbInput, FwbSelect } from 'flowbite-vue'
-import VTInput from '@/commons/VTInput/VTInput.vue'
+import { FwbCard, FwbHeading, FwbSelect } from 'flowbite-vue'
 import { ScheduleService, ToastService } from '@/services'
 import { Helper, type ErrorResponse } from '@/commons'
+import { VTInput } from '@ocph23/vtocph23'
 
 const loginRequest = ref({} as LoginRequest)
 const errorMessage = ref('')

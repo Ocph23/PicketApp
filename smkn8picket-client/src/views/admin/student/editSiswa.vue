@@ -12,30 +12,30 @@
       <form @submit.prevent="updateStudent">
         <div class="grid grid-cols-2 gap-4">
           <div class="mb-4">
-            <fwb-input label="NIS" type="text" v-model="data.form.nis" required />
+            <VTInput label="NIS" type="text" v-model="data.form.nis" required />
           </div>
           <div class="mb-4">
-            <fwb-input label="NISN" type="text" v-model="data.form.nisn" required />
+            <VTInput label="NISN" type="text" v-model="data.form.nisn" required />
           </div>
           <div class="mb-4">
-            <fwb-input label="Nama" type="text" v-model="data.form.name" required />
+            <VTInput label="Nama" type="text" v-model="data.form.name" required />
           </div>
           <div class="mb-4">
             <fwb-select :options="Helper.genders" label="Jenis Kelamin" type="text" v-model="data.form.gender"
               required />
           </div>
           <div class="mb-4">
-            <fwb-input label="Tempat Lahir" type="text" v-model="data.form.placeOfBorn" required />
+            <VTInput label="Tempat Lahir" type="text" v-model="data.form.placeOfBorn" required />
           </div>
           <div class="mb-4">
             <VTInput label="Tanggal Lahir" type="date" v-model="data.form.dateOfBorn" required />
           </div>
 
           <div class="mb-4">
-            <fwb-input label="email" type="email" v-model="data.form.email" />
+            <VTInput label="email" type="email" v-model="data.form.email" />
           </div>
           <div class="mb-4">
-            <fwb-input label="Parent Phone Number" type="text" v-model="data.form.parentPhoneNumber" />
+            <VTInput label="Parent Phone Number" type="text" v-model="data.form.parentPhoneNumber" />
           </div>
 
           <div class="mb-4">
@@ -58,13 +58,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { ToastService, StudentService } from '@/services'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import { Helper, type ErrorResponse } from '@/commons'
-import { FwbCard, FwbButton, FwbInput, FwbSelect, FwbTextarea, FwbTabs, FwbTab } from 'flowbite-vue'
+import { FwbCard, FwbButton, FwbSelect, FwbTextarea } from 'flowbite-vue'
 import PageHeader from '@/components/PageHeader.vue'
 import type { Student } from '@/models'
-import VTInput from '@/commons/VTInput/VTInput.vue'
 import { DateTime } from 'luxon'
+import { VTInput } from '@ocph23/vtocph23'
 
-const activeTab = ref('biodata')
+// const activeTab = ref('biodata')
 
 const data = reactive({
   form: {

@@ -1,5 +1,6 @@
-@import 'tailwindcss';
-@import '../../node_modules/flowbite-vue/dist/index.css';
+@import '../../node_modules/@ocph23/vtocph23/dist/index.css';
+
+@import "tailwindcss";
 
 .print-only {
   display: none !important;

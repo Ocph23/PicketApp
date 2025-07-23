@@ -5,31 +5,30 @@
       <form @submit.prevent="addData" class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
           <div class="mb-4">
-            <fwb-input label="NIS" type="text" v-model="data.formData.nis" required />
+            <VTInput label="NIS" type="text" v-model="data.formData.nis" required />
           </div>
           <div class="mb-4">
-            <fwb-input label="NISN" type="text" v-model="data.formData.nisn" required />
+            <VTInput label="NISN" type="text" v-model="data.formData.nisn" required />
           </div>
           <div class="mb-4">
-            <fwb-input label="Nama" type="text" v-model="data.formData.name" required />
-          </div>
-
-          <div class="mb-4">
-            <fwb-select :options="Helper.genders" label="Jenis Kelamin" type="text" v-model="data.formData.gender"
-              required />
-          </div>
-          <div class="mb-4">
-            <fwb-input label="Tempat Lahir" type="text" v-model="data.formData.placeOfBorn" required />
-          </div>
-          <div class="mb-4">
-            <fwb-input label="Tanggal Lahir" type="date" v-model="data.formData.dateOfBorn" required />
+            <VTInput label="Nama" type="text" v-model="data.formData.name" required />
           </div>
 
           <div class="mb-4">
-            <fwb-input label="email" type="email" v-model="data.formData.email" />
+            <VTSelect :options="Helper.genders" label="Jenis Kelamin" v-model="data.formData.gender" required />
           </div>
           <div class="mb-4">
-            <fwb-input label="Telepon Orang Tua" type="text" v-model="data.formData.parentPhoneNumber" />
+            <VTInput label="Tempat Lahir" type="text" v-model="data.formData.placeOfBorn" required />
+          </div>
+          <div class="mb-4">
+            <VTInput label="Tanggal Lahir" type="date" v-model="data.formData.dateOfBorn" required />
+          </div>
+
+          <div class="mb-4">
+            <VTInput label="email" type="email" v-model="data.formData.email" />
+          </div>
+          <div class="mb-4">
+            <VTInput label="Telepon Orang Tua" type="text" v-model="data.formData.parentPhoneNumber" />
           </div>
 
           <div class="mb-4">
@@ -52,6 +51,7 @@ import { FwbCard, FwbButton, FwbInput, FwbSelect, FwbTextarea } from 'flowbite-v
 import PageHeader from '@/components/PageHeader.vue'
 import type { Student } from '@/models'
 import { DateTime } from 'luxon'
+import { VTInput, VTSelect } from '@ocph23/vtocph23'
 
 const router = useRouter()
 

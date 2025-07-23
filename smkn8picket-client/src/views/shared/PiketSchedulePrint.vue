@@ -32,7 +32,7 @@
             </td>
             <td class="border px-4">
               <ul>
-                <li v-for="(teacher, index1) in schedules[item.name]" :key="index1">
+                <li v-for="(teacher, index1) in props.schedules[item.name]" :key="index1">
                   <span>{{ index1 + 1 }}. {{ teacher.teacherName }}</span>
                 </li>
               </ul>
@@ -49,7 +49,7 @@
 import type { Schedule, SchoolYear } from '@/models';
 import LogoAppp from '@/components/LogoApp.vue';
 import { FwbHeading } from 'flowbite-vue';
-import { Helper, type Directory } from '@/commons';
+import { Helper, type Dictionary } from '@/commons';
 import _ from 'lodash';
 
 
@@ -57,7 +57,7 @@ import _ from 'lodash';
 // const items: item[] = printStore.itemClassMemberPrint;
 
 const props = defineProps<{
-  schedules: Directory<Schedule>,
+  schedules: Dictionary<Schedule[]>,
   schoolYear: SchoolYear
 }>();
 

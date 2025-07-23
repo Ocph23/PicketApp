@@ -7,12 +7,12 @@
           <!-- Input Tahun -->
 
           <div class="mb-5">
-            <fwb-input v-model="data.form.year" type="number" placeholder="Tahun" label="Tahun" required />
+            <VTInput v-model="data.form.year" type="number" placeholder="Tahun" label="Tahun" required />
           </div>
 
           <!-- Input Semester -->
           <div class="mb-5">
-            <fwb-input v-model="data.form.semester" type="number" placeholder="Semester" label="Semester" required />
+            <VTInput v-model="data.form.semester" type="number" placeholder="Semester" label="Semester" required />
           </div>
 
           <!-- Status Aktif -->
@@ -43,6 +43,7 @@ import { FwbCard, FwbInput, FwbSelect } from 'flowbite-vue'
 import PageHeader from '@/components/PageHeader.vue'
 import type { SchoolYear } from '@/models'
 import { Helper, type ErrorDetail } from '@/commons'
+import { VTInput } from '@ocph23/vtocph23'
 
 const data = reactive({
   form: { id: 0, year: 0, semester: 1, actived: 'true' },

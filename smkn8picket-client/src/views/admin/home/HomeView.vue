@@ -1,6 +1,6 @@
 <template>
-  <AdminLayout class="gap-4">
-    <div class="grid grid-cols-1 gap-4 lg:grid-cols-4">
+  <AdminLayout>
+    <div class="w-full grid grid-cols-4 gap-4 ">
       <div class="flex flex-col gap-4">
         <FwbCard class="col-6 p-5 !min-w-full ">
           <div class="flex flex-col items-start justify-start">
@@ -67,24 +67,18 @@
 
 
       </div>
-      <FwbCard class="col-span-3 !min-w-full p-5">
-        <div>
-          <h1 class="text-center text-xl xl:text-2xl font-bold">GRAFIK TINGKAT KEHADIRAN SISWA</h1>
-          <h1 class="text-center text-xl xl:text-2xl font-bold">Tahun Ajaran {{ data?.schoolYearName }} {{
-            data?.semesterName }}</h1>
-        </div>
-        <ApexCharts type="bar" :options="chartOptions" :series="series">
-        </ApexCharts>
-      </FwbCard>
-
+      <div class="col-start-2 col-span-3 gap-4">
+        <FwbCard class="p-5 !min-w-full ">
+          <div>
+            <h1 class="text-center text-xl xl:text-2xl font-bold">GRAFIK TINGKAT KEHADIRAN SISWA</h1>
+            <h1 class="text-center text-xl xl:text-2xl font-bold">Tahun Ajaran {{ data?.schoolYearName }} {{
+              data?.semesterName }}</h1>
+          </div>
+          <ApexCharts type="bar" :options="chartOptions" :series="series">
+          </ApexCharts>
+        </FwbCard>
+      </div>
     </div>
-    <!-- <div class="flex flex-col justify-center  items-center !min-w-full">
-        <img class="m-1 w-[5%]" :src="Helper.infoSekolah.logo" alt="">
-        <p class="text-lg dark:text-white">APLIKASI PIKET </p>
-        <p class="text-lg dark:text-white"> {{ Helper.infoSekolah.nama_sekolah }}</p>
-        <p class="text-lg dark:text-white"> {{ Helper.infoSekolah.kota }}</p>
-        <p class="text-lg dark:text-white">{{ year }}</p>
-      </div> -->
   </AdminLayout>
 </template>
 

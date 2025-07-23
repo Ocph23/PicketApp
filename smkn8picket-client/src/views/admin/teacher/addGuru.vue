@@ -5,25 +5,25 @@
       <form @submit.prevent="addData">
         <div class="w-full grid grid-cols-1 gap-4 md:grid-cols-2">
           <div class="mb-4">
-            <fwb-input label="Nomor register" type="text" v-model="data.form.registerNumber" required />
+            <VTInput label="Nomor register" type="text" v-model="data.form.registerNumber" required />
           </div>
           <div class="mb-4">
-            <fwb-input label="Nama" type="text" v-model="data.form.name" required />
+            <VTInput label="Nama" type="text" v-model="data.form.name" required />
           </div>
           <div class="mb-4">
-            <fwb-select :options="genders" label="Jenis Kelamin" type="text" v-model="data.form.gender" required />
-          </div>
-
-          <div class="mb-4">
-            <fwb-input label="Tempat Lahir" type="text" v-model="data.form.placeOfBorn" required />
+            <VTSelect :options="genders" label="Jenis Kelamin" v-model="data.form.gender"></VTSelect>
           </div>
 
           <div class="mb-4">
-            <fwb-input label="Tanggal Lahir" type="date" v-model="data.form.dateOfBorn" required />
+            <VTInput label="Tempat Lahir" type="text" v-model="data.form.placeOfBorn" required />
           </div>
 
           <div class="mb-4">
-            <fwb-input label="Email" type="email" v-model="data.form.email" required />
+            <VTInput label="Tanggal Lahir" type="date" v-model="data.form.dateOfBorn" required />
+          </div>
+
+          <div class="mb-4">
+            <VTInput label="Email" type="email" v-model="data.form.email" required />
           </div>
         </div>
         <div class="mb-4">
@@ -40,11 +40,12 @@ import { useRouter } from 'vue-router'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import { TeacherService, ToastService } from '@/services'
 import { Helper, type ErrorDetail } from '@/commons'
-import { FwbCard, FwbButton, FwbInput, FwbSelect, FwbTextarea } from 'flowbite-vue'
+import { FwbCard, FwbButton, FwbInput, FwbTextarea } from 'flowbite-vue'
 import { reactive } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import type { Teacher } from '@/models'
 import { DateTime } from 'luxon'
+import { VTInput, VTSelect } from '@ocph23/vtocph23'
 
 const router = useRouter()
 const data = reactive({

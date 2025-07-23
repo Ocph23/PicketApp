@@ -63,11 +63,10 @@
         </template>
         <template #body>
           <div class="form-control">
-            <fwb-input :disabled="form.id > 0" v-model="form.createdAt" type="datetime-local" label="Tanggal" />
+            <VTInput :disabled="form.id > 0" v-model="form.createdAt" type="datetime-local" label="Tanggal" />
           </div>
           <div class="form-control">
-            <FwbSelect v-model="form.progressType" label="Jenis Perkembangan"
-              :options="Helper.studentProgressNoteTypes" />
+            <VTSelect v-model="form.progressType" label="Jenis Perkembangan" :options="dataStudentProgressNoteTypes" />
           </div>
           <div class="form-control mt-5">
             <FwbTextarea class="min-h-[350px]" :disabled="form.id > 0" v-model="form.note" type="text"
@@ -100,9 +99,8 @@ import {
   FwbTableBody,
   FwbTableHeadCell,
   FwbTableHead,
-  FwbButton, FwbModal, FwbHeading, FwbInput,
+  FwbButton, FwbModal, FwbHeading,
   FwbTextarea,
-  FwbSelect
 
 } from 'flowbite-vue'
 import _ from 'lodash';
@@ -113,6 +111,7 @@ import { PrinterIcon } from '@heroicons/vue/24/solid';
 import type StudentProgressNoteRequest from '@/models/Requests/StudentProgressNoteRequest';
 import AuthService from '@/services/AuthService';
 import EditIcon from '@/components/icons/EditIcon.vue';
+import { VTSelect } from '@ocph23/vtocph23';
 
 
 const props = defineProps({
@@ -130,6 +129,8 @@ const showModal = ref(false)
 const showPrint = ref(false)
 
 const datas = ref<StudentProgressNoteResponse[]>([])
+
+const dataStudentProgressNoteTypes: { name: string, value: number }[] = Helper.studentProgressNoteTypes;
 
 const teacherId = AuthService.getTeacherId();
 const canAdd = ref(false);

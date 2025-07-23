@@ -160,9 +160,7 @@ import {
   FwbTableRow,
 } from 'flowbite-vue'
 
-import PrintStore from '@/stores/PrintModelStore';
 import PiketSchedulePrint from '@/views/shared/PiketSchedulePrint.vue'
-const printStore = PrintStore();
 
 const route = useRoute()
 const modal = ref(false)
@@ -187,7 +185,7 @@ if (!scheduleId.value) {
 }
 
 
-const schedules = ref<Dictionary<Schedule[]>>({})
+const schedules = ref<Dictionary<Schedule[]>>({} as Dictionary<Schedule[]>)
 const data = reactive({
   teachers: [] as Teacher[],
   schoolYear: {} as SchoolYear,

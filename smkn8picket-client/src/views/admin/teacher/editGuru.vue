@@ -9,10 +9,10 @@
       <form @submit.prevent="updateTeacher">
         <div class="grid gap-6 mb-6 md:grid-cols-2">
           <div class="mb-4">
-            <fwb-input label="Nomor register" type="text" v-model="data.form.registerNumber" required />
+            <VTInput label="Nomor register" type="text" v-model="data.form.registerNumber" required />
           </div>
           <div class="mb-4">
-            <fwb-input label="Nama" type="text" v-model="data.form.name" required />
+            <VTInput label="Nama" type="text" v-model="data.form.name" required />
           </div>
           <div class="mb-4">
             <fwb-select :options="Helper.genders" label="Jenis Kelamin" type="number" v-model="data.form.gender"
@@ -20,14 +20,14 @@
           </div>
 
           <div class="mb-4">
-            <fwb-input label="Tempat Lahir" type="text" v-model="data.form.placeOfBorn" required />
+            <VTInput label="Tempat Lahir" type="text" v-model="data.form.placeOfBorn" required />
           </div>
 
           <div class="mb-4">
             <VTInput v-model="data.form.dateOfBorn" :type="'date'" label="Tanggal Lahir" required></VTInput>
           </div>
           <div class="mb-4">
-            <fwb-input label="Email" type="email" v-model="data.form.email" required />
+            <VTInput label="Email" type="email" v-model="data.form.email" required />
           </div>
         </div>
         <div class="mb-4">
@@ -46,9 +46,9 @@ import { ToastService, TeacherService } from '@/services'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import { Helper, type ErrorResponse } from '@/commons'
-import { FwbTextarea, FwbCard, FwbInput, FwbSelect, FwbButton } from 'flowbite-vue'
+import { FwbTextarea, FwbCard, FwbSelect, FwbButton } from 'flowbite-vue'
 import type { Teacher } from '@/models'
-import VTInput from '@/commons/VTInput/VTInput.vue'
+import { VTInput } from '@ocph23/vtocph23'
 
 const data = reactive({
   form: {

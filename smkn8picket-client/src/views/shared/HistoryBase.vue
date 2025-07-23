@@ -5,7 +5,7 @@
         <AddIcon class="w-7 h-7" />
       </router-link>
     </PageHeader>
-    <div class="my-2 flex sm:flex-row flex-col items-center sm:justify-between">
+    <div class="my-2 flex  items-center sm:justify-between">
       <fwb-select :options="data.pageSizes" placeholder="per halaman" v-model="data.paginate.pageSize"
         @change="changePageSize">
         <template #prefix>
@@ -26,10 +26,8 @@
           </svg>
         </template>
       </fwb-input>
-
-
     </div>
-    <fwb-table class="w-full p-5">
+    <fwb-table class="w-full">
       <fwb-table-head>
         <fwb-table-head-cell>No</fwb-table-head-cell>
         <fwb-table-head-cell>Tanggal</fwb-table-head-cell>

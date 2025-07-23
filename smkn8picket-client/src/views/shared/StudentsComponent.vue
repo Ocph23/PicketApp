@@ -5,9 +5,9 @@
         <AddIcon class="w-7 h-7" />
       </router-link>
     </PageHeader>
-    <div class="shadow-md sm:rounded-lg mt-1">
-      <div class="p-5 flex sm:flex-row flex-col items-center sm:justify-between">
-        <fwb-select :options="data.pageSizes" placeholder="per halaman" v-model="data.paginate.pageSize"
+    <div class="mt-1">
+      <div class="flex flex-row items-center sm:justify-between">
+        <VTSelect :options="data.pageSizes" placeholder="per halaman" v-model="data.paginate.pageSize"
           @change="changePageSize">
           <template #prefix>
             <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor"
@@ -16,7 +16,7 @@
                 stroke-width="2" />
             </svg>
           </template>
-        </fwb-select>
+        </VTSelect>
         <fwb-input v-model="data.paginate.searchTerm" placeholder="cari siswa..." @change="searchTextChange">
           <template #prefix>
             <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor"
@@ -27,7 +27,7 @@
           </template>
         </fwb-input>
       </div>
-      <fwb-table class="w-full p-5">
+      <fwb-table class="w-full mt-5">
         <fwb-table-head>
           <fwb-table-head-cell>No</fwb-table-head-cell>
           <fwb-table-head-cell>Nama</fwb-table-head-cell>
@@ -107,6 +107,7 @@ import type { PaginateResponse } from '@/models/Responses'
 import { DateTime } from 'luxon'
 import DetailIcon from '@/components/icons/DetailIcon.vue'
 import AuthService from '@/services/AuthService'
+import { VTSelect } from '@ocph23/vtocph23'
 
 const paginateState = PaginationStore()
 

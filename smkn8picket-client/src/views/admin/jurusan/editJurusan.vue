@@ -7,6 +7,7 @@ import PageHeader from '@/components/PageHeader.vue'
 import { FwbInput, FwbCard, FwbTextarea, FwbButton } from 'flowbite-vue'
 import type { Department } from '@/models'
 import { Helper, type ErrorDetail } from '@/commons'
+import { VTInput } from '@ocph23/vtocph23'
 
 const data = reactive({ form: {} as Department, errors: [] as ErrorDetail[] })
 const router = useRouter()
@@ -55,7 +56,7 @@ const updateDepartment = async () => {
           </div>
 
           <div class="mb-4">
-            <fwb-input v-model="data.form.initial" placeholder="kode jurusan" label="kode jurusan" />
+            <VTInput v-model="data.form.initial" placeholder="kode jurusan" label="kode jurusan" />
           </div>
 
           <div class="mb-4">

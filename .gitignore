@@ -10,7 +10,6 @@
 **/*.dbmdl
 **/*.jfm
 **/charts
-**/compose*
 **/node_modules
 **/npm-debug.log
 **/obj

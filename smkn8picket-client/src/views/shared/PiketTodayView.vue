@@ -11,7 +11,7 @@
         <div>{{ systemMessage }}</div>
       </div>
       <div class="flex justify-center" v-if="isAdminOrPicket">
-        <button @click="openPicket" class="w-1/2 btn-close text-white bg-orange-500 m-2 p-5 rounded-lg shadow-md"
+        <button @click="openPicket" class="w-1/2 btn-close text-white  bg-amber-500  m-2 mt-5 p-5 rounded-lg shadow-md"
           aria-label="Close">
           Buka Piket
         </button>

@@ -117,7 +117,7 @@ import { DialogService, ToastService, ClassRoomService, SchoolYearService } from
 import AutoComplete from '@/components/AutoComplete.vue'
 import { Helper, type ErrorResponse } from '@/commons'
 import { AddIcon, DeleteIcon } from '@/components/icons'
-import { SchoolYear, type ClassRoom, type Student } from '@/models'
+import { type ClassRoom, type SchoolYear, type Student } from '@/models'
 import type ErrorResult from '@/models/Responses/ErrorResponse'
 import PageHeader from '@/components/PageHeader.vue'
 import classroommemberprint from './classroommemberprint.vue'

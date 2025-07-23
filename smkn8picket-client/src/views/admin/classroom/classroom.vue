@@ -81,10 +81,10 @@
       <div class="modal-box">
         <form>
           <div class="mb-4">
-            <fwb-input v-model="form.className" label="Nama Kelas" />
+            <VTInput v-model="form.className" label="Nama Kelas" />
           </div>
           <div class="mb-4">
-            <fwb-input v-model="form.level" type="number" min="1" max="2" label="Tingkat" />
+            <VTInput v-model="form.level" type="number" min="1" max="2" label="Tingkat" />
           </div>
           <div class="mb-4">
             <fwb-select v-model="form.departmentId" label="Jurusan" :options="data.departments" />
@@ -122,10 +122,10 @@
       <div class="modal-box">
         <form>
           <div class="mb-4">
-            <fwb-input v-model="form.className" label="Nama Kelas" />
+            <VTInput v-model="form.className" label="Nama Kelas" />
           </div>
           <div class="mb-4">
-            <fwb-input v-model="form.level" :disabled="true" type="number" min="1" max="2" label="Tingkat" />
+            <VTInput v-model="form.level" :disabled="true" type="number" min="1" max="2" label="Tingkat" />
           </div>
         </form>
       </div>
@@ -170,7 +170,7 @@ import type { ClassRoomRequest, ClassRoom, Department, Teacher, AutoCompleteSugg
 import AutoCompleteStore from '@/stores/AutoCompleteStore'
 
 import {
-  FwbButton, FwbModal,
+  FwbButton,
   FwbInput, FwbSelect,
   FwbTable,
   FwbTableBody,
@@ -181,6 +181,7 @@ import {
 } from 'flowbite-vue'
 import { InformationCircleIcon } from '@heroicons/vue/24/solid'
 import type ClassRoomFromLastClassRequest from '@/models/Requests/ClassRoomFromLastClassRequest'
+import { VTInput } from '@ocph23/vtocph23'
 
 
 const data = reactive({

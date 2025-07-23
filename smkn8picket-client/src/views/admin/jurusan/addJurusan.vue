@@ -7,6 +7,7 @@ import { ToastService, DepartmentService } from "@/services";
 import { Helper, type ErrorDetail } from "@/commons";
 import { FwbInput, FwbCard, FwbTextarea, FwbButton } from 'flowbite-vue'
 import type { Department } from "@/models";
+import { VTInput } from "@ocph23/vtocph23";
 
 const router = useRouter();
 
@@ -43,23 +44,23 @@ const addData = async () => {
         <PageHeader title="Tambah Jurusan"></PageHeader>
         <form @submit.prevent="addData">
           <div class="mb-4">
-            <fwb-input v-model="data.form.name" placeholder="nama jurusan" label="Nama Jurusan"
+            <VTInput v-model="data.form.name" placeholder="nama jurusan" label="Nama Jurusan"
               :validation-status="Helper.getErrorStatus(data.errors, 'Name')">
               <template #validationMessage>
                 <span class="text-xs"> {{ Helper.readError(data.errors, 'Name') }}</span>
               </template>
-            </fwb-input>
+            </VTInput>
           </div>
 
           <div class="mb-4">
-            <fwb-input v-model="data.form.initial" placeholder="kode jurusan" label="kode jurusan"
+            <VTInput v-model="data.form.initial" placeholder="kode jurusan" label="kode jurusan"
               :validation-status="Helper.getErrorStatus(data.errors, 'Initial')">
               <template #validationMessage>
                 <span class="text-xs"> {{ Helper.readError(data.errors, 'Initial') }}</span>
               </template>
 
 
-            </fwb-input>
+            </VTInput>
           </div>
 
           <div class="mb-4">
