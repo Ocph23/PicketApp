@@ -44,7 +44,7 @@ import type { AuthResponse, Schedule } from '@/models'
 import { FwbCard, FwbHeading, FwbSelect } from 'flowbite-vue'
 import { ScheduleService, ToastService } from '@/services'
 import { Helper, type ErrorResponse } from '@/commons'
-import { VTInput } from '@ocph23/vtocph23'
+import VTInput from '@/components/VTInput/VTInput.vue'
 
 const loginRequest = ref({} as LoginRequest)
 const errorMessage = ref('')

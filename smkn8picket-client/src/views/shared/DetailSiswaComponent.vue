@@ -89,7 +89,7 @@ import { DateTime } from 'luxon'
 import StudentAttendanceChart from './studentAttendanceChart.vue'
 import StudentAttendanceList from './studentAttendanceList.vue'
 import StudentProgressNoteView from './StudentProgressNoteView.vue'
-import { VTInput } from '@ocph23/vtocph23'
+import VTInput from '@/components/VTInput/VTInput.vue'
 
 
 const props = defineProps({

@@ -1,0 +1,99 @@
+<template>
+  <div>
+    <label>
+      <span v-if="label" :class="labelClasses">
+        {{ label }}<span v-if="props.validation" class="text-orange-500">*</span>
+      </span>
+    </label>
+    <div class="flex relative w-full">
+      <select v-model="model" :disabled="disabled" :class="inputClasses" class="w-full">
+        <option disabled selected value="">
+          {{ placeholder }}
+        </option>
+        <option v-for="(option, index) in options" :key="index" :value="option.value">
+          {{ option.name }}
+        </option>
+      </select>
+    </div>
+    <p v-if="props.validation && props.validation.$message">
+      <FwbInputErrorMessage :messages="props.validation.$message" />
+    </p>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { computed } from 'vue'
+import { useVModel } from '@vueuse/core'
+import { twMerge } from 'tailwind-merge'
+import { type InputSize, type SelectOption } from './types'
+import FwbInputErrorMessage from '../../components/VTInput/VTInputErrorMessage.vue'
+import { defineProps, withDefaults } from 'vue'
+import type { ErrorObject, ValidationRuleWithParams } from '@vuelidate/core'
+
+interface InputProps {
+  modelValue?: unknown;
+  label?: string;
+  options?: SelectOption[];
+  placeholder?: string;
+  disabled?: boolean;
+  underline?: boolean;
+  size?: InputSize;
+  validation?: ValidationRuleWithParams<object, unknown>,
+}
+const props = withDefaults(defineProps<InputProps>(), {
+  label: '',
+  options: () => [],
+  placeholder: 'Please select one',
+  disabled: false,
+  underline: false,
+  size: 'md',
+  validationStatus: undefined,
+})
+const emit = defineEmits(['update:modelValue'])
+
+const model = useVModel(props, 'modelValue', emit)
+// LABEL
+const baseLabelClasses = 'block mb-2 text-sm font-medium'
+
+// INPUT
+const defaultInputClasses =
+  'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+const disabledInputClasses = 'cursor-not-allowed bg-gray-100'
+const inputSizeClasses: Record<InputSize, string> = {
+  lg: 'p-4',
+  md: 'p-2.5 text-sm',
+  sm: 'p-2 text-sm',
+}
+
+const successInputClasses = 'bg-green-50 border-green-500 dark:border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 focus:ring-green-500 focus:border-green-500'
+const errorInputClasses = 'bg-red-50 border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500'
+
+const inputClasses = computed(() => {
+  let classByStatus = defaultInputClasses;
+  if (props.validation) {
+    const vsx = props.validation.$message as unknown as ErrorObject[];
+    classByStatus = vsx
+      ? errorInputClasses
+      : successInputClasses
+  }
+
+  return twMerge(
+    defaultInputClasses,
+    classByStatus,
+    inputSizeClasses[props.size],
+    props.disabled ? disabledInputClasses : '',
+  )
+})
+
+const labelClasses = computed(() => {
+  let classByStatus = 'text-gray-900 dark:text-white';
+  if (props.validation) {
+    const vsx = props.validation.$message as unknown as ErrorObject[];
+    classByStatus = vsx
+      ? 'text-red-700 dark:text-red-500'
+      : 'text-green-700 dark:text-green-500'
+  }
+
+  return twMerge(baseLabelClasses, classByStatus)
+})
+</script>

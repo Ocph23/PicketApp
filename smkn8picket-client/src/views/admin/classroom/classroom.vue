@@ -181,7 +181,7 @@ import {
 } from 'flowbite-vue'
 import { InformationCircleIcon } from '@heroicons/vue/24/solid'
 import type ClassRoomFromLastClassRequest from '@/models/Requests/ClassRoomFromLastClassRequest'
-import { VTInput } from '@ocph23/vtocph23'
+import VTInput from '@/components/VTInput/VTInput.vue'
 
 
 const data = reactive({

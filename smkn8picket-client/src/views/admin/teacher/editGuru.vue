@@ -48,7 +48,7 @@ import PageHeader from '@/components/PageHeader.vue'
 import { Helper, type ErrorResponse } from '@/commons'
 import { FwbTextarea, FwbCard, FwbSelect, FwbButton } from 'flowbite-vue'
 import type { Teacher } from '@/models'
-import { VTInput } from '@ocph23/vtocph23'
+import VTInput from '@/components/VTInput/VTInput.vue'
 
 const data = reactive({
   form: {

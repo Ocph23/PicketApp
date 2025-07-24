@@ -5,9 +5,9 @@ import PageHeader from "@/components/PageHeader.vue";
 import { reactive } from "vue";
 import { ToastService, DepartmentService } from "@/services";
 import { Helper, type ErrorDetail } from "@/commons";
-import { FwbInput, FwbCard, FwbTextarea, FwbButton } from 'flowbite-vue'
+import { FwbCard, FwbTextarea, FwbButton } from 'flowbite-vue'
 import type { Department } from "@/models";
-import { VTInput } from "@ocph23/vtocph23";
+import VTInput from '@/components/VTInput/VTInput.vue'
 
 const router = useRouter();
 

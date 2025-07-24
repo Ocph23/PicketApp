@@ -7,7 +7,7 @@ import PageHeader from '@/components/PageHeader.vue'
 import { FwbInput, FwbCard, FwbTextarea, FwbButton } from 'flowbite-vue'
 import type { Department } from '@/models'
 import { Helper, type ErrorDetail } from '@/commons'
-import { VTInput } from '@ocph23/vtocph23'
+import VTInput from '@/components/VTInput/VTInput.vue'
 
 const data = reactive({ form: {} as Department, errors: [] as ErrorDetail[] })
 const router = useRouter()

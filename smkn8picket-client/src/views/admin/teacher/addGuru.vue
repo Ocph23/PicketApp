@@ -40,12 +40,15 @@ import { useRouter } from 'vue-router'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import { TeacherService, ToastService } from '@/services'
 import { Helper, type ErrorDetail } from '@/commons'
-import { FwbCard, FwbButton, FwbInput, FwbTextarea } from 'flowbite-vue'
+import { FwbCard, FwbButton, FwbTextarea } from 'flowbite-vue'
 import { reactive } from 'vue'
 import PageHeader from '@/components/PageHeader.vue'
 import type { Teacher } from '@/models'
 import { DateTime } from 'luxon'
-import { VTInput, VTSelect } from '@ocph23/vtocph23'
+import VTInput from '@/components/VTInput/VTInput.vue'
+import VTSelect from '@/components/VTSelect/VTSelect.vue'
+
+
 
 const router = useRouter()
 const data = reactive({

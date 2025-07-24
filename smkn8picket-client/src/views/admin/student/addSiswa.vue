@@ -47,11 +47,12 @@ import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import { reactive } from 'vue'
 import { StudentService, ToastService } from '@/services'
 import { Helper } from '@/commons'
-import { FwbCard, FwbButton, FwbInput, FwbSelect, FwbTextarea } from 'flowbite-vue'
+import { FwbCard, FwbButton, FwbTextarea } from 'flowbite-vue'
 import PageHeader from '@/components/PageHeader.vue'
 import type { Student } from '@/models'
 import { DateTime } from 'luxon'
-import { VTInput, VTSelect } from '@ocph23/vtocph23'
+import VTInput from '@/components/VTInput/VTInput.vue'
+import VTSelect from '@/components/VTSelect/VTSelect.vue'
 
 const router = useRouter()
 

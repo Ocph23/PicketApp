@@ -107,7 +107,7 @@ import type { PaginateResponse } from '@/models/Responses'
 import { DateTime } from 'luxon'
 import DetailIcon from '@/components/icons/DetailIcon.vue'
 import AuthService from '@/services/AuthService'
-import { VTSelect } from '@ocph23/vtocph23'
+import VTSelect from '@/components/VTSelect/VTSelect.vue'
 
 const paginateState = PaginationStore()
 

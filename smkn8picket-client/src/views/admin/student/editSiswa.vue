@@ -62,7 +62,7 @@ import { FwbCard, FwbButton, FwbSelect, FwbTextarea } from 'flowbite-vue'
 import PageHeader from '@/components/PageHeader.vue'
 import type { Student } from '@/models'
 import { DateTime } from 'luxon'
-import { VTInput } from '@ocph23/vtocph23'
+import VTInput from '@/components/VTInput/VTInput.vue'
 
 // const activeTab = ref('biodata')
 

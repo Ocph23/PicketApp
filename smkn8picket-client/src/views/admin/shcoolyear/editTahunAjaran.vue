@@ -39,11 +39,12 @@ import { reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { SchoolYearService, ToastService } from '@/services'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
-import { FwbCard, FwbInput, FwbSelect } from 'flowbite-vue'
+import { FwbCard, FwbSelect } from 'flowbite-vue'
 import PageHeader from '@/components/PageHeader.vue'
 import type { SchoolYear } from '@/models'
 import { Helper, type ErrorDetail } from '@/commons'
-import { VTInput } from '@ocph23/vtocph23'
+import VTInput from '@/components/VTInput/VTInput.vue'
+
 
 const data = reactive({
   form: { id: 0, year: 0, semester: 1, actived: 'true' },
