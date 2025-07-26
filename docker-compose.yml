@@ -16,11 +16,12 @@ services:
         restart: true
 
   whatsapp:
-    image: whatsapp
+    container_name: whatsapp
+    image: 230279/whatsapp:1.0.1
     restart: always
-    build:
-      context: WhatsApp
-      dockerfile: ./Dockerfile
+    # build:
+    #   context: WhatsApp
+    #   dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
     depends_on:
@@ -31,6 +32,7 @@ services:
       - 3000:3000
 
   smkn8picketclient:
+    container_name: smkn8picketclient
     image: smkn8picketclient
     restart: always
     build:
