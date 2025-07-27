@@ -24,7 +24,7 @@ builder.Logging.AddConsole();
 // builder.Services.AddMcpServer()
 //     .WithHttpTransport()
 //     .WithStdioServerTransport()
-//     .WithTools<StudentTools>();
+//     .WithTools<StudentTools>(); ????
 
 if (builder.Environment.IsProduction())
 {
