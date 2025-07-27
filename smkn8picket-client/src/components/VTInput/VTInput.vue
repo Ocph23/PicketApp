@@ -48,7 +48,7 @@ const props = withDefaults(defineProps<InputProps>(), {
 })
 
 const dateHandler = (value: unknown) => {
-  if (props.type == 'date' || props.type == 'datetime-local') {
+  if (props.type == 'date' || props.type == 'time' || props.type == 'datetime-local') {
     emit('update:modelValue', value as Date)
   }
 }

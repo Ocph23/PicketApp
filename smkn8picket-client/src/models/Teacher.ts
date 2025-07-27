@@ -6,7 +6,7 @@ export default interface Teacher {
   placeOfBorn: string
   dateOfBorn: Date
   email: string
-  description: string
+  address: string
   photo: string
   userId: string
 }

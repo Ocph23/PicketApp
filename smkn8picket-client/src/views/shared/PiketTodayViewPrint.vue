@@ -1,5 +1,5 @@
 <template>
-  <div class="print-only">
+  <div class="print-only m-3">
     <div class="flex items-center">
       <LogoApp class="w-12"></LogoApp>
       <div>
@@ -30,7 +30,7 @@
     </div>
 
     <h6 class="mt-5 text-sm">Catatan Peristiwa/Kegiatan</h6>
-    <table class="w-full">
+    <table class="table-print w-full">
       <thead>
         <tr>
           <th>No</th>
@@ -55,7 +55,7 @@
     </table>
 
     <h6 class="mt-5 text-sm"> Kehadiran Siswa</h6>
-    <table class="w-full">
+    <table class="table-print w-full">
       <thead>
         <tr>
           <th>No</th>
@@ -73,14 +73,14 @@
         <tr v-for="(absen, index) in kehadiran" :key="index">
           <td>{{ index + 1 }}</td>
           <td v-for="(item, index2) in absen" :key="index2" :class="index2 === 0 ? 'text-left' : 'text-center'">{{ item
-          }}</td>
+            }}</td>
         </tr>
       </tbody>
     </table>
 
 
     <h6 class="mt-5 font-bold text-sm"> Siswa Pulang Cepat</h6>
-    <table class="w-full">
+    <table class="table-print w-full">
       <thead>
         <tr>
           <th>No</th>

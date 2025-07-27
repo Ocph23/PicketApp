@@ -32,10 +32,12 @@
           </div>
 
           <div class="mb-4">
-            <fwb-textarea label="Catatan" placeholder="tulis jika ada catatan" v-model="data.formData.description" />
+            <fwb-textarea label="Catatan" placeholder="tulis jika ada catatan" v-model="data.formData.address" />
           </div>
         </div>
-        <fwb-button class="w-full cursor-pointer" color="green" type="submit"> Tambah Siswa </fwb-button>
+        <div class="mb-4 flex  justify-end">
+          <fwb-button class="!w-auto" color="green" type="submit">Simpan </fwb-button>
+        </div>
       </form>
     </fwb-card>
   </AdminLayout>
@@ -66,7 +68,7 @@ const data = reactive({
     placeOfBorn: '',
     dateOfBorn: '',
     email: '',
-    description: '',
+    address: '',
     photo: '',
     status: 0,
     parentPhoneNumber: '',
@@ -102,7 +104,7 @@ const collectStudent = (form: {
   placeOfBorn: string
   dateOfBorn: string
   email: string
-  description: string
+  address: string
   photo: string
   status: number
   parentPhoneNumber: string
@@ -116,7 +118,7 @@ const collectStudent = (form: {
     dateOfBorn: DateTime.fromJSDate(new Date(form.dateOfBorn)).toFormat('yyyy-MM-dd'),
     placeOfBorn: form.placeOfBorn,
     email: form.email,
-    description: form.description,
+    address: form.address,
     gender: Number(form.gender),
     parentPhoneNumber: form.parentPhoneNumber,
     photo: form.photo,

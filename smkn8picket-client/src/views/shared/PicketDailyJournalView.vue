@@ -36,7 +36,7 @@
     </fwb-table-body>
   </fwb-table>
 
-  <FwbModal class="modal opacity-[99%]" v-if="modal" :size="'3xl'">
+  <FwbModal class="modal opacity-[99%]" v-if="modal" :size="'3xl'" @close="modal = false" :persistent="true">
     <template #header>
       <FwbHeading tag="h3" class="text-lg pb-3 font-bold">
         {{ formTitle }} Catatan Kejadian
@@ -45,7 +45,7 @@
 
     <template #body>
       <form class="flex flex-col gap-3" @submit.prevent="saveJurnal(model)">
-        <FwbInput v-model="model.createAt" label="Waktu" :type="'datetime-local'" required></FwbInput>
+        <VTInput v-model="model.createAt" label="Waktu" :type="'datetime-local'" required />
         <FwbInput v-model="model.title" label="Judul" type="text" required></FwbInput>
         <FwbTextarea v-model="model.content" label="Kejadian" required></FwbTextarea>
         <div class="flex justify-end gap-2">
@@ -80,6 +80,8 @@ import { DialogService, PicketService, ToastService } from '@/services';
 import { EditIcon, DeleteIcon } from '@/components/icons';
 import Helper from '@/commons/helper';
 import AuthService from '@/services/AuthService';
+import { DateTime } from 'luxon';
+import VTInput from '@/components/VTInput/VTInput.vue';
 
 
 const props = defineProps({ data: Array<DailyJournal>, canAdd: Boolean })
@@ -141,16 +143,15 @@ const confirmDelete = (journal: DailyJournal) => {
 
 const edit = (journal: DailyJournal) => {
   model.value = journal;
-  model.value.createAt = Helper.getDateTimeString(new Date(journal.createAt), 'YYYY-MM-DDTHH:mm:ss');
+  model.value.createAt = DateTime.fromJSDate(new Date(journal.createAt)).toFormat("yyyy-MM-dd'T'HH:mm");
   modal.value = true;
   formTitle.value = 'Edit';
 }
 
 const createNew = () => {
-  model.value = { createAt: Helper.getDateTimeString(new Date(), 'YYYY-MM-DDTHH:mm:ss') } as DailyJournal;
-
+  const date = DateTime.fromJSDate(new Date()).toFormat("yyyy-MM-dd'T'HH:mm");
+  model.value = { createAt: date } as DailyJournal;
   modal.value = true;
-
   formTitle.value = 'Tambah';
 }
 

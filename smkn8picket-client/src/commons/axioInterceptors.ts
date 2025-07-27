@@ -36,7 +36,7 @@ axios.interceptors.response.use(
       const axiosResponse = axiosError.response as AxiosResponse
       if (axiosResponse) {
         if (axiosResponse.status == 401) {
-          ToastService.dangerToast(axiosError.message)
+          // ToastService.dangerToast(axiosError.message)
           return err
         }
 

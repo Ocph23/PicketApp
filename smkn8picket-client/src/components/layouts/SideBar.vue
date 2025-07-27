@@ -103,13 +103,20 @@ import { DialogService } from '@/services';
 import FwbSidebarDropdownItemCustome from '@/components/FwbSidebarDropdownItemCustome.vue'
 
 
-const logout = () => {
-  DialogService.showDialog('Yakin keluar ?', null, 'warning').then(() => {
-    localStorage.removeItem('authToken')
-    window.location.href = '/login'
-  })
 
+const emit = defineEmits(['onClickMenu', 'onClickLogout'])
+
+const clickMenu = () => {
+  emit('onClickMenu');
 }
+
+
+
+
+const logout = () => {
+  emit('onClickLogout');
+}
+
 
 </script>
 

@@ -31,9 +31,11 @@
           </div>
         </div>
         <div class="mb-4">
-          <fwb-textarea label="Catatan" placeholder="tulis jika ada catatan" v-model="data.form.description" />
+          <fwb-textarea label="Alamat" placeholder="Alamat" v-model="data.form.address" />
         </div>
-        <fwb-button color="green" type="submit">Simpan Perubahan</fwb-button>
+        <div class="mb-4 flex  justify-end">
+          <fwb-button class="!w-auto" color="green" type="submit">Simpan </fwb-button>
+        </div>
       </form>
     </fwb-card>
   </AdminLayout>
@@ -59,7 +61,7 @@ const data = reactive({
     placeOfBorn: '',
     dateOfBorn: new Date(),
     email: '',
-    description: '',
+    address: '',
     userId: '',
   }
 })
@@ -127,7 +129,7 @@ function setForm(teacher: Teacher) {
   data.form.dateOfBorn = teacher.dateOfBorn
   data.form.placeOfBorn = teacher.placeOfBorn
   data.form.email = teacher.email
-  data.form.description = teacher.description
+  data.form.address = teacher.address
   imageSrc.value = Helper.getTeacherAvatar(teacher.photo)
 }
 
@@ -139,7 +141,7 @@ function collectTeacher(form: {
   placeOfBorn: string
   dateOfBorn: Date
   email: string
-  description: string
+  address: string
   userId: string
 }) {
   const teacher = {
@@ -149,7 +151,7 @@ function collectTeacher(form: {
     placeOfBorn: form.placeOfBorn,
     registerNumber: form.registerNumber,
     email: form.email,
-    description: form.description,
+    address: form.address,
     gender: Number(form.gender),
   } as Teacher
 

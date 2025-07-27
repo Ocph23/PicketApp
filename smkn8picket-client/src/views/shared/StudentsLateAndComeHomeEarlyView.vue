@@ -32,7 +32,7 @@
     </fwb-table-body>
   </fwb-table>
 
-  <FwbModal class="modal opacity-[99%]" v-if="modal" :size="'3xl'">
+  <FwbModal class="modal opacity-[99%]" v-if="modal" :size="'3xl'" :persistent="true">
     <template #header>
       <FwbHeading tag="h3" class="text-lg pb-3 font-bold">
         Tambah Siswa Pulang Lebih Cepat
@@ -41,7 +41,7 @@
 
     <template #body>
       <form class="flex flex-col gap-3" @submit.prevent="save(model)">
-        <FwbInput v-model="model.AtTime" label="Waktu" step="1" :type="'time'" required></FwbInput>
+        <VTInput v-model="model.AtTime" label="Waktu" :type="'time'" required></VTInput>
         <div class="form-control">
           <AutoComplete placeholder="cari siswa" label="Nama Siswa" :service="'student'" v-model="studentSelected">
           </AutoComplete>
@@ -75,6 +75,8 @@ import AddIcon from '@/components/icons/AddIcon.vue';
 import type { LateAndComeHomeEarlyResponse } from '@/models/LateAndComeHomeEarly';
 import type { Student } from '@/models';
 import DeleteIcon from '@/components/icons/DeleteIcon.vue';
+import { DateTime } from 'luxon';
+import VTInput from '@/components/VTInput/VTInput.vue';
 
 const props = defineProps({ data: Array<LateAndComeHomeEarlyResponse>, canAdd: Boolean })
 const datas = props.data as LateAndComeHomeEarlyResponse[];
@@ -97,7 +99,7 @@ const attendanceStatus = [
 const createNew = () => {
   model.value = {} as LateAndComeHomeEarlyRequest;
   model.value.LateAndGoHomeEarlyStatus = 1;
-  model.value.AtTime = new Date().toTimeString();
+  model.value.AtTime = DateTime.fromJSDate(new Date()).toFormat("HH:mm");
   modal.value = true;
 }
 

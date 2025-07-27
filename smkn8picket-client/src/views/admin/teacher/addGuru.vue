@@ -27,9 +27,11 @@
           </div>
         </div>
         <div class="mb-4">
-          <fwb-textarea label="Catatan" placeholder="tulis jika ada catatan" v-model="data.form.description" />
+          <fwb-textarea label="Alamat" placeholder="Alamat" v-model="data.form.address" />
         </div>
-        <fwb-button class="w-full" color="green" type="submit">Simpan Perubahan</fwb-button>
+        <div class="mb-4 flex  justify-end">
+          <fwb-button class="!w-auto" color="green" type="submit">Simpan </fwb-button>
+        </div>
       </form>
     </fwb-card>
   </AdminLayout>
@@ -60,7 +62,7 @@ const data = reactive({
     placeOfBorn: '',
     dateOfBorn: '',
     email: '',
-    description: '',
+    address: '',
     userId: '',
   },
   errors: [] as ErrorDetail[],
@@ -82,7 +84,7 @@ const addData = async () => {
       placeOfBorn: data.form.placeOfBorn,
       registerNumber: data.form.registerNumber,
       email: data.form.email,
-      description: data.form.description,
+      address: data.form.address,
       gender: Number(data.form.gender),
     } as Teacher
 

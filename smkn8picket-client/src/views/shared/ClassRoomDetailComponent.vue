@@ -45,7 +45,7 @@
       </div>
     </div>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-1">
-      <fwb-table>
+      <fwb-table class="table w-full">
         <fwb-table-head>
           <fwb-table-head-cell class="px-6 py-3">No</fwb-table-head-cell>
           <fwb-table-head-cell class="px-6 py-3">Nama Siswa</fwb-table-head-cell>

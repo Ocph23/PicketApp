@@ -1,5 +1,5 @@
-
 @import 'tailwindcss';
+
 
 .print-only {
   display: none !important;
@@ -35,24 +35,9 @@
     display: none !important;
   }
 
-  th,
-  td {
-    border: 1px solid black;
-    padding: 3px;
-    font-size: 12px;
-  }
-
   #xbody {
     margin-left: 0px !important;
     padding: 0px !important;
     box-shadow: none !important;
   }
-}
-
-
-
-tr{
-  border: 2px solid rgb(233, 233, 233);
-  padding: 3px;
-  font-size: 12px;
 }

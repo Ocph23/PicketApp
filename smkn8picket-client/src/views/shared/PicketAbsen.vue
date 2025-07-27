@@ -27,7 +27,7 @@
         <fwb-table-cell>{{ absen.className }} - {{ absen.departmentName }}</fwb-table-cell>
         <fwb-table-cell>{{ DateTime.fromJSDate(new Date(absen.timeIn)).toFormat("HH:mm:ss") }}</fwb-table-cell>
         <fwb-table-cell>{{ absen.timeOut ? DateTime.fromJSDate(new Date(absen.timeOut)).toFormat("HH:mm:ss") : "-"
-        }}</fwb-table-cell>
+          }}</fwb-table-cell>
         <fwb-table-cell>{{ Helper.getAttendanceStatus(absen.status) }}</fwb-table-cell>
         <fwb-table-cell>
           <button @click="confirmDelete(absen)" class="text-white flex">
@@ -39,7 +39,7 @@
     </fwb-table-body>
   </fwb-table>
 
-  <FwbModal class="modal opacity-[99%]" v-if="modal" :size="'3xl'">
+  <FwbModal class="modal opacity-[99%]" v-if="modal" :size="'3xl'" :persistent="true">
     <template #header>
       <FwbHeading tag="h3" class="text-lg pb-3 font-bold">
         Tambah Absen
@@ -48,7 +48,7 @@
 
     <template #body>
       <form class="flex flex-col gap-3" @submit.prevent="save(model)">
-        <FwbInput v-model="timeIn" label="Waktu" :type="'datetime-local'" step="1" required></FwbInput>
+        <VTInput v-model="timeIn" label="Waktu" :type="'datetime-local'" required></VTInput>
         <AutoComplete placeholder="cari siswa" label="Nama Siswa" :service="'student'" v-model="studentSelected">
         </AutoComplete>
         <FwbSelect v-model="attendanceStatusSelect" label="Status" :options="attendanceStatus" required></FwbSelect>
@@ -87,6 +87,7 @@ import type StudentAttendanceRequest from '@/models/Requests/StudentAttendanceRe
 import { DialogService, StudentAttendanceService, ToastService } from '@/services';
 import DeleteIcon from '@/components/icons/DeleteIcon.vue';
 import { DateTime } from 'luxon';
+import VTInput from '@/components/VTInput/VTInput.vue';
 
 const props = defineProps<{ picket: Picket, canAdd: boolean }>()
 const model = ref<StudentAttendanceRequest>({} as StudentAttendanceRequest);
@@ -127,7 +128,7 @@ const handleClassChange = (event: Event) => {
 
 }
 const createNew = () => {
-  model.value = { description: '', timeIn: new Date().toISOString() } as StudentAttendance;
+  model.value = { description: '', timeIn: DateTime.fromJSDate(new Date()).toFormat("yyyy-MM-dd'T'HH:mm") } as StudentAttendance;
   modal.value = true;
 }
 

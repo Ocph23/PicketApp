@@ -3,7 +3,7 @@
   <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
     <div class="px-3 py-3 lg:px-5 lg:pl-3">
       <div class="flex items-center justify-between">
-        <div class="flex items-center justify-start rtl:justify-end">
+        <div class="flex items-center justify-start rtl:justify-end body">
           <button @click="clickMenu" type="button"
             class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
             <span class="sr-only">Open sidebar</span>
@@ -22,19 +22,55 @@
           </a>
         </div>
         <div class="flex">
-          <FwbHeading class="text-sm">Welcome, {{ user.name }}</FwbHeading>
-          <!-- <div class="flex items-center ml-5">
-            <FwbToggle size="sm" color="yellow" v-model="isDark" @change="toggleTheme" />
-            <label for="checkbox" class="switch-label">
-              <span v-if="isDark">🌙</span>
-              <span v-if="!isDark">☀️</span>
-              <div class="switch-toggle" :class="{ 'switch-toggle-checked': userTheme === 'dark-theme' }"></div>
-            </label>
-          </div> -->
+
+          <fwb-dropdown align-to-end text="Bottom" close-inside>
+            <template #trigger>
+              <FwbHeading class="text-sm  cursor-pointer">Welcome, {{ user.name }}</FwbHeading>
+            </template>
+            <nav class="w-44 flex flex-col py-2 text-sm text-gray-700 dark:text-gray-200">
+              <span @click="showChangePasswordModal"
+                class="cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ubah
+                Password</span>
+              <span @click="logout"
+                class="cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Logout</span>
+            </nav>
+          </fwb-dropdown>
+
         </div>
       </div>
     </div>
   </nav>
+
+
+  <FwbModal :size="'md'" @close="changePasswordModal = false" v-if="changePasswordModal" :persistent="true">
+    <template #header>
+      <FwbHeading tag="h3" class="text-lg pb-3 font-bold">
+        Ubah Password
+      </FwbHeading>
+    </template>
+
+    <template #body>
+
+      <div class="mb-4">
+        <VTInput label="Password Baru" type="password" v-model="form.password"></VTInput>
+      </div>
+
+      <div class="mb-4">
+        <VTInput label="Confirm Password" type="password" v-model="form.password_confirmation"></VTInput>
+      </div>
+
+
+    </template>
+
+    <template #footer>
+      <div class="flex justify-end gap-1">
+        <FwbButton color="alternative" @click="changePasswordModal = false">Batal</FwbButton>
+        <FwbButton @click="changePassword">Simpan</FwbButton>
+      </div>
+    </template>
+  </FwbModal>
+
+
 </template>
 
 
@@ -42,17 +78,35 @@
 import { Helper } from '@/commons';
 import LogoApp from '@/components/LogoApp.vue';
 import AuthService from '@/services/AuthService';
-import { FwbHeading } from 'flowbite-vue';
+import { FwbHeading, FwbDropdown, FwbButton, FwbToggle, FwbModal } from 'flowbite-vue';
 import { onMounted, ref } from 'vue';
+import FwbModalCustome from '../FwbModalCustome.vue';
+import VTInput from '../VTInput/VTInput.vue';
+import { ToastService } from '@/services';
 
-const emit = defineEmits(['onClickMenu'])
+const emit = defineEmits(['onClickMenu', 'onClickLogout'])
 
+const changePasswordModal = ref(false);
 const user = ref({ name: '' })
 const userTheme = ref('');
 const isDark = ref(false);
 
+
+const form = ref({
+  userName: '',
+  password: '',
+  password_confirmation: '',
+  old_password: '',
+  token: ''
+});
+
 const clickMenu = () => {
   emit('onClickMenu');
+}
+
+
+const logout = () => {
+  emit('onClickLogout');
 }
 
 
@@ -105,6 +159,52 @@ const toggleTheme = () => {
   } else {
     setTheme("light-theme");
   }
+}
+
+
+const showChangePasswordModal = async () => {
+
+  form.value.password = '';
+  form.value.password_confirmation = '';
+  form.value.old_password = '';
+
+
+  const user = await AuthService.getUser();
+  if (!user) {
+    return;
+  }
+
+  form.value.userName = user.email;
+  AuthService.resetpassword().then((res) => {
+    if (res.isSuccess) {
+      form.value.token = res.data as string;
+      changePasswordModal.value = true;
+    }
+  })
+
+}
+
+
+
+
+const changePassword = () => {
+  try {
+
+    if (form.value.password !== form.value.password_confirmation) {
+      throw new Error("Password tidak sama")
+    }
+
+    AuthService.changePassword(form.value.userName, form.value.token, form.value.password).then((res) => {
+      if (res.isSuccess) {
+        ToastService.successToast("Password berhasil diubah");
+        changePasswordModal.value = false;
+      }
+    })
+  } catch (error) {
+    const err = error as Error;
+    ToastService.dangerToast(err.message);
+  }
+
 }
 
 

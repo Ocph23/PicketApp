@@ -97,13 +97,13 @@ const login = async () => {
       }
       localStorage.setItem('authToken', JSON.stringify(auth))
     } else {
-      const error = response.error as ErrorResponse
-      errorMessage.value = error.message
-      ToastService.dangerToast(error.message || 'Periksa kembali username dan password')
+      const err = response.error as ErrorResponse
+
+      ToastService.dangerToast(err.detail || 'Periksa kembali username dan password')
     }
   } catch (error) {
     const err = error as ErrorResponse
-    ToastService.dangerToast(err.message || 'Login failed')
+    ToastService.dangerToast(err?.detail || err?.message || 'Login failed')
   }
 }
 </script>

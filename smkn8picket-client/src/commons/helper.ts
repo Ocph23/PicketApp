@@ -13,6 +13,7 @@ const Helper = {
       return { data: res.data, isSuccess: true, error: null }
     else {
       const x = response as AxiosError
+
       return { data: null, isSuccess: false, error: x.response?.data as ErrorResponse }
     }
   },

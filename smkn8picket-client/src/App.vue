@@ -10,3 +10,5 @@ import { ToasProvider, DialogProvider } from '@/commons';
   <ToasProvider />
   <RouterView />
 </template>
+
+<style lang="scss"></style>

@@ -65,7 +65,7 @@ namespace PiketWebApi.Services
                 if (schoolYearResult.IsError)
                     return Error.NotFound("Tahun ajaran aktif tidak ditemukan/belum ada");
 
-                if(schoolYearResult.Value.Id != req.SchoolYearId)
+                if (schoolYearResult.Value.Id != req.SchoolYearId)
                     return Error.Conflict("Tahun ajaran progress ini sudah tidak aktif, data tidak dapat diubah");
 
                 var result = dbContext.StudentProgressNotes.SingleOrDefault(x => x.Id == id);
@@ -119,9 +119,9 @@ namespace PiketWebApi.Services
                 var response = await GetByIdAsync(model.Id);
                 return response.Value;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw;
+                return Error.Conflict();
             }
         }
 
@@ -156,11 +156,11 @@ namespace PiketWebApi.Services
                              join tc in dbContext.Teachers on p.TeacherId equals tc.Id
                              select new StudentProgressNoteResponse(
                                  p.Id, p.SchoolYearId, $"{sy.Name} {sy.SemesterName}",
-                                 p.StudentId, st.Name, p.TeacherId, tc.Name, p.ProgressType, p.Note, p.CreatedAt, p.UpdatedAt
+                                 p.StudentId, st.Name, p.TeacherId, tc.Name, p.ProgressType, p.Note!, p.CreatedAt, p.UpdatedAt
                                  );
                 if (!result.Any())
                     return Error.NotFound("NotFound", "Data guru tidak ditemukan");
-                return result.FirstOrDefault();
+                return await Task.FromResult(result.FirstOrDefault()!);
             }
             catch (Exception)
             {

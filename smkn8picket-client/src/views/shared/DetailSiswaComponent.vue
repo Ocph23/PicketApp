@@ -161,7 +161,7 @@ const setForm = (student: Student) => {
     student.dateOfBorn == null ? '' : DateTime.fromISO(student.dateOfBorn).toFormat('yyyy-MM-dd')
   data.form.placeOfBorn = student.placeOfBorn
   data.form.email = student.email
-  data.form.description = student.description
+  data.form.description = student.address
   data.form.parentPhoneNumber = student.parentPhoneNumber
   imageSrc.value = Helper.getStudentAvatar(student.photo)
 }

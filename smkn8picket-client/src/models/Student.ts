@@ -7,7 +7,7 @@ export default interface Student {
   placeOfBorn: string
   dateOfBorn: string | null
   email: string
-  description: string
+  address: string
   photo: string
   userId: string
   parentPhoneNumber: string

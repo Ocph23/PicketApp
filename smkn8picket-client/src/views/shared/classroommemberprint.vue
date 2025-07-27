@@ -1,5 +1,5 @@
 <template>
-  <div class="print-only">
+  <div class="m-5 print-only">
     <div class="flex items-center">
       <LogoAppp class="w-12"></LogoAppp>
       <div>
@@ -31,23 +31,23 @@
       </div>
     </div>
     <div class="mt-4">
-      <table class="table-auto w-full">
+      <table class="table-print">
         <thead>
           <tr>
-            <th class="border px-4 py-2">No</th>
-            <th class="border px-4 py-2">NIS</th>
-            <th class="border px-4 py-2">Nama</th>
-            <th class="border px-4 py-2">Jenis Kelamin</th>
-            <th class="border px-4 py-2">Email</th>
+            <th>No</th>
+            <th>NIS</th>
+            <th>Nama</th>
+            <th>Jenis Kelamin</th>
+            <th>Email</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(student, index) in students" :key="student.id">
-            <td class="border px-4 py-2">{{ index + 1 }}</td>
-            <td class="border px-4 py-2">{{ student.nis }}/{{ student.nisn }}</td>
-            <td class="border px-4 py-2">{{ student.name }}</td>
-            <td class="border px-4 py-2">{{ student.gender == 0 ? 'Laki-laki' : 'Perempuan' }}</td>
-            <td class="border px-4 py-2">{{ student.email }}</td>
+            <td>{{ index + 1 }}</td>
+            <td>{{ student.nis }}/{{ student.nisn }}</td>
+            <td>{{ student.name }}</td>
+            <td>{{ student.gender == 0 ? 'Laki-laki' : 'Perempuan' }}</td>
+            <td>{{ student.email }}</td>
           </tr>
         </tbody>
       </table>
@@ -74,6 +74,10 @@ const props = defineProps<{
 
 <style scoped>
 label {
+  font-size: 12px;
+}
+
+td {
   font-size: 12px;
 }
 </style>

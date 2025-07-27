@@ -1,8 +1,8 @@
 <template>
   <div class="no-print">
     <PageHeader :title="picketId ? 'Detail Piket ' : 'Piket Hari Ini'">
-      <FwbButton :color="'yellow'" @click="print">
-        <PrinterIcon class="w-5 h-5"></PrinterIcon>
+      <FwbButton :color="'yellow'" @click="print" class="cursor-pointer">
+        <PrinterIcon class="w-5 h-5 text-amber-400"></PrinterIcon>
       </FwbButton>
     </PageHeader>
 
@@ -11,7 +11,8 @@
         <div>{{ systemMessage }}</div>
       </div>
       <div class="flex justify-center" v-if="isAdminOrPicket">
-        <button @click="openPicket" class="w-1/2 btn-close text-white  bg-amber-500  m-2 mt-5 p-5 rounded-lg shadow-md"
+        <button @click="openPicket"
+          class="w-1/2 btn-close text-white  bg-amber-500  m-2 mt-5 p-5 rounded-lg shadow-md cursor-pointer"
           aria-label="Close">
           Buka Piket
         </button>

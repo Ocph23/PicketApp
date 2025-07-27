@@ -21,10 +21,10 @@ builder.Logging.AddConsole();
 ///add mcp 
 ///
 
-builder.Services.AddMcpServer()
-    .WithHttpTransport()
-    .WithStdioServerTransport()
-    .WithTools<StudentTools>();
+// builder.Services.AddMcpServer()
+//     .WithHttpTransport()
+//     .WithStdioServerTransport()
+//     .WithTools<StudentTools>();
 
 if (builder.Environment.IsProduction())
 {
@@ -59,10 +59,10 @@ builder.Services.Configure<IISServerOptions>(options =>
 });
 
 
-string policyName = "all";
+string corsPolicyName = "all";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(policyName, policy =>
+    options.AddPolicy(corsPolicyName, policy =>
     {
         policy.WithOrigins("*")
         .AllowAnyHeader()
@@ -101,10 +101,10 @@ builder.Services.AddProblemDetails(x =>
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+      .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(TokenOptions.DefaultProvider); ;
 
-builder.Services.AddAuthentication();
-
+//.AddJwtBearer();
 builder.Services.AddOcphAuthServe(builder.Configuration);
 
 // Add services to the container.
@@ -153,10 +153,6 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddProblemDetails();
 builder.Services.AddHttpClient("waapp", c => c.BaseAddress = new System.Uri("http://localhost:3000"));
 
-builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("admin_policy", policy =>
-        policy
-            .RequireRole("admin"));
 
 
 
@@ -181,9 +177,11 @@ app.UseDeveloperExceptionPage();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
+
+
+app.UseCors(corsPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors(policyName);
 app.UseStaticFiles();    //Serve files from wwwroot
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -204,5 +202,5 @@ app.MapGroup("/api/dashboard").MapDashboardApi().WithOpenApi();
 app.MapGroup("/api/studentattendance").MapStudentAttendanceApi().WithOpenApi();
 app.MapGroup("/api/studentprogressnote").MapStudentProgressNoteApi().WithOpenApi();
 
-app.MapMcp("/api/mcp");
+// app.MapMcp("/api/mcp");
 app.Run();

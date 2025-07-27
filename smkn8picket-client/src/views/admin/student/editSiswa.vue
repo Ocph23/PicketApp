@@ -39,10 +39,12 @@
           </div>
 
           <div class="mb-4">
-            <fwb-textarea label="Catatan" placeholder="tulis jika ada catatan" v-model="data.form.description" />
+            <fwb-textarea label="Catatan" placeholder="tulis jika ada catatan" v-model="data.form.address" />
           </div>
         </div>
-        <fwb-button class="w-full" color="green" type="submit"> Simpan </fwb-button>
+        <div class="mb-4 flex  justify-end">
+          <fwb-button class="!w-auto" color="green" type="submit">Simpan </fwb-button>
+        </div>
       </form>
 
 
@@ -76,7 +78,7 @@ const data = reactive({
     placeOfBorn: '',
     dateOfBorn: '',
     email: '',
-    description: '',
+    address: '',
     userId: '',
     parentPhoneNumber: '',
   },
@@ -186,7 +188,7 @@ const setForm = (student: Student) => {
     student.dateOfBorn == null ? '' : DateTime.fromISO(student.dateOfBorn).toFormat('yyyy-MM-dd')
   data.form.placeOfBorn = student.placeOfBorn
   data.form.email = student.email
-  data.form.description = student.description
+  data.form.address = student.address
   data.form.parentPhoneNumber = student.parentPhoneNumber
   imageSrc.value = Helper.getStudentAvatar(student.photo)
 }
@@ -200,13 +202,13 @@ function collectStudent(form: {
   placeOfBorn: string
   dateOfBorn: string
   email: string
-  description: string
+  address: string
   userId: string
   parentPhoneNumber: string
 }): Student {
   const student = {} as Student
   student.dateOfBorn = DateTime.fromJSDate(new Date(form.dateOfBorn)).toISODate()
-  student.description = form.description
+  student.address = form.address
   student.email = form.email
   student.gender = Number(form.gender)
   student.id = form.id
