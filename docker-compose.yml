@@ -10,6 +10,8 @@ services:
       - 5002:5002
     volumes:
       - picketwebapi_data:/app/photos
+    environment:
+      - ASPNETCORE_URLS=http://+:5001
     depends_on:
       db:
         condition: service_healthy
@@ -40,10 +42,10 @@ services:
       dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
-      VITE_API_URL: http://localhost:5041
+      VITE_API_URL: http://localhost:5001
       VITE_LOGO: /smk.png
     ports:
-      - 3100:80
+      - 8080:80
 
   db:
     image: postgres
