@@ -3,7 +3,7 @@ using PiketWebApi.Services;
 using System.ComponentModel;
 using System.Text.Json;
 
-namespace PiketWebApi.Mcp
+namespace PiketWebApi.Mcp.Tools
 {
 
     [McpServerToolType]
@@ -21,7 +21,7 @@ namespace PiketWebApi.Mcp
         public async Task<string> GetStudents()
         {
             var data = await studentService.GetAllStudent();
-            return JsonSerializer.Serialize(data.Value);   
+            return JsonSerializer.Serialize(data.Value);
         }
 
 
@@ -30,6 +30,18 @@ namespace PiketWebApi.Mcp
         {
             var data = await studentService.GetStudentById(id);
             return JsonSerializer.Serialize(data.Value);
+        }
+
+
+
+        [McpServerTool, Description("Ulang Tahun Siswa")]
+        public async Task<string> SiswaBerulangtahun (DateOnly date)
+        {
+            var data = await studentService.GetAllStudent();
+            if(!data.IsError)
+                return JsonSerializer.Serialize(data.Value.Where(x=>x.DateOfBorn.Month==date.Month));
+
+            return "Data siswa tidak ditemukan !";
         }
 
     }

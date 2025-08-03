@@ -10,6 +10,7 @@ using PiketWebApi.Api;
 using PiketWebApi.Data;
 using PiketWebApi.Exceptions;
 using PiketWebApi.Mcp;
+using PiketWebApi.Mcp.Tools;
 using PiketWebApi.Services;
 using System.Security.Authentication;
 
@@ -24,8 +25,10 @@ builder.Logging.AddConsole();
 builder.Services.AddMcpServer()
     .WithHttpTransport()
     .WithStdioServerTransport()
-    .WithPrompts<StudentPrompt>()
-    .WithTools<StudentTools>();
+    .WithPromptsFromAssembly()
+    .WithToolsFromAssembly()
+    .WithResourcesFromAssembly()
+    ;
 
 if (builder.Environment.IsProduction())
 {
