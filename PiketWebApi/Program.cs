@@ -21,10 +21,11 @@ builder.Logging.AddConsole();
 ///add mcp 
 ///
 
-// builder.Services.AddMcpServer()
-//     .WithHttpTransport()
-//     .WithStdioServerTransport()
-//     .WithTools<StudentTools>(); ????
+builder.Services.AddMcpServer()
+    .WithHttpTransport()
+    .WithStdioServerTransport()
+    .WithPrompts<StudentPrompt>()
+    .WithTools<StudentTools>();
 
 if (builder.Environment.IsProduction())
 {
@@ -202,5 +203,5 @@ app.MapGroup("/api/dashboard").MapDashboardApi().WithOpenApi();
 app.MapGroup("/api/studentattendance").MapStudentAttendanceApi().WithOpenApi();
 app.MapGroup("/api/studentprogressnote").MapStudentProgressNoteApi().WithOpenApi();
 
-// app.MapMcp("/api/mcp");
+app.MapMcp();
 app.Run();

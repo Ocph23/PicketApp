@@ -1,12 +1,7 @@
-name: HTTP MCP Server
+name: New MCP server
 version: 0.0.1
 schema: v1
 mcpServers:
-  - name: Local HTTP MCP
-    type: http
-    args:
-      - -v
-      - http://localhost:5003/api/mcp
-    headers:
-      Content-Type: application/json
-   
+  - name: New MCP server
+    type: sse
+    url : http://localhost:5001/sse

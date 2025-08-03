@@ -1,7 +1,7 @@
 {
   "servers": {
     "my-mcp-server-e9f2e9f4": {
-      "url": "http://localhost:5003/api/mcp",
+      "url": "http://localhost:5001/api/mcp",
       "type": "http"
     }
   },

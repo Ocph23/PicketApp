@@ -6,18 +6,18 @@ using System.Text.Json;
 namespace PiketWebApi.Mcp
 {
 
-    [McpServerToolType]
-    public class StudentTools
+    [McpServerPromptType]
+    public class StudentPrompt
     {
         private readonly IStudentService studentService;
 
-        public StudentTools(IStudentService _studentService)
+        public StudentPrompt(IStudentService _studentService)
         {
             studentService = _studentService;
         }
 
 
-        [McpServerTool, Description("Get all students")]
+        [McpServerPrompt, Description("Get all students")]
         public async Task<string> GetStudents()
         {
             var data = await studentService.GetAllStudent();
@@ -25,7 +25,7 @@ namespace PiketWebApi.Mcp
         }
 
 
-        [McpServerTool, Description("Get student")]
+        [McpServerPrompt, Description("Get student")]
         public async Task<string> GetStudent(int id)
         {
             var data = await studentService.GetStudentById(id);
