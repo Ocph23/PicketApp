@@ -19,9 +19,8 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 
-///add mcp 
-///
 
+///add mcp 
 builder.Services.AddMcpServer()
     .WithHttpTransport()
     .WithStdioServerTransport()
@@ -141,6 +140,14 @@ builder.Services.AddSwaggerGen(setup =>
     });
 
 });
+
+//add cache
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+});
+builder.Services.AddScoped<ICacheService, CacheService>();
+
 builder.Services.AddSignalR();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IClassRoomService, ClassRoomService>();

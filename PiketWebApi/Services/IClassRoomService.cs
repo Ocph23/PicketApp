@@ -413,7 +413,7 @@ namespace PiketWebApi.Services
             foreach (var item in classroom.Students)
             {
                 dbContext.Entry(item.Student).State = EntityState.Unchanged;
-                newClassRoom.Students.Add(new ClassRoomMember { Student=item.Student });
+                newClassRoom.Students.Add(new ClassRoomMember { Student = item.Student });
             }
 
             dbContext.ClassRooms.Add(newClassRoom);
@@ -435,10 +435,10 @@ namespace PiketWebApi.Services
                     .Include(x => x.HomeroomTeacher)
                     .Include(x => x.ClassLeader)
                     .Include(x => x.Students).ThenInclude(x => x.Student)
-                    .Where(x => x.HomeroomTeacher.Id == id)
-                    .Select(x => new ClassRoomResponse(x.Id, x.Name, x.Level, x.SchoolYear.Id, x.SchoolYear.Year,
-                    x.Department.Id, x.Department.Name, x.Department.Initial, x.ClassLeader.Id, x.ClassLeader.Name,
-                    x.HomeroomTeacher.Id, x.HomeroomTeacher.Name, null));
+                    .Where(x => x.HomeroomTeacher!.Id == id)
+                    .Select(z => new ClassRoomResponse(z.Id, z.Name, z.Level, z.SchoolYear.Id, z.SchoolYear.Year,
+                    z.Department.Id, z.Department.Name, z.Department.Initial, z.ClassLeader.Id, z.ClassLeader.Name!,
+                    z.HomeroomTeacher.Id, z.HomeroomTeacher.Name, null));
                 return await Task.FromResult(result.ToList());
             }
             catch (Exception)

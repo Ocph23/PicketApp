@@ -23,13 +23,18 @@ namespace PiketWebApi.Services
         private readonly IHttpContextAccessor http;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext dbContext;
+        private readonly ICacheService cacheService;
 
-        public TeacherService(IHttpContextAccessor _http, UserManager<ApplicationUser> _userManager,
-            ApplicationDbContext _dbContext)
+        public TeacherService(IHttpContextAccessor _http,
+         UserManager<ApplicationUser> _userManager,
+            ApplicationDbContext _dbContext,
+            ICacheService _cacheService
+            )
         {
             http = _http;
             userManager = _userManager;
             dbContext = _dbContext;
+            cacheService = _cacheService;
         }
 
 
@@ -37,10 +42,10 @@ namespace PiketWebApi.Services
         {
             try
             {
-                if (image.Length <= 0) 
+                if (image.Length <= 0)
                     return Error.Validation("Teacher", "Data file yg anda kirim kosong, periksa kembali file yang anda kirim.");
 
-                if(Helper.IsMaxUpload(image.Length))
+                if (Helper.IsMaxUpload(image.Length))
                     return Error.Validation("Teacher", "Data file lebih besar dari 1 MB");
 
 
@@ -161,6 +166,7 @@ namespace PiketWebApi.Services
                 var result = dbContext.Teachers.Add(model);
                 dbContext.SaveChanges();
                 trans.Commit();
+                await cacheService.SetAsync($"teacher-{model.Id}", result);
                 return model;
             }
             catch (Exception ex)
@@ -174,7 +180,11 @@ namespace PiketWebApi.Services
         {
             try
             {
-                return await Task.FromResult(dbContext.Teachers.ToList());
+                var result = await cacheService.GetAsync<IEnumerable<Teacher>>("teacher", async () =>
+                {
+                    return dbContext.Teachers.ToList();
+                });
+                return result is null ? Enumerable.Empty<Teacher>().ToList() : result.ToList();
             }
             catch (Exception)
             {
@@ -186,7 +196,10 @@ namespace PiketWebApi.Services
         {
             try
             {
-                var result = dbContext.Teachers.SingleOrDefault(x => x.Id == id);
+                var result = await cacheService.GetAsync<Teacher>($"teacher-{id}", async () =>
+                            {
+                                return dbContext.Teachers.SingleOrDefault(x => x.Id == id)!;
+                            });
                 if (result == null)
                     return Error.NotFound("NotFound", "Data guru tidak ditemukan");
                 return await Task.FromResult(result);
@@ -214,11 +227,14 @@ namespace PiketWebApi.Services
             }
         }
 
-        public async Task<ErrorOr<Teacher>> GetByUserIdAsync(string id)
+        public async Task<ErrorOr<Teacher>> GetByUserIdAsync(string userId)
         {
             try
             {
-                var result = dbContext.Teachers.SingleOrDefault(x => x.UserId == id);
+                var result = await cacheService.GetAsync<Teacher>($"teacher-{userId}", async () =>
+                            {
+                                return dbContext.Teachers.SingleOrDefault(x => x.UserId == userId)!;
+                            });
                 if (result == null)
                     return Error.NotFound("NotFound", "Data guru tidak ditemukan");
                 return await Task.FromResult(result);

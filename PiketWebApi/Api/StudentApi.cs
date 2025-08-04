@@ -55,11 +55,11 @@ namespace PiketWebApi.Api
             var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
 
             // Return the file as a download
-           return Results.File(fileBytes, "application/octet-stream", fileName);
+            return Results.File(fileBytes, "application/octet-stream", fileName);
         }
 
         private static async Task<IResult> GetAllStudentWithPanitate(HttpContext context, IStudentService studentService, PaginationRequest req)
-            
+
         {
             var result = await studentService.GetAllStudentWithPanitate(req);
             return result.Match(items => Results.Ok(items), errors => Results.BadRequest(result.CreateProblemDetail(context)));
@@ -81,7 +81,7 @@ namespace PiketWebApi.Api
 
         private static async Task<IResult> GetAllStudentWithClass(HttpContext context, IStudentService studentService)
         {
-            var result = await studentService.GetAlStudentWithClass();
+            var result = await studentService.GetAllStudentWithClass();
             return result.Match(items => Results.Ok(items), errors => Results.BadRequest(result.CreateProblemDetail(context)));
         }
 

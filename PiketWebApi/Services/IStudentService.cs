@@ -11,7 +11,7 @@ namespace PiketWebApi.Services;
 
 public interface IStudentService
 {
-    Task<ErrorOr<IEnumerable<StudentClassRoom>>> GetAlStudentWithClass();
+    Task<ErrorOr<IEnumerable<StudentClassRoom>>> GetAllStudentWithClass();
     Task<ErrorOr<IEnumerable<StudentClassRoom>>> GetStudentsWithClassRoom(int classroomId);
     Task<ErrorOr<IEnumerable<StudentClassRoom>>> SearchStudent(string searchtext);
     Task<ErrorOr<bool>> DeleteStudent(int id);
@@ -31,15 +31,17 @@ public class StudentService : IStudentService
     private readonly ApplicationDbContext dbContext;
     private readonly ISchoolYearService schoolYearService;
     private readonly ILogger<StudentService> logger;
+    private readonly ICacheService cacheService;
 
     public StudentService(IHttpContextAccessor _http, UserManager<ApplicationUser> _userManager,
-        ApplicationDbContext _dbContext, ISchoolYearService _schoolYearService, ILogger<StudentService> _logger)
+        ApplicationDbContext _dbContext, ISchoolYearService _schoolYearService, ILogger<StudentService> _logger, ICacheService _cacheService)
     {
         http = _http;
         userManager = _userManager;
         dbContext = _dbContext;
         schoolYearService = _schoolYearService;
         logger = _logger;
+        cacheService = _cacheService;
     }
     public async Task<ErrorOr<string>> UploadPhoto(int sturentId, byte[] image)
     {
@@ -69,41 +71,45 @@ public class StudentService : IStudentService
             return Error.Conflict();
         }
     }
-    public async Task<ErrorOr<IEnumerable<StudentClassRoom>>> GetAlStudentWithClass()
+    public async Task<ErrorOr<IEnumerable<StudentClassRoom>>> GetAllStudentWithClass()
     {
         try
         {
-
             var schoolYearActive = await schoolYearService.GetActiveSchoolYear();
             if (schoolYearActive.IsError)
                 return schoolYearActive.Errors;
 
-            List<StudentClassRoom> list = new List<StudentClassRoom>();
 
-            foreach (var item in dbContext.ClassRooms
-                .Include(x => x.SchoolYear)
-                .Include(x => x.Department).Include(x => x.Students)
-                .ThenInclude(x => x.Student)
-                .Where(x => x.SchoolYear.Id == schoolYearActive.Value.Id))
+            var result = await cacheService.GetAsync<IEnumerable<StudentClassRoom>>("studentWithClass", async () =>
             {
-                var data = item.Students.Select(x => new StudentClassRoom
+                List<StudentClassRoom> list = new List<StudentClassRoom>();
+                foreach (var item in dbContext.ClassRooms
+                    .Include(x => x.SchoolYear)
+                    .Include(x => x.Department).Include(x => x.Students)
+                    .ThenInclude(x => x.Student)
+                    .Where(x => x.SchoolYear.Id == schoolYearActive.Value.Id))
                 {
-                    Gender = x.Student.Gender,
-                    Id = x.Student.Id,
-                    Name = x.Student.Name,
-                    NIS = x.Student.NIS,
-                    NISN = x.Student.NISN,
-                    Photo = x.Student.Photo,
-                    ClassRoomId = item.Id,
-                    ClassRoomName = item.Name,
-                    DepartmenId = item.Department.Id,
-                    DepartmenName = item.Department.Name,
-                });
-                list.AddRange(data.AsEnumerable());
-            }
-            return await Task.FromResult(list.ToList());
+                    var data = item.Students.Select(x => new StudentClassRoom
+                    {
+                        Gender = x.Student.Gender,
+                        Id = x.Student.Id,
+                        Name = x.Student.Name,
+                        NIS = x.Student.NIS,
+                        NISN = x.Student.NISN,
+                        Photo = x.Student.Photo,
+                        ClassRoomId = item.Id,
+                        ClassRoomName = item.Name,
+                        DepartmenId = item.Department.Id,
+                        DepartmenName = item.Department.Name,
+                    });
+                    list.AddRange(data.AsEnumerable());
+                }
+                return list;
+            });
+
+            return await Task.FromResult(result.ToList());
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return Error.Conflict();
         }
@@ -118,12 +124,12 @@ public class StudentService : IStudentService
             || x.NISN!.ToLower().Contains(txtSearch)
             || x.NIS!.ToLower().Contains(txtSearch)).ToList();
 
-            var xx = await GetAlStudentWithClass();
-            if (xx.IsError)
-                return xx.Errors;
+            var studentWithClass = await GetAllStudentWithClass();
+            if (studentWithClass.IsError)
+                return studentWithClass.Errors;
 
             var data = from r in result
-                       join x in xx.Value on r.Id equals x.Id into xGroup
+                       join x in studentWithClass.Value on r.Id equals x.Id into xGroup
                        from xc in xGroup.DefaultIfEmpty()
                        select new StudentClassRoom
                        {
@@ -246,7 +252,12 @@ public class StudentService : IStudentService
     {
         try
         {
-            return await Task.FromResult(dbContext.Students.Where(x => x.Status == SharedModel.StudentStatus.Aktif).ToList());
+            var result = await cacheService.GetAsync<IEnumerable<Student>>("student", async () =>
+            {
+                var list = dbContext.Students.Where(x => x.Status == SharedModel.StudentStatus.Aktif).ToList();
+                return list;
+            });
+            return result is null ? Enumerable.Empty<Student>().ToList() : result.ToList();
         }
         catch (Exception)
         {
@@ -258,10 +269,13 @@ public class StudentService : IStudentService
     {
         try
         {
-            var result = dbContext.Students.SingleOrDefault(x => x.Id == id);
-            if (result == null)
+            var student = await cacheService.GetAsync<Student>($"student-{id}", async () =>
+            {
+                return dbContext.Students.SingleOrDefault(x => x.Id == id)!;
+            });
+            if (student == null)
                 return Error.NotFound("NotFound", "Data siswa tidak ditemukan");
-            return await Task.FromResult(result);
+            return student;
         }
         catch (Exception)
         {
@@ -277,30 +291,38 @@ public class StudentService : IStudentService
             if (schoolYearService == null)
                 return Error.Failure("Belum Ada Tahun Ajaran Aktif !");
 
-            var item = dbContext.ClassRooms
-                 .Include(x => x.SchoolYear)
-                 .Include(x => x.Department)
-                 .Include(x => x.Students)
-                 .ThenInclude(x => x.Student)
-                 .FirstOrDefault(x => x.SchoolYear.Id == schoolYearActive.Value.Id && x.Students.Any(x => x.Student.Id == studentId));
 
-            if (item == null)
-                return Error.NotFound();
-
-            return item.Students.Select(x => new StudentClassRoom
+            var result = await cacheService.GetAsync<StudentClassRoom>($"studentWithClass-{studentId}", async () =>
             {
-                Gender = x.Student.Gender,
-                Id = x.Student.Id,
-                Name = x.Student.Name,
-                NIS = x.Student.NIS,
-                NISN = x.Student.NISN,
-                Photo = x.Student.Photo,
-                ClassRoomId = item.Id,
-                ClassRoomName = item.Name,
-                DepartmenId = item.Department.Id,
-                DepartmenName = item.Department.Name,
-            }).FirstOrDefault();
+                var item = dbContext.ClassRooms
+                     .Include(x => x.SchoolYear)
+                     .Include(x => x.Department)
+                     .Include(x => x.Students)
+                     .ThenInclude(x => x.Student)
+                     .FirstOrDefault(x => x.SchoolYear.Id == schoolYearActive.Value.Id && x.Students.Any(x => x.Student.Id == studentId));
 
+                if (item == null)
+                    return null!;
+
+                return item.Students.Select(x => new StudentClassRoom
+                {
+                    Gender = x.Student.Gender,
+                    Id = x.Student.Id,
+                    Name = x.Student.Name,
+                    NIS = x.Student.NIS,
+                    NISN = x.Student.NISN,
+                    Photo = x.Student.Photo,
+                    ClassRoomId = item.Id,
+                    ClassRoomName = item.Name,
+                    DepartmenId = item.Department.Id,
+                    DepartmenName = item.Department.Name,
+                }).FirstOrDefault()!;
+            });
+
+
+            if (result is null)
+                return Error.NotFound("NotFound", "Data siswa tidak ditemukan");
+            return result;
         }
         catch (Exception)
         {
@@ -351,30 +373,37 @@ public class StudentService : IStudentService
             if (schoolYearActive.IsError)
                 return schoolYearActive.Errors;
 
-            List<StudentClassRoom> list = new List<StudentClassRoom>();
 
-            foreach (var item in dbContext.ClassRooms
-                .Include(x => x.SchoolYear)
-                .Include(x => x.Department).Include(x => x.Students)
-                .ThenInclude(x => x.Student)
-                .Where(x => x.Id == classroomId && x.SchoolYear.Id == schoolYearActive.Value.Id))
+            var result = await cacheService.GetAsync<IEnumerable<StudentClassRoom>>($"studentsWithClass-{classroomId}", async () =>
             {
-                var data = item.Students.Select(x => new StudentClassRoom
+                List<StudentClassRoom> list = new List<StudentClassRoom>();
+
+                foreach (var item in dbContext.ClassRooms
+                    .Include(x => x.SchoolYear)
+                    .Include(x => x.Department).Include(x => x.Students)
+                    .ThenInclude(x => x.Student)
+                    .Where(x => x.Id == classroomId && x.SchoolYear.Id == schoolYearActive.Value.Id))
                 {
-                    Gender = x.Student.Gender,
-                    Id = x.Student.Id,
-                    Name = x.Student.Name,
-                    NIS = x.Student.NIS,
-                    NISN = x.Student.NISN,
-                    Photo = x.Student.Photo,
-                    ClassRoomId = item.Id,
-                    ClassRoomName = item.Name,
-                    DepartmenId = item.Department.Id,
-                    DepartmenName = item.Department.Name,
-                });
-                list.AddRange(data.AsEnumerable());
-            }
-            return await Task.FromResult(list.ToList());
+                    var data = item.Students.Select(x => new StudentClassRoom
+                    {
+                        Gender = x.Student.Gender,
+                        Id = x.Student.Id,
+                        Name = x.Student.Name,
+                        NIS = x.Student.NIS,
+                        NISN = x.Student.NISN,
+                        Photo = x.Student.Photo,
+                        ClassRoomId = item.Id,
+                        ClassRoomName = item.Name,
+                        DepartmenId = item.Department.Id,
+                        DepartmenName = item.Department.Name,
+                    });
+                    list.AddRange(data.AsEnumerable());
+                }
+                return await Task.FromResult(list.ToList());
+
+            });
+            return result is null ? Enumerable.Empty<StudentClassRoom>().ToList() : result.ToList();
+
         }
         catch (Exception)
         {

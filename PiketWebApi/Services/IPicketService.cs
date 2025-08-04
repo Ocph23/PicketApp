@@ -55,7 +55,8 @@ namespace PiketWebApi.Services
             try
             {
                 var schoolYearActive = await schoolYearService.GetActiveSchoolYear();
-                if (schoolYearActive.IsError) { 
+                if (schoolYearActive.IsError)
+                {
                     return schoolYearActive.Errors;
                 }
 
@@ -224,7 +225,7 @@ namespace PiketWebApi.Services
                 StudentsLateAndComeHomeEarly = Enumerable.Empty<LateAndGoHomeEarlyResponse>().ToList()
             };
 
-            var students = await studentService.GetAlStudentWithClass();
+            var students = await studentService.GetAllStudentWithClass();
 
             if (!students.IsError && response.StudentAttendances.Any())
             {
@@ -455,7 +456,7 @@ namespace PiketWebApi.Services
                 journal.Content = model.Content;
                 journal.CreateAt = model.CreateAt.ToUniversalTime();
                 dbContext.SaveChanges();
-                return new DailyJournalResponse(journal.Id,journal.Title, journal.Content, journal.Teacher.Id, journal.Teacher.Name, journal.CreateAt);
+                return new DailyJournalResponse(journal.Id, journal.Title, journal.Content, journal.Teacher.Id, journal.Teacher.Name, journal.CreateAt);
             }
             return Error.NotFound("Data tidak ditemukan !");
         }

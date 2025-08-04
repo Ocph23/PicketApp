@@ -22,7 +22,7 @@ namespace PiketWebApi.Services
         Task<ErrorOr<IEnumerable<StudentAttendanceSyncRequest>>> SyncData(IEnumerable<StudentAttendanceSyncRequest> data);
         Task<ErrorOr<IEnumerable<StudentAttendanceReportResponse>>> GetAbsenByClassRoomMonthYear(int classroom, int month, int year);
         Task<ErrorOr<IEnumerable<StudentAttendanceReportResponse>>> GetAttendanceByStudentId(int yearSchoolId, int studentId);
-    }                                                                                
+    }
 
 
     public class StudentAttendaceService : IStudentAttendaceService
@@ -54,7 +54,7 @@ namespace PiketWebApi.Services
         {
             try
             {
-                var students = await studentService.GetAlStudentWithClass();
+                var students = await studentService.GetAllStudentWithClass();
                 if (students.IsError)
                     return students.Errors;
 
@@ -75,7 +75,7 @@ namespace PiketWebApi.Services
         {
             try
             {
-                var students = await studentService.GetAlStudentWithClass();
+                var students = await studentService.GetAllStudentWithClass();
                 if (students.IsError)
                     return students.Errors;
 
@@ -303,14 +303,14 @@ namespace PiketWebApi.Services
         {
             try
             {
-                var result = from p in dbContext.Picket.Where(x=>x.SchoolYearId==yearSchoolId).Include(x=>x.SchoolYear)
-                             join a in dbContext.StudentAttendaces.Where(x=>x.StudentId== studentId) on p.Id equals a.PicketId into xattendate 
+                var result = from p in dbContext.Picket.Where(x => x.SchoolYearId == yearSchoolId).Include(x => x.SchoolYear)
+                             join a in dbContext.StudentAttendaces.Where(x => x.StudentId == studentId) on p.Id equals a.PicketId into xattendate
                              from a in xattendate.DefaultIfEmpty()
                              join s in dbContext.Students on a.StudentId equals s.Id into x
                              from s in x.DefaultIfEmpty()
                              select new StudentAttendanceReportResponse
                              {
-                                 StudentId = s==null?null:s.Id,
+                                 StudentId = s == null ? null : s.Id,
                                  StudentName = s == null ? null : s.Name,
                                  PicketId = p.Id,
                                  PicketDate = p.Date,
