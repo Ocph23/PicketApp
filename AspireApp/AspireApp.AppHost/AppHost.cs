@@ -4,6 +4,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 var postgres = builder.AddPostgres("db")
     //.WithPgAdmin()
     .WithDataVolume("postgres_data");
+
 var kursusdb = postgres.AddDatabase("piketdb");
 
 var redis = builder.AddRedis("Redis");
