@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <Sdk Name="Aspire.AppHost.Sdk" Version="9.3.1" />
 
@@ -12,8 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\PiketWebApi\PiketWebApi.csproj" />
-    <ProjectReference Include="..\AspireApp.ApiService\AspireApp.ApiService.csproj" />
-    <ProjectReference Include="..\AspireApp.Web\AspireApp.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
