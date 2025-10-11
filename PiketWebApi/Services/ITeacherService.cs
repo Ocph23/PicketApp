@@ -180,11 +180,11 @@ namespace PiketWebApi.Services
         {
             try
             {
-                var result = await cacheService.GetAsync<IEnumerable<Teacher>>("teacher", async () =>
-                {
-                    return dbContext.Teachers.ToList();
-                });
-                return result is null ? Enumerable.Empty<Teacher>().ToList() : result.ToList();
+                return dbContext.Teachers.ToList();
+                // var result = await cacheService.GetAsync<IEnumerable<Teacher>>("teacher", async () =>
+                // {
+                // });
+                // return result is null ? Enumerable.Empty<Teacher>().ToList() : result.ToList();
             }
             catch (Exception)
             {

@@ -84,7 +84,7 @@ builder.Services.AddDateOnlyTimeOnlyStringConverters();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(connectionString);
-    options.EnableSensitiveDataLogging(builder.Environment.IsDevelopment());
+    options.EnableSensitiveDataLogging(builder.Environment.IsProduction());
 });
 
 
