@@ -78,11 +78,10 @@
 import { Helper } from '@/commons';
 import LogoApp from '@/components/LogoApp.vue';
 import AuthService from '@/services/AuthService';
-import { FwbHeading, FwbDropdown, FwbButton, FwbToggle, FwbModal } from 'flowbite-vue';
+import { FwbHeading, FwbDropdown, FwbButton, FwbModal } from 'flowbite-vue';
 import { onMounted, ref } from 'vue';
-import FwbModalCustome from '../FwbModalCustome.vue';
 import VTInput from '../VTInput/VTInput.vue';
-import { ToastService } from '@/services';
+import { DialogService, ToastService } from '@/services';
 
 const emit = defineEmits(['onClickMenu', 'onClickLogout'])
 
@@ -104,8 +103,11 @@ const clickMenu = () => {
   emit('onClickMenu');
 }
 
-
 const logout = () => {
+  DialogService.showDialog('Yakin keluar ?', null, 'warning').then(() => {
+    localStorage.removeItem('authToken')
+    window.location.href = '/login'
+  })
   emit('onClickLogout');
 }
 
@@ -152,14 +154,14 @@ const getTheme = () => {
 
 
 
-const toggleTheme = () => {
-  const activeTheme = localStorage.getItem("user-theme");
-  if (activeTheme === "light-theme") {
-    setTheme("dark-theme");
-  } else {
-    setTheme("light-theme");
-  }
-}
+// const toggleTheme = () => {
+//   const activeTheme = localStorage.getItem("user-theme");
+//   if (activeTheme === "light-theme") {
+//     setTheme("dark-theme");
+//   } else {
+//     setTheme("light-theme");
+//   }
+// }
 
 
 const showChangePasswordModal = async () => {

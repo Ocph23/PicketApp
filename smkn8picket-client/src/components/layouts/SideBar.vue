@@ -94,7 +94,6 @@
 
 
   </fwb-sidebar>
-
 </template>
 <script setup lang="ts">
 import { FwbSidebar, FwbSidebarItem } from 'flowbite-vue'
@@ -104,18 +103,14 @@ import FwbSidebarDropdownItemCustome from '@/components/FwbSidebarDropdownItemCu
 
 
 
-const emit = defineEmits(['onClickMenu', 'onClickLogout'])
-
-const clickMenu = () => {
-  emit('onClickMenu');
-}
-
-
-
-
 const logout = () => {
-  emit('onClickLogout');
+  DialogService.showDialog('Yakin keluar ?', null, 'warning').then(() => {
+    localStorage.removeItem('authToken')
+    window.location.href = '/login'
+  })
+
 }
+
 
 
 </script>

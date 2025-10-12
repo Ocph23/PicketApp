@@ -60,6 +60,10 @@ const login = async () => {
       auth.loginAs = loginAs.value // Store the selected login type in auth
       axios.defaults.headers.common['Authorization'] = auth ? 'Bearer ' + auth.token : ''
       if (loginAs.value === 'Piket') {
+        if (auth.profile == null || auth.profile.id == null) {
+          ToastService.dangerToast('Maaf anda belum terdaftar sebagai guru')
+          return
+        }
         const response = await ScheduleService.get()
         if (response.isSuccess) {
           const schedules = response.data as Schedule[]

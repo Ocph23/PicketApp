@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
@@ -69,7 +70,7 @@ onMounted(getData)
 <template>
   <AdminLayout>
     <div class="">
-      <PageHeader title="Data Tahun Ajaran">
+      <PageHeader title="Data Jurusan">
         <router-link :to="{ name: 'addJurusan' }">
           <AddIcon class="w-7 h-7" />
         </router-link>
