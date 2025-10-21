@@ -19,6 +19,7 @@ namespace PiketWebApi.Api
             group.MapGet("/", GetAllClassRoom);
             group.MapGet("/{id}", GetClassRoomById);
             group.MapGet("/schoolyear/{id}", GetClassRoomBySchoolYear);
+            group.MapGet("/schoolyearwithstudents/{id}", GetClassRoomBySchoolYearWithStudents);
             group.MapGet("/byteacher", GetClassRoomByTeacher);
             group.MapPost("/", PostClassRoom);
             group.MapPost("/classroomfromlast", CreateClassRoomFromLastClass);
@@ -31,7 +32,7 @@ namespace PiketWebApi.Api
 
         private static async Task<IResult> GetClassRoomByTeacher(HttpContext context, IClassRoomService classRoomService, ITeacherService teacherService)
         {
-            var userId = context.User.Claims.FirstOrDefault(x=>x.Type=="id");
+            var userId = context.User.Claims.FirstOrDefault(x => x.Type == "id");
             var teacher = await teacherService.GetByUserIdAsync(userId.Value);
             if (!teacher.IsError)
             {
@@ -48,6 +49,11 @@ namespace PiketWebApi.Api
 
         }
 
+        private static async Task<IResult> GetClassRoomBySchoolYearWithStudents(HttpContext context, IClassRoomService classRoomService, int id)
+        {
+            var result = await classRoomService.GetClassRoomBySchoolYearIdWithStudents(id);
+            return result.Match(items => Results.Ok(items), errors => Results.BadRequest(result.CreateProblemDetail(context)));
+        }
         private static async Task<IResult> GetClassRoomBySchoolYear(HttpContext context, IClassRoomService classRoomService, int id)
         {
             var result = await classRoomService.GetClassRoomBySchoolYear(id);
@@ -89,7 +95,6 @@ namespace PiketWebApi.Api
             var result = await classRoomService.PutClassRoom(id, req);
             return result.Match(items => Results.Ok(items), errors => Results.BadRequest(result.CreateProblemDetail(context)));
         }
-
 
         private static async Task<IResult> GetAllClassRoom(HttpContext context, IClassRoomService classRoomService)
         {

@@ -17,6 +17,7 @@ namespace PiketWebApi.Services
         Task<ErrorOr<IEnumerable<ClassRoomResponse>>> GetAllClassRoom();
         Task<ErrorOr<ClassRoomResponse>> GetClassRoomById(int id);
         Task<ErrorOr<IEnumerable<ClassRoomResponse>>> GetClassRoomBySchoolYear(int id);
+        Task<ErrorOr<ClassRoomResponse>> GetClassRoomBySchoolYearIdWithStudents(int schoolYearId);
         Task<ErrorOr<IEnumerable<ClassRoomResponse>>> GetClassRoomByTeacherId(int id);
         Task<ErrorOr<ClassRoomResponse>> PostClassRoom(ClassRoomRequest req);
         Task<ErrorOr<bool>> PutClassRoom(int id, ClassRoomRequest req);
@@ -106,6 +107,43 @@ namespace PiketWebApi.Services
                   .Include(x => x.ClassLeader)
                   .Include(x => x.Students).ThenInclude(x => x.Student)
                   .Where(x => x.Id == id)
+                  .Select(x => new ClassRoomResponse(x.Id, x.Name, x.Level, x.SchoolYear.Id, x.SchoolYear.Year,
+                  x.Department.Id, x.Department.Name, x.Department.Initial, x.ClassLeader.Id,
+                  x.ClassLeader.Name, x.HomeroomTeacher.Id, x.HomeroomTeacher.Name,
+                  x.Students.Select(x => new
+                  {
+                      Id = x.Student.Id,
+                      NIS = x.Student.NIS,
+                      NISN = x.Student.NISN,
+                      Name = x.Student.Name,
+                      Gender = x.Student.Gender,
+                      PlaceOfBorn = x.Student.PlaceOfBorn,
+                      DateOfBorn = x.Student.DateOfBorn,
+                  })));
+
+                if (!result.Any())
+                    return Error.Conflict("ClassRoom", "Kelas tidak ditemukan.");
+
+                return await Task.FromResult(result.FirstOrDefault());
+            }
+            catch (Exception)
+            {
+                return Error.Conflict(); ;
+            }
+
+        }
+
+        public async Task<ErrorOr<ClassRoomResponse>> GetClassRoomBySchoolYearIdWithStudents(int schoolYearId)
+        {
+            try
+            {
+                var result = dbContext.ClassRooms
+                  .Include(x => x.SchoolYear)
+                  .Include(x => x.Department)
+                  .Include(x => x.HomeroomTeacher)
+                  .Include(x => x.ClassLeader)
+                  .Include(x => x.Students).ThenInclude(x => x.Student)
+                     .Where(x => x.SchoolYear.Id == schoolYearId)
                   .Select(x => new ClassRoomResponse(x.Id, x.Name, x.Level, x.SchoolYear.Id, x.SchoolYear.Year,
                   x.Department.Id, x.Department.Name, x.Department.Initial, x.ClassLeader.Id,
                   x.ClassLeader.Name, x.HomeroomTeacher.Id, x.HomeroomTeacher.Name,
