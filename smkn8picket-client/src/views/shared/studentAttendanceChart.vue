@@ -12,11 +12,12 @@
 import type { RequestResponse } from '@/commons';
 import type StudentAttendanceRequest from '@/models/Requests/StudentAttendanceRequest';
 import { SchoolYearService, StudentAttendanceService } from '@/services';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import _ from 'lodash'
 import type { SchoolYear } from '@/models';
 import { FwbSelect } from 'flowbite-vue';
 import VueApexCharts from 'vue3-apexcharts';
+import type { ApexOptions } from 'apexcharts';
 
 const props = defineProps({
   studentId: {
@@ -33,17 +34,16 @@ const schoolYears = ref<{ name: string, value: string }[]>([]);
 
 
 
-const chartOptions = ref({
+const chartOptions = reactive({
   chart: {
     id: "vuechart-example",
     stacked: true,
-    stackType: "100%"
-
+    stackType: "normal"
   },
   xaxis: {
     categories: [] as string[],
   },
-}
+} as ApexOptions
 )
 
 
@@ -86,7 +86,6 @@ const generateChart = () => {
         });
       const bulan = _.groupBy(lastresult, 'monthYear');
 
-      chartOptions.value.xaxis.categories.length = 0;
       const seriesx = [
         { name: "hadir", data: [] as number[] },
         { name: "sakit", data: [] },
@@ -97,7 +96,7 @@ const generateChart = () => {
       ];
 
       _.forEach(bulan, (value, key) => {
-        chartOptions.value.xaxis.categories.push(key);
+        chartOptions.xaxis?.categories.push(key);
         const jumlahMasuk = value.length;
         const hadir = value.filter(x => x.status == 1 || x.status == 2).length;
         const alpha = value.filter(x => x.status == 3).length;
