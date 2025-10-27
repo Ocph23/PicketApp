@@ -1,4 +1,5 @@
-﻿using SharedModel.Requests;
+﻿using PicketMobile.Views;
+using SharedModel.Requests;
 using SharedModel.Responses;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace PicketMobile.Services
     internal interface IAccountService
     {
         Task<bool> Login(string username, string password);
+        bool UserInRole(string role);
 
         Task Logout();
     }
@@ -56,8 +58,19 @@ namespace PicketMobile.Services
             Preferences.Set("user", null);
             Preferences.Set("email", null);
             Preferences.Set("roles", null);
-            Application.Current.MainPage = new AppShell();
+            Preferences.Set("profile", null);
+            Application.Current.MainPage = new LoginPage();
             return Task.CompletedTask;
+        }
+
+        public bool UserInRole(string role)
+        {
+            var rolesText = Preferences.Get("roles", string.Empty);
+            if (string.IsNullOrEmpty(rolesText))
+                return false;
+
+            var roles = JsonSerializer.Deserialize<string[]>(rolesText);
+            return roles.Contains(role);
         }
     }
 

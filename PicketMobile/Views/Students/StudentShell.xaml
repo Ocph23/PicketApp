@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="PicketMobile.Views.Students.StudentShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:PicketMobile"
+   xmlns:view="clr-namespace:PicketMobile.Views"
+   xmlns:studentView="clr-namespace:PicketMobile.Views.Students"
+    Shell.FlyoutBehavior="Disabled"
+    Title="PicketMobile">
+
+    <Shell.Resources>
+        <Style TargetType="TabBar">
+            <Setter Property="Shell.TabBarBackgroundColor"
+          Value="#E9EEED" />
+            <Setter Property="Shell.TabBarTitleColor"
+          Value="Black" />
+            <Setter Property="Shell.TabBarUnselectedColor"
+          Value="#8F8F8F" />
+            <Setter Property="Shell.ForegroundColor" Value="OrangeRed" />
+
+        </Style>
+    </Shell.Resources>
+    <TabBar >
+        <Tab Title="Home" Icon="home.png">
+            <ShellContent Title="Home" Icon="home.png"  ContentTemplate="{DataTemplate studentView:StudentHomePage}" />
+        </Tab>
+        <Tab Title="Absen"
+           Icon="calendar.png">
+            <ShellContent Title="Absen" Icon="cat.png" ContentTemplate="{DataTemplate studentView:StudentAbsenPage}" />
+        </Tab>
+        <Tab Title="Profile" Icon="profile.png">
+            <ShellContent Title="Profile" Icon="dog.png" ContentTemplate="{DataTemplate studentView:StudentProfilePage}" />
+        </Tab>
+        <Tab Title="About" Icon="about.png">
+            <ShellContent ContentTemplate="{DataTemplate view:AboutPage}" />
+        </Tab>
+    </TabBar>
+
+</Shell>

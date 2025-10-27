@@ -1,4 +1,6 @@
-﻿using PicketMobile.Views;
+﻿using PicketMobile.Services;
+using PicketMobile.Views;
+using PicketMobile.Views.Students;
 
 namespace PicketMobile
 {
@@ -18,7 +20,13 @@ namespace PicketMobile
             }
             else
             {
-                return new Window(new AppShell());
+                IAccountService service = ServiceHelper.GetService<IAccountService>()!;
+                if (service.UserInRole("Student"))
+                    return new Window(new StudentShell());
+                else
+                    return new Window(new AppShell());
+
+
             }
         }
     }

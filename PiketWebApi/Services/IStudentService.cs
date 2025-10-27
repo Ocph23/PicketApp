@@ -22,6 +22,8 @@ public interface IStudentService
     Task<ErrorOr<StudentClassRoom?>> GetStudentWithClass(int id);
     Task<ErrorOr<string>> UploadPhoto(int teacherId, byte[] image);
     Task<ErrorOr<PaginationResponse<Student>>> GetAllStudentWithPanitate(PaginationRequest req);
+    Task<ErrorOr<bool>> ResetPassword(int id);
+    Task<ErrorOr<string>> CreateAccountStudent(int id);
 }
 
 public class StudentService : IStudentService
@@ -225,10 +227,11 @@ public class StudentService : IStudentService
         var trans = dbContext.Database.BeginTransaction();
         try
         {
-            if (!string.IsNullOrEmpty(model.Email))
+            if (!string.IsNullOrEmpty(model.NISN) || !string.IsNullOrEmpty(model.NIS))
             {
+                var user = model.NISN ?? model.NIS;
                 var userResult = await Helper.CreateUser(userManager,
-                    new ApplicationUser { Email = model.Email, EmailConfirmed = true, Name = model.Name, UserName = model.Email },
+                    new ApplicationUser { Email = $"{user.Trim()}@smkn8tikjapura.sch.id", EmailConfirmed = true, Name = model.Name, UserName = user.Trim() },
                     "Student");
                 if (userResult.IsError)
                     return userResult.Errors;
@@ -409,6 +412,65 @@ public class StudentService : IStudentService
         {
             return Error.Conflict();
         }
+    }
+
+    public async Task<ErrorOr<bool>> ResetPassword(int id)
+    {
+        try
+        {
+            var student = dbContext.Students.SingleOrDefault(x => x.Id == id);
+            if (student == null)
+                return Error.NotFound("Data siswa tidak ditemukan.");
+
+            var user = userManager.FindByIdAsync(student.UserId!).Result;
+            if (user == null)
+                return Error.NotFound("User siswa tidak ditemukan.");
+
+            var token = userManager.GeneratePasswordResetTokenAsync(user).Result;
+            var resetPassResult = userManager.ResetPasswordAsync(user, token, "Password@123").Result;
+            if (!resetPassResult.Succeeded)
+            {
+                var errors = resetPassResult.Errors.Select(e => Error.Failure(e.Code, e.Description));
+                return Error.Failure("Gagal mereset password siswa.");
+            }
+            return true;
+        }
+        catch (Exception)
+        {
+            return Error.Conflict();
+        }
+    }
+
+    public async Task<ErrorOr<string>> CreateAccountStudent(int id)
+    {
+        var model = dbContext.Students.SingleOrDefault(x => x.Id == id);
+        if (model == null)
+            return Error.NotFound("Data siswa tidak ditemukan.");
+
+        var trans = dbContext.Database.BeginTransaction();
+        try
+        {
+            if (!string.IsNullOrEmpty(model.NISN) || !string.IsNullOrEmpty(model.NIS))
+            {
+                var user = model.NISN ?? model.NIS;
+                var userResult = await Helper.CreateUser(userManager,
+                    new ApplicationUser { Email = $"{user.Trim()}@smkn8tikjapura.sch.id", EmailConfirmed = true, Name = model.Name, UserName = user.Trim() },
+                    "Student");
+                if (userResult.IsError)
+                    return userResult.Errors;
+                model.UserId = userResult.Value.Id;
+            }
+            dbContext.SaveChanges();
+            trans.Commit();
+            return model.UserId!;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex.Message, ex);
+            trans.Rollback();
+            return Error.Conflict();
+        }
+
     }
 }
 

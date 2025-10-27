@@ -40,7 +40,7 @@ services:
     networks:
       - "aspire"
   piketapi:
-    image: "${PIKETAPI_IMAGE}"
+    image: 230279/piketapi:latest
     environment:
       OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
       OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
@@ -65,11 +65,11 @@ services:
 
   smkn8picketclient:
     container_name: smkn8picketclient
-    image: smkn8picketclient
+    image: 230279/smkn8picketclient:latest
     restart: always
-    build:
-      context: ../../../smkn8picket-client
-      dockerfile: ./Dockerfile
+    # build:
+      # context: ../../../smkn8picket-client
+      # dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
       VITE_API_URL: http://localhost:5001
@@ -91,7 +91,8 @@ services:
         condition: service_healthy
         restart: true
     ports:
-      - 3000:3000
+      - 3000:3000 
+
 
 networks:
   aspire:
@@ -99,3 +100,4 @@ networks:
 volumes:
   picketwebapi_data:    
   postgres_data:
+    driver: "local"

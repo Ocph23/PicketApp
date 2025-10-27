@@ -223,7 +223,7 @@ namespace PiketWebApi.Api
                 var result = await signInManager.PasswordSignInAsync(request.Username.ToUpper(), request.Password, false, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    var user = await userManager.FindByEmailAsync(request.Username.ToUpper());
+                    var user = await userManager.FindByNameAsync(request.Username.ToUpper());
                     ArgumentNullException.ThrowIfNull(user);
                     var identity = user as ApplicationUser;
                     if (!await userManager.IsEmailConfirmedAsync(user))

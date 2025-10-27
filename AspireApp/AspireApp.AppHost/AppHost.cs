@@ -26,7 +26,6 @@ var picketapi = builder.AddProject<Projects.PiketWebApi>("piketapi")
     .WaitFor(postgres);
 
 
-
 builder.AddNpmApp("adminclient", "../../smkn8picket-client")
     .WithReference(picketapi)
     .WaitFor(picketapi)

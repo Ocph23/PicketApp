@@ -40,6 +40,12 @@ const StudentService = {
   updateFoto: async (id: number, data: string) => {
     const response = await axios.put(`/${controller}/uploadphoto/${id}`, data);
     return Helper.getResult(response);
+  }, createAccount: async (id: number) => {
+    const response = await axios.get(`${controller}/createaccount/${id}`);
+    return Helper.getResult(response);
+  }, resetPassword: async (id: number) => {
+    const response = await axios.get(`${controller}/resetpassword/${id}`);
+    return Helper.getResult(response);
   },
 };
 

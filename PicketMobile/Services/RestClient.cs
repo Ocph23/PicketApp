@@ -11,7 +11,7 @@ namespace PicketMobile.Services
 
         public RestClient()//:base(DependencyService.Get<Helpers.IHTTPClientHandlerCreationService>().GetInsecureHandler())
         {
-            string _server = Preferences.Get("url", "http://localhost");
+            string _server = Preferences.Get("url", "http://localhost:5001");
             if (!string.IsNullOrEmpty(_server))
             {
                 var url = $"{_server}";
