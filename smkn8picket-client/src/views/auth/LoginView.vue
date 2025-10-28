@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen w-full bg-white shadow-md dark:bg-gray-600 flex justify-center items-center">
-    <FwbCard class="p-5 w-[50%] md:w-[75%] sm:w-full">
+    <FwbCard class="p-5 md:w-[30%] sm:w-full">
       <form @submit.prevent="login" class="max-w-sm w-full p-6 rounded-lg">
         <div class="flex justify-center mb-6">
           <img :src="Helper.infoSekolah.logo" class="w-1/2 sm:w-1/4" alt="SMK Logo" />
@@ -60,6 +60,10 @@ const login = async () => {
       auth.loginAs = loginAs.value // Store the selected login type in auth
       axios.defaults.headers.common['Authorization'] = auth ? 'Bearer ' + auth.token : ''
       if (loginAs.value === 'Piket') {
+        if (auth.profile == null || auth.profile.id == null) {
+          ToastService.dangerToast('Maaf anda belum terdaftar sebagai guru')
+          return
+        }
         const response = await ScheduleService.get()
         if (response.isSuccess) {
           const schedules = response.data as Schedule[]

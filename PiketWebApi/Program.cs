@@ -20,14 +20,14 @@ builder.Logging.AddConsole();
 
 
 
-///add mcp 
-builder.Services.AddMcpServer()
-    .WithHttpTransport()
-    .WithStdioServerTransport()
-    .WithPromptsFromAssembly()
-    .WithToolsFromAssembly()
-    .WithResourcesFromAssembly()
-    ;
+// ///add mcp 
+// builder.Services.AddMcpServer()
+//     .WithHttpTransport()
+//     .WithStdioServerTransport()
+//     .WithPromptsFromAssembly()
+//     .WithToolsFromAssembly()
+//     .WithResourcesFromAssembly()
+//     ;
 
 if (builder.Environment.IsProduction())
 {
@@ -84,7 +84,7 @@ builder.Services.AddDateOnlyTimeOnlyStringConverters();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(connectionString);
-    options.EnableSensitiveDataLogging(builder.Environment.IsDevelopment());
+    options.EnableSensitiveDataLogging(builder.Environment.IsProduction());
 });
 
 
@@ -102,7 +102,11 @@ builder.Services.AddProblemDetails(x =>
     };
 });
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.User.RequireUniqueEmail = false;
+    options.SignIn.RequireConfirmedAccount = false;
+})
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
       .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(TokenOptions.DefaultProvider); ;
@@ -172,18 +176,12 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     await DataSeeder.SeedData(scope);
-
 }
 
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseDeveloperExceptionPage();
-
-//if (app.Environment.IsDevelopment())
-//{
-//}
-
 
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -213,5 +211,5 @@ app.MapGroup("/api/dashboard").MapDashboardApi().WithOpenApi();
 app.MapGroup("/api/studentattendance").MapStudentAttendanceApi().WithOpenApi();
 app.MapGroup("/api/studentprogressnote").MapStudentProgressNoteApi().WithOpenApi();
 
-app.MapMcp();
+// app.MapMcp();
 app.Run();

@@ -3,7 +3,6 @@ WORKDIR /app
 EXPOSE 5001
 EXPOSE 5002
 
-ENV ASPNETCORE_URLS=http://+:5001
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG configuration=Release
@@ -26,5 +25,6 @@ COPY --from=publish /app/publish .
 
 RUN mkdir -p ./photos
 RUN chmod -R 777 ./photos
+# ENV ASPNETCORE_URLS=http://+:5001
 
 ENTRYPOINT ["dotnet", "PiketWebApi.dll"]

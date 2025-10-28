@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PicketMobile.Views.Students.StudentAbsenPage"
+                xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+         xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+         Shell.NavBarIsVisible="False"
+         BackgroundImageSource="background.jpg"
+         Title="ScanBarcodePage">
+
+    <Grid RowDefinitions="10*,60*,10*" Margin="30">
+
+        <StackLayout>
+            <Label FontSize="Title" Text="{Binding LastScan}"></Label>
+        </StackLayout>
+        <Grid Grid.Row="1" WidthRequest="300" HeightRequest="380"
+              Padding="20" BackgroundColor="White">
+            <zxing:CameraBarcodeReaderView 
+            HorizontalOptions="Center"
+            VerticalOptions="Center" 
+            x:Name="cameraBarcodeReaderView"   
+             BarcodesDetected="cameraBarcodeReaderView_BarcodesDetected" />
+
+        </Grid>
+        <StackLayout Grid.Row="2" Margin="10">
+            <Button Text="Batal" Clicked="Button_Clicked"></Button>
+        </StackLayout>
+    </Grid>
+</ContentPage>

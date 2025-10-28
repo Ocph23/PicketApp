@@ -24,6 +24,9 @@ internal partial class ProfilePageViewModel  :ObservableObject
     [ObservableProperty]
     private string initial;
 
+    [ObservableProperty]
+    private string photo;
+
 
     public AsyncRelayCommand LogoutCommand { get; set; }
     public ProfilePageViewModel()
@@ -34,6 +37,8 @@ internal partial class ProfilePageViewModel  :ObservableObject
         {
             Profile = JsonSerializer.Deserialize<TeacherResponse>(profileString, Helper.JsonOption)!;
             Initial = Helper.GetInitial(Profile == null ? "" : Profile.Name)!;
+            var baseUrl = Preferences.Get("url", string.Empty);
+            Photo = $"{baseUrl}/photos/student/{Profile.Photo}";
         }
     }
 

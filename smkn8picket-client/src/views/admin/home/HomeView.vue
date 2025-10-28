@@ -86,24 +86,24 @@
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import type DashboardResponse from '@/models/Responses/DashboardResponse';
 import DashboardService from '@/services/DashboardService';
+import type { ApexOptions } from 'apexcharts';
 import { FwbCard } from 'flowbite-vue';
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import ApexCharts from 'vue3-apexcharts';
 
 const year = ref(new Date().getFullYear())
 const data = ref<DashboardResponse>();
 
-const chartOptions = ref({
+const chartOptions = reactive({
   chart: {
     id: "vuechart-example",
     stacked: true,
-    stackType: "100%"
-
+    stackType: 'normal'
   },
   xaxis: {
     categories: [] as string[],
   },
-}
+} as ApexOptions
 );
 
 const series = ref<{ name: string, data: number[] }[]>([
@@ -113,12 +113,11 @@ const series = ref<{ name: string, data: number[] }[]>([
   { name: "alpha", data: [] },
 ])
 
-chartOptions.value.xaxis.categories.length = 0;
 DashboardService.get()
   .then((response) => {
     data.value = response.data as DashboardResponse;
     data.value.kehadirans.forEach(value => {
-      chartOptions.value.xaxis.categories.push(value.groupName);
+      chartOptions.xaxis?.categories.push(value.groupName);
       const jumlahMasuk = value.data.length;
       const hadir = value.data.filter(x => x.status == 1 || x.status == 2).length;
       const alpha = value.data.filter(x => x.status == 3).length;
@@ -131,7 +130,7 @@ DashboardService.get()
       series.value.filter(x => x.name == 'alpha')[0]?.data.push(Number((alpha / jumlahMasuk * 100).toFixed(2)));
     });
     console.log(series.value);
-    console.log(chartOptions.value.xaxis.categories);
+    console.log(chartOptions.xaxis?.categories);
   })
   .catch((error) => {
     console.error("Error fetching dashboard data:", error);

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PicketMobile.Views.Students.StudentHomePage"
+              Shell.NavBarIsVisible="False"
+             BackgroundImageSource="background.jpg"
+             Title="Home">
+    <Grid RowDefinitions="auto,*" Margin="30,0">
+        <Label Text="Home" Style="{StaticResource pageTitle}"></Label>
+        <VerticalStackLayout Grid.Row="1" VerticalOptions="Center" >
+            
+            <Image WidthRequest="100" Source="logo.png" Margin="10,20"></Image>
+            <Label Text="SMK NEGERI 8" VerticalOptions="Center" HorizontalOptions="Center" />
+            <Label Text="TEKNOLOGI INFORMASI DAN KOMUNIKASI" VerticalOptions="Center" HorizontalOptions="Center" />
+            <Label Text="KOTA JAYAPURA - PAPUA" VerticalOptions="Center" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

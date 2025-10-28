@@ -22,7 +22,7 @@
                         <TapGestureRecognizer Command="{Binding ShowURLCommand}" />
                     </Image.GestureRecognizers>
                 </Image>
-                <Label Text="APLIKASI PIKET" Style="{StaticResource Headline}"></Label>
+                <Label Text="SISTEM INFORMASI SEKOLAH" Style="{StaticResource Headline}"></Label>
                 <Label Text="SMK 8 TIK KOTA JAYAPURA" Style="{StaticResource SubHeadline}"></Label>
                 <Label Margin="0,30,0,0" Text="Login" HorizontalOptions="Start" Style="{StaticResource SubHeadline}"></Label>
                 <StackLayout >
@@ -34,8 +34,8 @@
                     <Label Text="Password" />
                     <Entry Text="{Binding Password}" IsPassword="True" Placeholder="Password"></Entry>
                 </StackLayout>
-                <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"  WidthRequest="50"></ActivityIndicator>
                 <Button Text="Login"  Command="{Binding LoginCommand}" HorizontalOptions="Fill" />
+                <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}"  WidthRequest="50"></ActivityIndicator>
                 <StackLayout>
                     <Entry IsVisible="{Binding ShowURL}" HorizontalOptions="CenterAndExpand" Text="{Binding URL}" Placeholder="URL"></Entry>
                 </StackLayout>

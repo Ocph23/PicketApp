@@ -23,7 +23,6 @@ namespace PicketMobile
             };
         }
 
-
         public static string? GetInitial(string? name)
         {
             if (string.IsNullOrEmpty(name))
@@ -36,5 +35,8 @@ namespace PicketMobile
             }
             return sb.ToString();
         }
+
+        
+
     }
 }

@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PicketMobile.Services;
+using PicketMobile.Views.Students;
 using System.Windows.Input;
 
 namespace PicketMobile.Views;
@@ -20,7 +21,8 @@ internal class LoginPageViewModel : BaseNotify
     {
         LoginCommand = new AsyncRelayCommand(LoginCommandAction, LoginCommandValidate);
 
-        ShowURLCommand = new AsyncRelayCommand(async () => {
+        ShowURLCommand = new AsyncRelayCommand(async () =>
+        {
             ShowURL = !ShowURL;
         });
 
@@ -31,6 +33,11 @@ internal class LoginPageViewModel : BaseNotify
                 LoginCommand = new AsyncRelayCommand(LoginCommandAction, LoginCommandValidate);
             }
         };
+
+
+        UserName = "27181656";
+        Password = "Password@123";
+
     }
 
     private bool LoginCommandValidate()
@@ -53,12 +60,17 @@ internal class LoginPageViewModel : BaseNotify
             var loginSuccess = await service.Login(UserName!, Password!);
             if (loginSuccess)
             {
-                Application.Current.MainPage = new AppShell();
+                if (service.UserInRole("Student"))
+                    Application.Current.MainPage = new StudentShell();
+                else
+                    Application.Current.MainPage = new AppShell();
             }
+            IsBusy = false;
         }
         catch (Exception ex)
         {
             await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK")!;
+            IsBusy = false;
         }
         finally
         {
@@ -74,8 +86,6 @@ internal class LoginPageViewModel : BaseNotify
         set { SetProperty(ref userName, value); }
     }
 
-
-
     private string? password;
 
     public string? Password
@@ -84,15 +94,17 @@ internal class LoginPageViewModel : BaseNotify
         set { SetProperty(ref password, value); }
     }
 
-    private string url = Preferences.Get("url", "http://localhost");
+    private string url = Preferences.Get("url", "http://localhost:5001");
     public string URL
     {
         get { return url; }
-        set { SetProperty(ref url, value);
+        set
+        {
+            SetProperty(ref url, value);
             Preferences.Set("url", value);
         }
     }
-        
+
     private bool showUrl;
 
     public bool ShowURL

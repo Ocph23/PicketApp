@@ -60,7 +60,7 @@ namespace PiketWebApi.Services
                     return schoolYearActive.Errors;
                 }
 
-                DateOnly dateNow = DateOnly.FromDateTime(DateTime.Now);
+                DateOnly dateNow = DateOnly.FromDateTime(DateTime.Now.ToUniversalTime());
                 var userClaim = await http.IsTeacherPicket(userManager, dbContext);
                 if (!userClaim.Item1)
                     return Error.Unauthorized("Picket", "Maaf, Anda tidak sedang piket/anda tidak memiliki akses !");
@@ -85,7 +85,7 @@ namespace PiketWebApi.Services
         {
             try
             {
-                DateOnly date = DateOnly.FromDateTime(DateTime.Now);
+                DateOnly date = DateOnly.FromDateTime(DateTime.Now.ToUniversalTime());
 
                 var ppicketToday = dbContext.Picket
                     .Include(x => x.CreatedBy)
@@ -241,34 +241,31 @@ namespace PiketWebApi.Services
                                                 x.AttendanceStatus, x.TimeIn, x.TimeOut, x.Description, x.CreateAt
                                             )).ToList();
 
+                result.StudentsLateAndComeHomeEarly = (from x in response.LateAndComeHomeEarly
+                                                       join s in students.Value on x.Student.Id equals s.Id into sGroup
+                                                       from sx in sGroup.DefaultIfEmpty()
+                                                       select
+                                                       new LateAndGoHomeEarlyResponse
+                                                       {
+                                                           Id = x.Id,
+                                                           LateAndGoHomeEarlyStatus = x.LateAndGoHomeEarlyStatus,
+                                                           AttendanceStatus = x.AttendanceStatus,
+                                                           Time = x.Time,
+                                                           CreateAt = x.CreateAt,
+                                                           TeacherId = x.CreatedBy.Id,
+                                                           TeacherName = x.CreatedBy.Name,
+                                                           TeacherPhoto = x.CreatedBy.Photo,
+                                                           Description = x.Description,
+                                                           StudentPhoto = x.Student.Photo,
+                                                           StudentId = x.Student.Id,
+                                                           StudentName = x.Student.Name,
+                                                           ClassRoomId = sx == null ? null : sx.ClassRoomId,
+                                                           ClassRoomName = sx == null ? null : sx.ClassRoomName,
+                                                           DepartmentId = sx == null ? null : sx.DepartmenId,
+                                                           DepartmentName = sx == null ? null : sx.DepartmenName
+
+                                                       }).ToList();
             }
-
-
-            result.StudentsLateAndComeHomeEarly = (from x in response.LateAndComeHomeEarly
-                                                   join s in students.Value on x.Student.Id equals s.Id into sGroup
-                                                   from sx in sGroup.DefaultIfEmpty()
-                                                   select
-                                                   new LateAndGoHomeEarlyResponse
-                                                   {
-                                                       Id = x.Id,
-                                                       LateAndGoHomeEarlyStatus = x.LateAndGoHomeEarlyStatus,
-                                                       AttendanceStatus = x.AttendanceStatus,
-                                                       Time = x.Time,
-                                                       CreateAt = x.CreateAt,
-                                                       TeacherId = x.CreatedBy.Id,
-                                                       TeacherName = x.CreatedBy.Name,
-                                                       TeacherPhoto = x.CreatedBy.Photo,
-                                                       Description = x.Description,
-                                                       StudentPhoto = x.Student.Photo,
-                                                       StudentId = x.Student.Id,
-                                                       StudentName = x.Student.Name,
-                                                       ClassRoomId = sx == null ? null : sx.ClassRoomId,
-                                                       ClassRoomName = sx == null ? null : sx.ClassRoomName,
-                                                       DepartmentId = sx == null ? null : sx.DepartmenId,
-                                                       DepartmentName = sx == null ? null : sx.DepartmenName
-
-                                                   }).ToList();
-
 
 
 

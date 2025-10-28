@@ -22,6 +22,8 @@ namespace PiketWebApi.Api
             group.MapGet("/withclass", GetAllStudentWithClass);
             group.MapGet("/withclas/{id}", GetStudentWithClass);
             group.MapGet("/{id}", GetStudentById);
+            group.MapGet("/createaccount/{id}", CreateAccount);
+            group.MapGet("/resetpassword/{id}", ResetPassword);
             group.MapGet("/search/{searchtext}", SearchStudent);
             group.MapPost("/", PostStudent);
             group.MapPut("/{id}", PutStudent);
@@ -29,6 +31,18 @@ namespace PiketWebApi.Api
             group.MapPut("/uploadphoto/{id}", UploadFoto);
             group.MapGet("/photo/{fileName}", GetFoto).AllowAnonymous();
             return group.WithTags("student").RequireAuthorization(); ;
+        }
+
+        private static async Task<IResult> ResetPassword(HttpContext context, IStudentService studentService, int id)
+        {
+            var result = await studentService.ResetPassword(id);
+            return result.Match(items => Results.Ok(items), errors => Results.BadRequest(result.CreateProblemDetail(context)));
+        }
+
+        private static async Task<IResult> CreateAccount(HttpContext context, IStudentService studentService, int id)
+        {
+            var result = await studentService.CreateAccountStudent(id);
+            return result.Match(items => Results.Ok(items), errors => Results.BadRequest(result.CreateProblemDetail(context)));
         }
 
         private static async Task<IResult> GetFoto(HttpContext context, string fileName)
@@ -59,7 +73,6 @@ namespace PiketWebApi.Api
         }
 
         private static async Task<IResult> GetAllStudentWithPanitate(HttpContext context, IStudentService studentService, PaginationRequest req)
-
         {
             var result = await studentService.GetAllStudentWithPanitate(req);
             return result.Match(items => Results.Ok(items), errors => Results.BadRequest(result.CreateProblemDetail(context)));

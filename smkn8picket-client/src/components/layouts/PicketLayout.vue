@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import Header from '@/components/layouts/Header.vue'
 import PicketSidebar from '@/components/layouts/PicketSideBar.vue'
+
 import { ref } from 'vue'
 const showSide = ref(true)
 
 const clickMenu = () => {
   showSide.value = !showSide.value
 }
+
+
 </script>
 
 <template>

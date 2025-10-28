@@ -12,7 +12,7 @@
               <label for="">Status Siswa : {{ Helper.studentStatus(data.form.status) }}</label>
             </div>
 
-            <form>
+            <form @submit.prevent>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="mb-4">
                   <VTInput label="NIS" type="text" v-model="data.form.nis" required />
@@ -50,6 +50,11 @@
                   <VTInput class="text-red-500 font-bold" label="Kelas" type="text"
                     model-value="Belum terdaftar dalam kelas" disabled />
                 </div>
+                <div class="mb-4 flex flex-col">
+                  <label class="text-sm mb-2">Akun</label>
+                  <fwb-button v-if="!data.form.userId" @click="createAccount">Buat Akun</fwb-button>
+                  <fwb-button v-if="data.form.userId" @click="resetPassword">Reset Password</fwb-button>
+                </div>
               </div>
             </form>
 
@@ -59,10 +64,6 @@
             <StudentAttendanceChart :student-id="studentId"></StudentAttendanceChart>
           </div>
         </div>
-
-
-
-
       </fwb-card>
     </FwbTab>
     <FwbTab name="absen" title="Absen">
@@ -82,7 +83,7 @@
 import { ref, reactive } from 'vue'
 import { StudentService } from '@/services'
 import { Helper, type ErrorResponse, } from '@/commons'
-import { FwbCard, FwbSelect, FwbTabs, FwbTab } from 'flowbite-vue'
+import { FwbCard, FwbSelect, FwbTabs, FwbTab, FwbButton } from 'flowbite-vue'
 import PageHeader from '@/components/PageHeader.vue'
 import type { Student } from '@/models'
 import { DateTime } from 'luxon'
@@ -90,7 +91,6 @@ import StudentAttendanceChart from './studentAttendanceChart.vue'
 import StudentAttendanceList from './studentAttendanceList.vue'
 import StudentProgressNoteView from './StudentProgressNoteView.vue'
 import VTInput from '@/components/VTInput/VTInput.vue'
-
 
 const props = defineProps({
   studentId: {
@@ -155,6 +155,7 @@ const setForm = (student: Student) => {
   data.form.id = student.id
   data.form.nis = student.nis
   data.form.nisn = student.nisn
+  data.form.userId = student.userId
   data.form.name = student.name
   data.form.gender = student.gender.toString()
   data.form.dateOfBorn =
@@ -164,6 +165,22 @@ const setForm = (student: Student) => {
   data.form.description = student.address
   data.form.parentPhoneNumber = student.parentPhoneNumber
   imageSrc.value = Helper.getStudentAvatar(student.photo)
+}
+
+
+const createAccount = () => {
+  StudentService.createAccount(props.studentId).then(response => {
+    data.form.userId = response.data as string
+  })
+
+}
+const resetPassword = () => {
+  StudentService.resetPassword(props.studentId).then(response => {
+    if (response.isSuccess) {
+      alert('Password berhasil di reset')
+    }
+
+  })
 }
 
 </script>

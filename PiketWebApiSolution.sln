@@ -16,6 +16,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedModel", "SharedModel\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PicketMcpClient", "PicketMcpClient\PicketMcpClient.csproj", "{442617EF-3637-4FAA-A81C-6FCAC53D75C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireApp.AppHost", "AspireApp\AspireApp.AppHost\AspireApp.AppHost.csproj", "{B09054E7-CF7C-4622-A895-15C31B5B7756}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireApp.ServiceDefaults", "AspireApp\AspireApp.ServiceDefaults\AspireApp.ServiceDefaults.csproj", "{CEF74E1D-AEBF-CDE1-7C5A-CCC40CBE62E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{442617EF-3637-4FAA-A81C-6FCAC53D75C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{442617EF-3637-4FAA-A81C-6FCAC53D75C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{442617EF-3637-4FAA-A81C-6FCAC53D75C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B09054E7-CF7C-4622-A895-15C31B5B7756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B09054E7-CF7C-4622-A895-15C31B5B7756}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B09054E7-CF7C-4622-A895-15C31B5B7756}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B09054E7-CF7C-4622-A895-15C31B5B7756}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEF74E1D-AEBF-CDE1-7C5A-CCC40CBE62E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEF74E1D-AEBF-CDE1-7C5A-CCC40CBE62E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEF74E1D-AEBF-CDE1-7C5A-CCC40CBE62E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEF74E1D-AEBF-CDE1-7C5A-CCC40CBE62E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

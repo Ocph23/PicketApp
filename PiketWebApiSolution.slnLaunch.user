@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "PicketMobile\\PicketMobile.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "AspireApp\\AspireApp.AppHost\\AspireApp.AppHost.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
