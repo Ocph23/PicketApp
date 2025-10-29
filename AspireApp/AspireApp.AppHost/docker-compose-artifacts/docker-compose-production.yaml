@@ -24,6 +24,12 @@ services:
         target: "/var/lib/postgresql/data"
         source: "postgres_data"
         read_only: false
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
     networks:
       - "aspire"
   redis:
@@ -48,6 +54,7 @@ services:
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
       HTTP_PORTS: "${PIKETAPI_PORT}"
       ConnectionStrings__Redis: "Redis:6379,password=${REDIS_PASSWORD}"
+      ConnectionStrings__piketdb: "Host=db;Port=5432;Username=postgres;Password=${DB_PASSWORD};Database=piketdb"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://compose-dashboard:18889"
       OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
       OTEL_SERVICE_NAME: "piketapi"
@@ -67,9 +74,6 @@ services:
     container_name: smkn8picketclient
     image: 230279/smkn8picketclient:latest
     restart: always
-    # build:
-      # context: ../../../smkn8picket-client
-      # dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
       VITE_API_URL: http://localhost:5001
