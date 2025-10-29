@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\PiketWebApi\PiketWebApi.csproj" />
+    <ProjectReference Include="..\..\PiketWebApi\PiketWebApi.csproj" /> 
   </ItemGroup>
 
   <ItemGroup>

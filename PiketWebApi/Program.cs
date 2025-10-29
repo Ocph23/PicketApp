@@ -76,6 +76,7 @@ builder.Services.AddCors(options =>
 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+//var connectionString = builder.Configuration.GetConnectionString("piketdb") ??
     throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));

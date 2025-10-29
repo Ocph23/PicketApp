@@ -9,7 +9,7 @@ namespace PiketWebApi.Data
         {
             var dbcontext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            //await dbcontext.Database.MigrateAsync(); // Apply pending migrations
+            await dbcontext.Database.MigrateAsync(); // Apply pending migrations
 
             var userManager = scope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
             var roleManager = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>();

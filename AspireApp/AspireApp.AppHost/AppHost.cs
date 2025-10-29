@@ -13,8 +13,9 @@ builder.AddDockerComposeEnvironment("compose")
 // 🔹 PostgreSQL + Database
 var postgres = builder.AddPostgres("db")
     //.WithPgAdmin()
-    .WithDataVolume("postgres_data")
-    .AddDatabase("piketdb");
+    .WithDataVolume("postgres_data");
+
+var db= postgres.AddDatabase("piketdb");
 
 // 🔹 Redis
 var redis = builder.AddRedis("Redis");
@@ -22,8 +23,9 @@ var redis = builder.AddRedis("Redis");
 // 🔹 ASP.NET Core Web API
 var picketapi = builder.AddProject<Projects.PiketWebApi>("piketapi")
     .WithReference(redis) 
+    .WithReference(db) 
     //.WithEnvironment("ASPNETCORE_PORT", "5001")
-    .WaitFor(postgres);
+    .WaitFor(db);
 
 
 builder.AddNpmApp("adminclient", "../../smkn8picket-client")
