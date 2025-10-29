@@ -72,7 +72,7 @@ services:
       dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
-      VITE_API_URL: http://localhost:5001
+      VITE_API_URL: "${VITE_API_URL}"
       VITE_LOGO: /smk.png
     ports:
       - 0.0.0.0:8080:80
