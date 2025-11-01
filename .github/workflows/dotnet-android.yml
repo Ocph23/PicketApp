@@ -52,7 +52,8 @@ jobs:
 
       # 6️⃣ Build MAUI Android (Release)
       - name: Build MAUI Android
-        run: dotnet build PicketMobile/PicketMobile.csproj -c Release -f net9.0-android \
+        run: |
+          dotnet build PicketMobile/PicketMobile.csproj -c Release -f net9.0-android \
           /p:AndroidSigningKeyStore=ocph23.keystore \
           /p:AndroidSigningKeyAlias=Ocph23 \
           /p:AndroidSigningKeyPass="${{ secrets.KEYSTORE_PASSWORD }}" \
