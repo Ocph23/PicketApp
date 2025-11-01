@@ -1,71 +1,85 @@
-﻿﻿name: ANDROID CI/CD
+﻿name: ANDROID
+
 on:
   push:
     branches: [ "android" ]
   pull_request:
     branches: [ "android" ]
 
-env:
-  whatnew: "New Feature"
+env: 
+  whatnew: new Feature
+
+permissions:
+  contents: read
 
 jobs:
   build-android:
-    name: Build and Deploy Android (.NET MAUI)
-    runs-on: macos-latest
+    name: Android Build (.NET 9)
+    runs-on: macos-14 # macOS 14 (Sonoma) diperlukan untuk .NET 9
 
     steps:
-      - name: 🧾 Checkout Repository
+      # 1️⃣ Checkout source code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: 🧰 Setup Keystore File
+      # 2️⃣ Setup keystore & whatsnew
+      - name: Setup keystore & whatsnew
         shell: bash
         run: |
           mkdir -pv distribution/whatsnew
           echo "$whatnew" > ./distribution/whatsnew/whatsnew-id-ID
-
+          
           echo "${{ secrets.KEYSTOREFILE }}" > ocph23.keystore.asc
           gpg -d --passphrase "${{ secrets.KEYSTORE_PASSWORD }}" --batch ocph23.keystore.asc > ocph23.keystore
 
-      - name: ⚙️ Setup .NET 9 SDK
+      # 3️⃣ Setup .NET 9 SDK
+      - name: Setup .NET 9
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
-          include-prerelease: true
 
-      - name: 📦 Install .NET MAUI Workloads
+      # 4️⃣ Install MAUI & Android workloads
+      - name: Install .NET MAUI & Android workloads
         shell: bash
         run: |
           dotnet nuget locals all --clear
-          dotnet workload install maui-android android --source https://aka.ms/dotnet6/nuget/index.json --source https://api.nuget.org/v3/index.json
+          dotnet workload install maui-android --skip-manifest-update --source https://api.nuget.org/v3/index.json
+          dotnet workload install android --skip-manifest-update --source https://api.nuget.org/v3/index.json
 
-      - name: 🔧 Restore Dependencies
+      # 5️⃣ Restore dependencies
+      - name: Restore Dependencies
         run: dotnet restore PicketMobile/PicketMobile.csproj
 
-      - name: 🏗️ Build MAUI Android (Signed)
-        run: |
-          dotnet build PicketMobile/PicketMobile.csproj \
-            -c Release -f net9.0-android \
-            /p:AndroidSigningKeyStore=ocph23.keystore \
-            /p:AndroidSigningKeyAlias=Ocph23 \
-            /p:AndroidSigningKeyPass="${{ secrets.KEYSTORE_PASSWORD }}" \
-            /p:AndroidSigningStorePass="${{ secrets.KEYSTORE_PASSWORD }}" \
-            --no-restore
+      # 6️⃣ Build MAUI Android (Release)
+      - name: Build MAUI Android
+        run: dotnet build PicketMobile/PicketMobile.csproj -c Release -f net9.0-android \
+          /p:AndroidSigningKeyStore=ocph23.keystore \
+          /p:AndroidSigningKeyAlias=Ocph23 \
+          /p:AndroidSigningKeyPass="${{ secrets.KEYSTORE_PASSWORD }}" \
+          /p:AndroidSigningStorePass="${{ secrets.KEYSTORE_PASSWORD }}" \
+          --no-restore
 
-      - name: 📤 Upload Android Artifact
+      # 7️⃣ Upload artifact hasil build
+      - name: Upload Android Artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-ci-build
           path: PicketMobile/bin/Release/net9.0-android/*Signed.aab
 
-      - name: 📥 Download Artifact (Verification)
+      # 8️⃣ Download kembali artifact (untuk deploy)
+      - name: Get appbundle from artifacts
         uses: actions/download-artifact@v4
         with:
           name: android-ci-build
 
-      - name: 🧾 Create service_account.json
-        run: echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
+      # 9️⃣ Generate service account JSON
+      - name: Create service_account.json
+        run: |
+          echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
+          ls -l
 
-      - name: 🚀 Deploy to Google Play (Production)
+      # 🔟 Deploy ke Google Play (production)
+      - name: Deploy to Production
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJson: service_account.json
