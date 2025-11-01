@@ -56,7 +56,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: android-ci-build
-          path: ApsMobileApp/bin/Release/net9.0-android/*Signed.aab
+          path: PicketMobile/bin/Release/net9.0-android/*Signed.aab
 
       - name: 📥 Download Artifact (Verification)
         uses: actions/download-artifact@v4
