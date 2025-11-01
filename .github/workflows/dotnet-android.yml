@@ -1,4 +1,4 @@
-name: ANDROID
+﻿name: ANDROID CI/CD
 
 on:
   push:
@@ -6,63 +6,67 @@ on:
   pull_request:
     branches: [ "android" ]
 
-env: 
-  whatnew : New Feature
-
+env:
+  whatnew: "New Feature"
 
 jobs:
   build-android:
+    name: Build and Deploy Android (.NET MAUI)
     runs-on: macos-latest
-    name: Android Build
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      
-      - name: Setup keystore file
+      - name: 🧾 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🧰 Setup Keystore File
         shell: bash
         run: |
           mkdir -pv distribution/whatsnew
           echo "$whatnew" > ./distribution/whatsnew/whatsnew-id-ID
+
           echo "${{ secrets.KEYSTOREFILE }}" > ocph23.keystore.asc
           gpg -d --passphrase "${{ secrets.KEYSTORE_PASSWORD }}" --batch ocph23.keystore.asc > ocph23.keystore
-      
-      - name: Setup .NET 9
-        uses: actions/setup-dotnet@v1
+
+      - name: ⚙️ Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
           include-prerelease: true
-     
-      - name: Install .NET MAUI
+
+      - name: 📦 Install .NET MAUI Workloads
         shell: bash
         run: |
-          dotnet nuget locals all --clear 
-          dotnet workload install maui-android --source https://aka.ms/dotnet6/nuget/index.json --source https://api.nuget.org/v3/index.json
-          dotnet workload install android --source https://aka.ms/dotnet6/nuget/index.json --source https://api.nuget.org/v3/index.json
-    
-      - name: Restore Dependencies
+          dotnet nuget locals all --clear
+          dotnet workload install maui-android android --source https://aka.ms/dotnet6/nuget/index.json --source https://api.nuget.org/v3/index.json
+
+      - name: 🔧 Restore Dependencies
         run: dotnet restore ApsMobileApp/ApsMobileApp.csproj
 
-      - name: Build MAUI Android
-        run: dotnet build ApsMobileApp/ApsMobileApp.csproj -c Release -f net9.0-android /p:AndroidSigningKeyStore=ocph23.keystore /p:AndroidSigningKeyAlias=Ocph23 /p:AndroidSigningKeyPass="${{ secrets.KEYSTORE_PASSWORD }}" /p:AndroidSigningStorePass="${{ secrets.KEYSTORE_PASSWORD }}" --no-restore
+      - name: 🏗️ Build MAUI Android (Signed)
+        run: |
+          dotnet build ApsMobileApp/ApsMobileApp.csproj \
+            -c Release -f net9.0-android \
+            /p:AndroidSigningKeyStore=ocph23.keystore \
+            /p:AndroidSigningKeyAlias=Ocph23 \
+            /p:AndroidSigningKeyPass="${{ secrets.KEYSTORE_PASSWORD }}" \
+            /p:AndroidSigningStorePass="${{ secrets.KEYSTORE_PASSWORD }}" \
+            --no-restore
 
-      - name: Upload Android Artifact
-        uses: actions/upload-artifact@v3.1.0
+      - name: 📤 Upload Android Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: android-ci-build
           path: ApsMobileApp/bin/Release/net9.0-android/*Signed.aab
 
-
-      - name: Get appbundle from artifacts
-        uses: actions/download-artifact@v2
+      - name: 📥 Download Artifact (Verification)
+        uses: actions/download-artifact@v4
         with:
           name: android-ci-build
 
-      - name: Create service_account.json
-        run: |
-          ls
-          echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
+      - name: 🧾 Create service_account.json
+        run: echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
 
-      - name: Deploy to Production
+      - name: 🚀 Deploy to Google Play (Production)
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJson: service_account.json
@@ -70,4 +74,3 @@ jobs:
           releaseFiles: com.ocph23.picketsmkn8-Signed.aab
           track: production
           whatsNewDirectory: distribution/whatsnew
-          
