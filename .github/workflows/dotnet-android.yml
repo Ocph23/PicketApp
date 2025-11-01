@@ -1,5 +1,4 @@
 ﻿﻿name: ANDROID CI/CD
-
 on:
   push:
     branches: [ "android" ]
