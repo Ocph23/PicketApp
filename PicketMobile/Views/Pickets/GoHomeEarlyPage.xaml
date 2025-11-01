@@ -6,7 +6,7 @@
                xmlns:view="clr-namespace:PicketMobile.Views.Pickets"
   xmlns:sharedModelResponse="clr-namespace:SharedModel.Responses;assembly=SharedModel"
               x:DataType="view:GoHomeEarlyPageViewModel"
-              BackgroundImageSource="background.jpg"
+               BackgroundImageSource="{AppThemeBinding Light=background.jpg, Dark=backgrounddark.jpg}"
              Title="Picket Hari Ini">
     <ContentPage.ToolbarItems>
         <ToolbarItem IconImageSource="addcircle.svg"  Command="{Binding AddStudentLateCommand}"  />

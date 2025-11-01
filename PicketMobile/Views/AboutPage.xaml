@@ -2,12 +2,12 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PicketMobile.Views.AboutPage"
-             BackgroundImageSource="background.jpg"
+               BackgroundImageSource="{AppThemeBinding Light=background.jpg, Dark=backgrounddark.jpg}"
              Shell.NavBarIsVisible="False"
              Title="AboutPage">
 
     <Grid RowDefinitions="auto,*,auto" >
-        <Border Grid.RowSpan="3" Background="WhiteSmoke" Opacity="0.8"/>
+        <Border Grid.RowSpan="3"  Opacity="0.8"/>
         <VerticalStackLayout Grid.Row="0" VerticalOptions="Center" Margin="0,30">
             <Image WidthRequest="100" Source="logo.png" Margin="10,20"></Image>
             <Label Text="SMK NEGERI 8" VerticalOptions="Center" HorizontalOptions="Center" />
@@ -34,7 +34,7 @@
             </Label>
         </StackLayout>
         <VerticalStackLayout Grid.Row="2" Margin="0,30">
-            <Label Text="@Ocph23 - 2024" VerticalOptions="Center" HorizontalOptions="Center" />
+            <Label x:Name="creator"  VerticalOptions="Center" HorizontalOptions="Center" />
         </VerticalStackLayout>
     </Grid>
 

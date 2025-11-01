@@ -47,7 +47,7 @@ namespace PicketMobile.Services
             }
             catch (Exception ex)
             {
-                throw new SystemException("Maaf, Anda Tidak Memiliki Akses !");
+                throw new SystemException("Maaf, Anda Tidak Memiliki Akses/Periksa Koneksi Anda !");
             }
         }
 

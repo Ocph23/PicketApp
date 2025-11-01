@@ -5,7 +5,7 @@
              xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              x:Class="PicketMobile.Views.Pickets.ScanBarcodePage"
              Shell.NavBarIsVisible="False"
-             BackgroundImageSource="background.jpg"
+             BackgroundImageSource="{AppThemeBinding Light=background.jpg, Dark=backgrounddark.jpg}"
              Title="ScanBarcodePage">
 
     <Grid RowDefinitions="10*,60*,10*" Margin="10">

@@ -4,7 +4,7 @@
              x:Class="PicketMobile.Views.LoginPage"
                xmlns:view="clr-namespace:PicketMobile.Views"
             x:DataType="view:LoginPageViewModel"
-                BackgroundImageSource="background.jpg"
+                 BackgroundImageSource="{AppThemeBinding Light=background.jpg, Dark=backgrounddark.jpg}"
                 Shell.NavBarIsVisible="False"
              Title="LoginPage">
 

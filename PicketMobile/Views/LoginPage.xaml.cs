@@ -42,7 +42,7 @@ internal class LoginPageViewModel : BaseNotify
 
     private bool LoginCommandValidate()
     {
-        if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Password))
+        if (IsBusy || string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Password))
             return false;
         return true;
     }

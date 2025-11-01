@@ -7,7 +7,7 @@
              xmlns:control="clr-namespace:PicketMobile.Controls"
              x:DataType="view:AddTerlambatPageViewModel"
              Shell.NavBarIsVisible="False"
-              BackgroundImageSource="background.jpg">
+              BackgroundImageSource="{AppThemeBinding Light=background.jpg, Dark=backgrounddark.jpg}">
     <ContentPage.Resources>
         <control:IsShowStudentDetailConverter x:Key="isShowStudent"/>
     </ContentPage.Resources>

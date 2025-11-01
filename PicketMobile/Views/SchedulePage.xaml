@@ -7,7 +7,7 @@
              xmlns:model="clr-namespace:PicketMobile.Models"
              xmlns:sharedModelResponse="clr-namespace:SharedModel.Responses;assembly=SharedModel"
              x:DataType="local:SchedulePageViewModel"
-             BackgroundImageSource="background.jpg"
+              BackgroundImageSource="{AppThemeBinding Light=background.jpg, Dark=backgrounddark.jpg}"
              Shell.NavBarIsVisible="False"
              Title="Jadwal Piket">
 
@@ -17,7 +17,7 @@
                 <toolkit:AvatarView HorizontalOptions="Start" WidthRequest="60"  TextColor="White"
                 Margin="5,0" HeightRequest="60" CornerRadius="100" Text="{Binding TeacherInitial}" 
                 BackgroundColor="#56d388"   />
-                <Label VerticalOptions="CenterAndExpand"   Text="{Binding TeacherName}"></Label>
+                <Label   Text="{Binding TeacherName}"></Label>
             </HorizontalStackLayout>
         </DataTemplate>
     </ContentPage.Resources>

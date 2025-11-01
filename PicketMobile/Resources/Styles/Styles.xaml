@@ -41,12 +41,12 @@
         <Setter Property="FontSize" Value="Body"></Setter>
     </Style>
     <Style x:Key="textContent" TargetType="Label">
-        <Setter Property="TextColor" Value="Black"></Setter>
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
         <Setter Property="FontSize" Value="Body"></Setter>
     </Style>
 
     <Style x:Key="pageTitle" TargetType="Label">
-        <Setter Property="TextColor" Value="Black"></Setter>
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
         <Setter Property="FontSize" Value="Large"></Setter>
         <Setter Property="Margin" Value="0,20"></Setter>
         <Setter Property="FontAttributes" Value="Bold"></Setter>

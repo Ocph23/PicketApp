@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PicketMobile.Views.Students.StudentHomePage"
               Shell.NavBarIsVisible="False"
-             BackgroundImageSource="background.jpg"
+            BackgroundImageSource="{AppThemeBinding Light=background.jpg, Dark=backgrounddark.jpg}"
              Title="Home">
     <Grid RowDefinitions="auto,*" Margin="30,0">
         <Label Text="Home" Style="{StaticResource pageTitle}"></Label>

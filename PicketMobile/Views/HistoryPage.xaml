@@ -4,7 +4,7 @@
                 xmlns:view="clr-namespace:PicketMobile.Views"
                 xmlns:sharedModel="clr-namespace:SharedModel.Responses;assembly=SharedModel"
                 x:DataType="view:HistoryPageViewModel"
-             BackgroundImageSource="background.jpg"
+               BackgroundImageSource="{AppThemeBinding Light=background.jpg, Dark=backgrounddark.jpg}"
              Shell.NavBarIsVisible="False"
              x:Class="PicketMobile.Views.HistoryPage"
              Title="HistoryPage">

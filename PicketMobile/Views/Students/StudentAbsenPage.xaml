@@ -5,7 +5,7 @@
                 xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
          xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
          Shell.NavBarIsVisible="False"
-         BackgroundImageSource="background.jpg"
+          BackgroundImageSource="{AppThemeBinding Light=background.jpg, Dark=backgrounddark.jpg}"
          Title="ScanBarcodePage">
 
     <Grid RowDefinitions="10*,60*,10*" Margin="30">

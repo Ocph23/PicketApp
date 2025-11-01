@@ -4,11 +4,13 @@
               xmlns:tooltip="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="PicketMobile.Views.Students.StudentProfilePage"
               xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             xmlns:shareModel ="clr-namespace:SharedModel.Responses;assembly=SharedModel"
+             xmlns:viewModel="clr-namespace:PicketMobile.Views.Students"
               Shell.NavBarIsVisible="False"
-             BackgroundImageSource="background.jpg"
+             BackgroundImageSource="{AppThemeBinding Light=background.jpg, Dark=backgrounddark.jpg}"
              Title="Profile">
     <ScrollView>
-        <VerticalStackLayout Padding="30,0">
+        <VerticalStackLayout Padding="30,0" x:DataType="viewModel:StudentProfilePageViewModel">
             <Label Text="Profile" Style="{StaticResource  pageTitle}"></Label>
             <StackLayout Margin="30">
                 <tooltip:AvatarView WidthRequest="100" HeightRequest="100" CornerRadius="75" 
