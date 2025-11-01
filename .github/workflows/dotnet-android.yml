@@ -40,16 +40,16 @@ jobs:
           dotnet workload install android --source https://aka.ms/dotnet6/nuget/index.json --source https://api.nuget.org/v3/index.json
     
       - name: Restore Dependencies
-        run: dotnet restore ApsMobileApp/ApsMobileApp.csproj
+        run: dotnet restore PicketMobile/PicketMobile.csproj
 
       - name: Build MAUI Android
-        run: dotnet build ApsMobileApp/ApsMobileApp.csproj -c Release -f net9.0-android /p:AndroidSigningKeyStore=ocph23.keystore /p:AndroidSigningKeyAlias=Ocph23 /p:AndroidSigningKeyPass="${{ secrets.KEYSTORE_PASSWORD }}" /p:AndroidSigningStorePass="${{ secrets.KEYSTORE_PASSWORD }}" --no-restore
+        run: dotnet build PicketMobile/PicketMobile.csproj -c Release -f net9.0-android /p:AndroidSigningKeyStore=ocph23.keystore /p:AndroidSigningKeyAlias=Ocph23 /p:AndroidSigningKeyPass="${{ secrets.KEYSTORE_PASSWORD }}" /p:AndroidSigningStorePass="${{ secrets.KEYSTORE_PASSWORD }}" --no-restore
 
       - name: Upload Android Artifact
         uses: actions/upload-artifact@v3.1.0
         with:
           name: android-ci-build
-          path: ApsMobileApp/bin/Release/net9.0-android/*Signed.aab
+          path: PicketMobile/bin/Release/net9.0-android/*Signed.aab
 
 
       - name: Get appbundle from artifacts
