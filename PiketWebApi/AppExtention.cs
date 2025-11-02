@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PiketWebApi.Data;
+using PiketWebApi.Services;
 using SharedModel;
 using SharedModel.Models;
 using System.Security.Claims;
@@ -96,10 +97,28 @@ namespace PiketWebApi
         }
 
 
+        public static Task ClearRadishCache( this ICacheService cache, string prefix, int? id=null, string? name = null)
+        {
+            cache.RemoveAsync($"{prefix}");
+            if (id != null && name==null)
+            {
+                cache.RemoveAsync($"{prefix}-id");
+            }
+
+            if (id == null && name != null)
+            {
+                cache.RemoveAsync($"{prefix}-{name}");
+            }
+
+            if (id != null && name != null)
+            {
+                cache.RemoveAsync($"{prefix}-{id}-{name}");
+            }
+
+            return Task.CompletedTask;
 
 
-
-
+        }
 
     }
 

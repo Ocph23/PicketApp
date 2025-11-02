@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireApp.AppHost", "Aspire
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireApp.ServiceDefaults", "AspireApp\AspireApp.ServiceDefaults\AspireApp.ServiceDefaults.csproj", "{CEF74E1D-AEBF-CDE1-7C5A-CCC40CBE62E4}"
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "smkn8picket", "smkn8picket-client\smkn8picket.esproj", "{37FF0780-473D-49E0-DC54-BE584332A4D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,12 @@ Global
 		{CEF74E1D-AEBF-CDE1-7C5A-CCC40CBE62E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEF74E1D-AEBF-CDE1-7C5A-CCC40CBE62E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEF74E1D-AEBF-CDE1-7C5A-CCC40CBE62E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37FF0780-473D-49E0-DC54-BE584332A4D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37FF0780-473D-49E0-DC54-BE584332A4D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37FF0780-473D-49E0-DC54-BE584332A4D1}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{37FF0780-473D-49E0-DC54-BE584332A4D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37FF0780-473D-49E0-DC54-BE584332A4D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37FF0780-473D-49E0-DC54-BE584332A4D1}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

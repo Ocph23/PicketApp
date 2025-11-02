@@ -36,7 +36,8 @@ public class StudentService : IStudentService
     private readonly ICacheService cacheService;
 
     public StudentService(IHttpContextAccessor _http, UserManager<ApplicationUser> _userManager,
-        ApplicationDbContext _dbContext, ISchoolYearService _schoolYearService, ILogger<StudentService> _logger, ICacheService _cacheService)
+        ApplicationDbContext _dbContext, ISchoolYearService _schoolYearService, ILogger<StudentService> _logger,
+        ICacheService _cacheService)
     {
         http = _http;
         userManager = _userManager;
@@ -45,14 +46,14 @@ public class StudentService : IStudentService
         logger = _logger;
         cacheService = _cacheService;
     }
-    public async Task<ErrorOr<string>> UploadPhoto(int sturentId, byte[] image)
+    public async Task<ErrorOr<string>> UploadPhoto(int studentId, byte[] image)
     {
         try
         {
             if (image.Length <= 0)
                 return Error.Validation("Student", "Data file yg anda kirim kosong, periksa kembali file yang anda kirim.");
 
-            var student = dbContext.Students.FirstOrDefault(t => t.Id == sturentId);
+            var student = dbContext.Students.FirstOrDefault(t => t.Id == studentId);
             if (student == null)
                 return Error.NotFound("Student", "Data siswa tidak ditemukan.");
 
@@ -66,6 +67,7 @@ public class StudentService : IStudentService
                 Helper.DeleteFile(Helper.StudentPhotoPath + student.Photo);
             student.Photo = fileName;
             dbContext.SaveChanges();
+            _ = ClearRadishCache(studentId);
             return fileName;
         }
         catch (Exception ex)
@@ -82,7 +84,7 @@ public class StudentService : IStudentService
                 return schoolYearActive.Errors;
 
 
-            var result = await cacheService.GetAsync<IEnumerable<StudentClassRoom>>("studentWithClass", async () =>
+            var result = await cacheService.GetAsync<IEnumerable<StudentClassRoom>>("student-withclass", async () =>
             {
                 List<StudentClassRoom> list = new List<StudentClassRoom>();
                 foreach (var item in dbContext.ClassRooms
@@ -109,6 +111,7 @@ public class StudentService : IStudentService
                 return list;
             });
 
+            _ = ClearRadishCache();
             return await Task.FromResult(result.ToList());
         }
         catch (Exception ex)
@@ -162,9 +165,9 @@ public class StudentService : IStudentService
             if (result == null)
                 return Error.NotFound("Data siswa tidak ditemukan.");
 
-
             dbContext.Remove(result);
             dbContext.SaveChanges();
+            _ = ClearRadishCache(id);
             return await Task.FromResult(true);
         }
         catch (Exception)
@@ -204,6 +207,7 @@ public class StudentService : IStudentService
             dbContext.Entry(result).CurrentValues.SetValues(model);
             dbContext.SaveChanges();
             trans.Commit();
+            _ = ClearRadishCache(id);
             return await Task.FromResult(true);
         }
         catch (Exception ex)
@@ -240,6 +244,7 @@ public class StudentService : IStudentService
             var result = dbContext.Students.Add(model);
             dbContext.SaveChanges();
             trans.Commit();
+            _ = ClearRadishCache();
             return model;
         }
         catch (Exception ex)
@@ -295,7 +300,7 @@ public class StudentService : IStudentService
                 return Error.Failure("Belum Ada Tahun Ajaran Aktif !");
 
 
-            var result = await cacheService.GetAsync<StudentClassRoom>($"studentWithClass-{studentId}", async () =>
+            var result = await cacheService.GetAsync<StudentClassRoom>($"student-withclass-{studentId}", async () =>
             {
                 var item = dbContext.ClassRooms
                      .Include(x => x.SchoolYear)
@@ -377,7 +382,7 @@ public class StudentService : IStudentService
                 return schoolYearActive.Errors;
 
 
-            var result = await cacheService.GetAsync<IEnumerable<StudentClassRoom>>($"studentsWithClass-{classroomId}", async () =>
+            var result = await cacheService.GetAsync<IEnumerable<StudentClassRoom>>($"student-classroom-{classroomId}", async () =>
             {
                 List<StudentClassRoom> list = new List<StudentClassRoom>();
 
@@ -433,6 +438,8 @@ public class StudentService : IStudentService
                 var errors = resetPassResult.Errors.Select(e => Error.Failure(e.Code, e.Description));
                 return Error.Failure("Gagal mereset password siswa.");
             }
+
+            _ = ClearRadishCache(id);
             return true;
         }
         catch (Exception)
@@ -452,16 +459,19 @@ public class StudentService : IStudentService
         {
             if (!string.IsNullOrEmpty(model.NISN) || !string.IsNullOrEmpty(model.NIS))
             {
-                var user = model.NISN ?? model.NIS;
+                var nis = model.NISN ?? model.NIS;
+                var user = new ApplicationUser { Email = $"{nis.Trim()}@smkn8tikjapura.sch.id", EmailConfirmed = true, Name = model.Name, UserName = nis.Trim() };
                 var userResult = await Helper.CreateUser(userManager,
-                    new ApplicationUser { Email = $"{user.Trim()}@smkn8tikjapura.sch.id", EmailConfirmed = true, Name = model.Name, UserName = user.Trim() },
+                    user,
                     "Student");
                 if (userResult.IsError)
                     return userResult.Errors;
+                model.Email = user.Email;
                 model.UserId = userResult.Value.Id;
             }
             dbContext.SaveChanges();
             trans.Commit();
+            _ = ClearRadishCache(id);
             return model.UserId!;
         }
         catch (Exception ex)
@@ -472,5 +482,21 @@ public class StudentService : IStudentService
         }
 
     }
+
+    public async Task ClearRadishCache(int? id = null)
+    {
+        string prefix = "student";
+        await cacheService.RemoveAsync($"{prefix}");
+        await cacheService.RemoveAsync($"{prefix}-withclass");
+        await cacheService.RemoveAsync($"{prefix}");
+        if (id != null)
+        {
+            await cacheService.RemoveAsync($"{prefix}-classroom-{id}");
+            await cacheService.RemoveAsync($"{prefix}-withclass-{id}");
+            await cacheService.RemoveAsync($"{prefix}-{id}");
+        }
+    }
+
+
 }
 

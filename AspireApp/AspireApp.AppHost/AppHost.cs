@@ -1,4 +1,5 @@
 ﻿using Aspire.Hosting;
+using Google.Protobuf.WellKnownTypes;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -10,22 +11,40 @@ builder.AddDockerComposeEnvironment("compose")
                     .WithForwardedHeaders(enabled: true);
        });
 
-// 🔹 PostgreSQL + Database
-var postgres = builder.AddPostgres("db")
-    //.WithPgAdmin()
-    .WithDataVolume("postgres_data");
 
-var db= postgres.AddDatabase("piketdb");
+
+// 🔹 PostgreSQL + Database
+//var backupPath = Path.GetFullPath(@"D:\smk8\PicketApp\pgadmin_backups");
+//Directory.CreateDirectory(backupPath);
+//var backupPathX = "/mnt/d/smk8/PicketApp/pgadmin_backups";
+
+var postgres = builder.AddPostgres("db")
+    //.WithPgAdmin(pgadmin =>
+    //{
+    //    pgadmin.WithVolume($"{backupPathX}:/backups"); // <--- tambahkan volume ini
+    //})
+    .WithDataVolume("postgres_data"); 
+
+var db = postgres.AddDatabase("piketdb");
 
 // 🔹 Redis
 var redis = builder.AddRedis("Redis");
 
 // 🔹 ASP.NET Core Web API
 var picketapi = builder.AddProject<Projects.PiketWebApi>("piketapi")
-    .WithReference(redis) 
-    .WithReference(db) 
-    //.WithEnvironment("ASPNETCORE_PORT", "5001")
+    .WithReference(redis)
+    .WithReference(db)
+    //.WithHttpEndpoint(name: "http", port: 5000)
+    // .WithHttpsEndpoint(name: "https", port: 5001)
     .WaitFor(db);
+
+
+//DEV TUNNEL
+//var tunnel = builder.AddDevTunnel("mytunnel")
+//                    .WithReference(picketapi.GetEndpoint("https"), allowAnonymous: true)
+//                    .WaitFor(picketapi)
+//                    ;
+
 
 
 builder.AddNpmApp("adminclient", "../../smkn8picket-client")

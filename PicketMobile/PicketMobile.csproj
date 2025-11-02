@@ -19,6 +19,7 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+    <AndroidUse16KPageAlignment>true</AndroidUse16KPageAlignment>
     
 		<!-- Display name <MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation> -->
 		<ApplicationTitle>PIKET SMKN 8</ApplicationTitle>

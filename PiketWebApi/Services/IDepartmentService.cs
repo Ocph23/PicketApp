@@ -18,12 +18,15 @@ namespace PiketWebApi.Services
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext dbContext;
+        private readonly ICacheService cacheService;
+        private string cachePrefix = "department";
 
-        public DepartmentService( UserManager<ApplicationUser> _userManager,
-            ApplicationDbContext _dbContext)
+        public DepartmentService(UserManager<ApplicationUser> _userManager,
+            ApplicationDbContext _dbContext, ICacheService _cacheService)
         {
             userManager = _userManager;
             dbContext = _dbContext;
+            cacheService = _cacheService;
         }
 
         public async Task<ErrorOr<bool>> DeleteAsync(int id)
@@ -35,6 +38,7 @@ namespace PiketWebApi.Services
                     return Error.NotFound("NotFound", "Data jurusan tidak ditemukan.");
                 dbContext.Remove(result);
                 dbContext.SaveChanges();
+                _ = cacheService.ClearRadishCache(cachePrefix, id);
                 return await Task.FromResult(true);
             }
             catch (Exception)
@@ -54,6 +58,7 @@ namespace PiketWebApi.Services
                 }
                 dbContext.Entry(result).CurrentValues.SetValues(model);
                 dbContext.SaveChanges();
+                _ = cacheService.ClearRadishCache(cachePrefix, id);
                 return await Task.FromResult(true);
             }
             catch (Exception)
@@ -70,10 +75,11 @@ namespace PiketWebApi.Services
                 var validator = new Validators.DepartmentValidator();
                 var validateResult = validator.Validate(model);
                 if (!validateResult.IsValid)
-                    return validateResult.GetErrors();  
+                    return validateResult.GetErrors();
 
                 var result = dbContext.Departments.Add(model);
                 dbContext.SaveChanges();
+                _ = cacheService.ClearRadishCache(cachePrefix);
                 return await Task.FromResult(model);
             }
             catch (Exception)
@@ -86,7 +92,11 @@ namespace PiketWebApi.Services
         {
             try
             {
-                return await Task.FromResult(dbContext.Departments.ToList());
+                var result = await cacheService.GetAsync<IEnumerable<Department>>(cachePrefix, async () =>
+                {
+                    return await Task.FromResult(dbContext.Departments.ToList());
+                });
+                return result is null ? Enumerable.Empty<Department>().ToList() : result.ToList();
             }
             catch (Exception)
             {
@@ -98,8 +108,11 @@ namespace PiketWebApi.Services
         {
             try
             {
-                var result = dbContext.Departments.SingleOrDefault(x => x.Id == id);
-                return await Task.FromResult(result);
+                var result = await cacheService.GetAsync<Department>($"{cachePrefix}-{id}", async () =>
+                {
+                    return await Task.FromResult(dbContext.Departments.SingleOrDefault(x => x.Id == id)!);
+                });
+                return result!;
             }
             catch (Exception)
             {
