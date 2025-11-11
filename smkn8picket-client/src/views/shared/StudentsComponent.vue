@@ -31,7 +31,7 @@
         <fwb-table-head>
           <fwb-table-head-cell>No</fwb-table-head-cell>
           <fwb-table-head-cell>Nama</fwb-table-head-cell>
-          <fwb-table-head-cell>NIS/NISN</fwb-table-head-cell>
+          <fwb-table-head-cell>NIPD/NISN</fwb-table-head-cell>
           <fwb-table-head-cell class="w-5">Kelamin</fwb-table-head-cell>
           <fwb-table-head-cell>Tempat, Tanggal Lahir</fwb-table-head-cell>
           <fwb-table-head-cell>Hp Orang Tua</fwb-table-head-cell>

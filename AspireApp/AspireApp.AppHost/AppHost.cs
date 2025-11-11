@@ -1,4 +1,4 @@
-﻿using Aspire.Hosting;
+﻿    using Aspire.Hosting;
 using Google.Protobuf.WellKnownTypes;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -16,13 +16,13 @@ builder.AddDockerComposeEnvironment("compose")
 // 🔹 PostgreSQL + Database
 //var backupPath = Path.GetFullPath(@"D:\smk8\PicketApp\pgadmin_backups");
 //Directory.CreateDirectory(backupPath);
-//var backupPathX = "/mnt/d/smk8/PicketApp/pgadmin_backups";
+var backupPathX = "/mnt/d/smk8/PicketApp/pgadmin_backups";
 
 var postgres = builder.AddPostgres("db")
-    //.WithPgAdmin(pgadmin =>
-    //{
-    //    pgadmin.WithVolume($"{backupPathX}:/backups"); // <--- tambahkan volume ini
-    //})
+    .WithPgAdmin(pgadmin =>
+    {
+        pgadmin.WithVolume($"{backupPathX}:/backups"); // <--- tambahkan volume ini
+    })
     .WithDataVolume("postgres_data"); 
 
 var db = postgres.AddDatabase("piketdb");

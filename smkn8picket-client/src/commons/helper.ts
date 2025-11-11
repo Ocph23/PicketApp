@@ -47,15 +47,15 @@ const Helper = {
   },
   studentStatus: (status: number) => {
     switch (status) {
-      case 0:
-        return 'Aktif'
       case 1:
-        return 'Pindah'
+        return 'Aktif'
       case 2:
-        return 'Tamat'
+        return 'Pindah'
       case 3:
-        return 'Keluar'
+        return 'Tamat'
       case 4:
+        return 'Keluar'
+      case 0:
         return 'Tanpa Status'
       default:
         return 'Aktif';

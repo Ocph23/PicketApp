@@ -11,7 +11,7 @@
           <fwb-table-head>
             <fwb-table-head-cell>No</fwb-table-head-cell>
             <fwb-table-head-cell>Nama</fwb-table-head-cell>
-            <fwb-table-head-cell>NIP/Nomo Induk</fwb-table-head-cell>
+            <fwb-table-head-cell>NUPTK</fwb-table-head-cell>
             <fwb-table-head-cell>Jenis Kelamin</fwb-table-head-cell>
             <fwb-table-head-cell>TTL</fwb-table-head-cell>
             <fwb-table-head-cell>Email</fwb-table-head-cell>

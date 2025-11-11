@@ -12,6 +12,5 @@ public class Profile
     public string? Photo { get; set; }
     public string? UserId { get; set; }
 
-    
-
 }
+

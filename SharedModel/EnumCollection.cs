@@ -35,11 +35,11 @@
 
     public enum StudentStatus
     {
-        Aktif,
+        TanpaStatus = 0,
+        Aktif = 1,
         Pindah,
         Tamat,
         Keluar,
-        TanpaStatus
     }
 
 

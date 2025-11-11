@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace PiketWebApi.Data
 {
@@ -49,35 +50,51 @@ namespace PiketWebApi.Data
                 dbcontext.SaveChanges();
             }
 
-            // if (!dbcontext.Students.Any())
-            // {
-            //     dbcontext.Students.AddRange(new List<Student>
-            //     {
-            //         new Student {NIS="11111111",  Name = "Valentinus Sipayung", DateOfBorn = new DateOnly(2003,3,3), Gender= SharedModel.Gender.Pria, PlaceOfBorn="Medan"  },
-            //         new Student {NIS="11111112",  Name = "Revo Barus", DateOfBorn = new DateOnly(2003,3,3), Gender= SharedModel.Gender.Pria, PlaceOfBorn="Jayapura"  },
-            //         new Student {NIS="11111113",  Name = "Michael Saja", DateOfBorn = new DateOnly(2003,3,3), Gender= SharedModel.Gender.Pria, PlaceOfBorn="Jayapura"  },
-            //         new Student {NIS="11111114",  Name = "Andika Saja", DateOfBorn = new DateOnly(2003,3,3), Gender= SharedModel.Gender.Pria, PlaceOfBorn="Jayapura"  },
-            //         new Student {NIS="11111115",  Name = "Duta Saja", DateOfBorn = new DateOnly(2003,3,3), Gender= SharedModel.Gender.Pria, PlaceOfBorn="Jayapura"  },
-            //         new Student {NIS="11111116",  Name = "Angela Guru", DateOfBorn = new DateOnly(2003,3,3), Gender= SharedModel.Gender.Wanita, PlaceOfBorn="Soe"  },
-            //     });
-            //     dbcontext.SaveChanges();
-            // }
+
+            if (!dbcontext.Teachers.Any())
+            {
+                CancellationToken ct = default;
+                var jsonFilePath = Path.Combine(AppContext.BaseDirectory, "Data", "teacher.json");
+                if (!File.Exists(jsonFilePath)) throw new FileNotFoundException(jsonFilePath);
+
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                await using var fs = File.OpenRead(jsonFilePath);
+                var dtos = await JsonSerializer.DeserializeAsync<List<Teacher>>(fs, options, ct)
+                           ?? new List<Teacher>();
 
 
-            // if (!dbcontext.Teachers.Any())
-            // {
-            //     dbcontext.Teachers.AddRange(new List<Teacher>
-            //      {
-            //          new Teacher {RegisterNumber="511111111",  Name = "Nasrullah", DateOfBorn = new DateOnly(2003,3,3), Gender= SharedModel.Gender.Pria, PlaceOfBorn="Medan"  },
-            //          new Teacher {RegisterNumber="511111112",  Name = "Juan Latuperisa", DateOfBorn = new DateOnly(2003,3,3), Gender= SharedModel.Gender.Pria, PlaceOfBorn="Jayapura"  },
-            //          new Teacher {RegisterNumber="511111113",  Name = "Yoseph Kungkung", DateOfBorn = new DateOnly(2003,3,3), Gender= SharedModel.Gender.Pria, PlaceOfBorn="Jayapura"  },
-            //          new Teacher {RegisterNumber="511111114",  Name = "Himawan", DateOfBorn = new DateOnly(2003,3,3), Gender= SharedModel.Gender.Pria, PlaceOfBorn="Jayapura"  },
-            //          new Teacher {RegisterNumber="511111115",  Name = "Videl Silak", DateOfBorn = new DateOnly(2003,3,3), Gender= SharedModel.Gender.Pria, PlaceOfBorn="Jayapura"  },
-            //          new Teacher {RegisterNumber="511111116",  Name = "Mira Cucu", DateOfBorn = new DateOnly(2003,3,3), Gender= SharedModel.Gender.Wanita, PlaceOfBorn="Soe"  },
-            //      });
-            //     dbcontext.SaveChanges();
-            // }
+                foreach (var teacher in dtos)
+                {
+                    var user = new ApplicationUser(teacher.Email) { Name = teacher.Name, Email = teacher.Email, EmailConfirmed = true };
+                    var result = await userManager.CreateAsync(user, "Password@123");
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(user, "Teacher");
+                        teacher.UserId = user.Id;
+                        await dbcontext.Teachers.AddAsync(teacher);
+                    }
+                    else
+                    {
+                        await userManager.DeleteAsync(user);
+                    }
+                }
+            }
 
+
+            if(!dbcontext.Students.Any())
+            {
+                CancellationToken ct = default;
+                var jsonFilePath = Path.Combine(AppContext.BaseDirectory, "Data", "student.json");
+                if (!File.Exists(jsonFilePath)) throw new FileNotFoundException(jsonFilePath);
+
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                await using var fs = File.OpenRead(jsonFilePath);
+                var dtos = await JsonSerializer.DeserializeAsync<List<Student>>(fs, options, ct)
+                           ?? new List<Student>();
+                dbcontext.Students.AddRange(dtos);
+                await dbcontext.SaveChangesAsync(ct);
+
+            }
 
         }
     }
