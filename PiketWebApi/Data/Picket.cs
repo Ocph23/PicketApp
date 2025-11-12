@@ -17,6 +17,7 @@ namespace PiketWebApi.Data
         public ICollection<LateAndGoHomeEarly> LateAndComeHomeEarly { get; set; } = default;
         public ICollection<DailyJournal> DailyJournals { get; set; } = default;
         public ICollection<StudentAttendance> StudentAttendances{ get; set; } = default;
+        public ICollection<TeacherAttendance> TeacherAttendances{ get; set; } = default;
         
         public int SchoolYearId { get; set; }
         public SchoolYear SchoolYear { get; set; }

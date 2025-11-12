@@ -1,7 +1,7 @@
 FROM node:lts-alpine AS build-stage
 # set the working directory
 
-ARG VITE_API_URL=http://192.168.1.9:5001
+ARG VITE_API_URL=http://192.168.8.1:5001
 ARG VITE_LOGO=/smk.png
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_LOGO=$VITE_LOGO

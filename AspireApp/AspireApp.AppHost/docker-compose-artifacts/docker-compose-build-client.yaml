@@ -1,0 +1,14 @@
+services:
+  smkn8picketclient:
+    container_name: smkn8picketclient
+    image: smkn8picketclient
+    restart: always
+    build:
+      context: ../../../smkn8picket-client
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+      VITE_API_URL: http://192.168.8.1:5001
+      VITE_LOGO: /smk.png
+    ports:
+      - 0.0.0.0:80:80

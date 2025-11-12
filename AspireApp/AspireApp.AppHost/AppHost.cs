@@ -19,10 +19,10 @@ builder.AddDockerComposeEnvironment("compose")
 var backupPathX = "/mnt/d/smk8/PicketApp/pgadmin_backups";
 
 var postgres = builder.AddPostgres("db")
-    .WithPgAdmin(pgadmin =>
-    {
-        pgadmin.WithVolume($"{backupPathX}:/backups"); // <--- tambahkan volume ini
-    })
+    //.WithPgAdmin(pgadmin =>
+    //{
+    //    pgadmin.WithVolume($"{backupPathX}:/backups"); // <--- tambahkan volume ini
+    //})
     .WithDataVolume("postgres_data"); 
 
 var db = postgres.AddDatabase("piketdb");

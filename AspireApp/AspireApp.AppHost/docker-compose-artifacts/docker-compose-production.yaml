@@ -76,7 +76,7 @@ services:
     restart: always
     environment:
       NODE_ENV: production
-      VITE_API_URL: ${VITE_API_URL}"
+      VITE_API_URL: ${VITE_API_URL}":${PIKETAPI_PORT}
       VITE_LOGO: /smk.png
     ports:
       - 80:80
