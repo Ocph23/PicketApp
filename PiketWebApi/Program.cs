@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
+using OpenTelemetry.Trace;
 using PiketWebApi;
 using PiketWebApi.Api;
 using PiketWebApi.Data;
@@ -15,10 +16,9 @@ using PiketWebApi.Services;
 using System.Security.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.AddServiceDefaults();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-
-
 
 // ///add mcp 
 // builder.Services.AddMcpServer()
@@ -129,26 +129,23 @@ builder.Services.AddSwaggerGen(setup =>
         Scheme = JwtBearerDefaults.AuthenticationScheme,
         Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
 
-        Reference = new OpenApiReference
-        {
-            Id = JwtBearerDefaults.AuthenticationScheme,
-            Type = ReferenceType.SecurityScheme
-        }
+        //Reference = new OpenApiReference
+        //{
+        //    Id = JwtBearerDefaults.AuthenticationScheme,
+        //    Type = ReferenceType.SecurityScheme
+        //}
     };
 
-    setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+    //setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
 
-    setup.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        { jwtSecurityScheme, Array.Empty<string>() }
-    });
+    //setup.AddSecurityRequirement();
 
 });
 
 //add cache
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.Configuration = builder.Configuration.GetConnectionString("cache");
 });
 builder.Services.AddScoped<ICacheService, CacheService>();
 

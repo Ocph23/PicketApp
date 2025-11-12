@@ -1,8 +1,5 @@
-﻿    using Aspire.Hosting;
-using Google.Protobuf.WellKnownTypes;
-
-var builder = DistributedApplication.CreateBuilder(args);
-var seq = builder.AddSeq("seq").WithDataVolume(); 
+﻿var builder = DistributedApplication.CreateBuilder(args);
+var seq = builder.AddSeq("seq").WithDataVolume();
 
 // 🔹 Tambahkan Docker Compose environment (opsional)
 builder.AddDockerComposeEnvironment("compose")
@@ -22,12 +19,12 @@ var postgres = builder.AddPostgres("db")
     //{
     //    pgadmin.WithVolume($"{backupPathX}:/backups"); // <--- tambahkan volume ini
     //})
-    .WithDataVolume("postgres_data"); 
+    .WithDataVolume("postgres_data");
 
 var db = postgres.AddDatabase("piketdb");
 
 // 🔹 Redis
-var redis = builder.AddRedis("Redis");
+var redis = builder.AddRedis("cache");
 
 // 🔹 ASP.NET Core Web API
 var picketapi = builder.AddProject<Projects.PiketWebApi>("piketapi")
