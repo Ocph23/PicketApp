@@ -649,7 +649,10 @@ namespace PiketWebApi.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<int?>("TeacherId")
+                    b.Property<int>("PicketId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TeacherId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("TimeIn")
@@ -659,6 +662,8 @@ namespace PiketWebApi.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PicketId");
 
                     b.HasIndex("TeacherId");
 
@@ -851,9 +856,17 @@ namespace PiketWebApi.Migrations
 
             modelBuilder.Entity("PiketWebApi.Data.TeacherAttendance", b =>
                 {
+                    b.HasOne("PiketWebApi.Data.Picket", null)
+                        .WithMany("TeacherAttendances")
+                        .HasForeignKey("PicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("PiketWebApi.Data.Teacher", "Teacher")
                         .WithMany()
-                        .HasForeignKey("TeacherId");
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Teacher");
                 });
@@ -870,6 +883,8 @@ namespace PiketWebApi.Migrations
                     b.Navigation("LateAndComeHomeEarly");
 
                     b.Navigation("StudentAttendances");
+
+                    b.Navigation("TeacherAttendances");
                 });
 #pragma warning restore 612, 618
         }

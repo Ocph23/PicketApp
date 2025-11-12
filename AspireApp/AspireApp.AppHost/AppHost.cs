@@ -2,6 +2,7 @@
 using Google.Protobuf.WellKnownTypes;
 
 var builder = DistributedApplication.CreateBuilder(args);
+var seq = builder.AddSeq("seq").WithDataVolume(); 
 
 // 🔹 Tambahkan Docker Compose environment (opsional)
 builder.AddDockerComposeEnvironment("compose")
@@ -10,8 +11,6 @@ builder.AddDockerComposeEnvironment("compose")
            dashboard.WithHostPort(8181)
                     .WithForwardedHeaders(enabled: true);
        });
-
-
 
 // 🔹 PostgreSQL + Database
 //var backupPath = Path.GetFullPath(@"D:\smk8\PicketApp\pgadmin_backups");
@@ -34,8 +33,7 @@ var redis = builder.AddRedis("Redis");
 var picketapi = builder.AddProject<Projects.PiketWebApi>("piketapi")
     .WithReference(redis)
     .WithReference(db)
-    //.WithHttpEndpoint(name: "http", port: 5000)
-    // .WithHttpsEndpoint(name: "https", port: 5001)
+    .WithReference(seq)
     .WaitFor(db);
 
 

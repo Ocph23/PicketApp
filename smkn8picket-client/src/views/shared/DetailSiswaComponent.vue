@@ -10,7 +10,7 @@
               <div class="w-32 h-32 bg-gray-200 p-2 rounded-full cursor-pointer">
                 <img :src="imageSrc" class="w-full h-full" />
               </div>
-              <label class="p-1 px-4 mt-2 rounded-full" :class="data.form.status==0?'bg-green-400':'bg-red-400'" for="">{{ Helper.studentStatus(data.form.status) }}</label>
+              <label class="p-1 px-4 mt-2 rounded-full" :class="data.form.status==1?'bg-green-400':'bg-red-400'" for="">Status : {{ Helper.studentStatus(data.form.status) }}</label>
             </div>
 
             <form @submit.prevent>
@@ -158,6 +158,7 @@
     data.form.nisn = student.nisn
     data.form.userId = student.userId
     data.form.name = student.name
+    data.form.status = student.status
     data.form.gender = student.gender.toString()
     data.form.dateOfBorn =
       student.dateOfBorn == null ? '' : DateTime.fromISO(student.dateOfBorn).toFormat('yyyy-MM-dd')

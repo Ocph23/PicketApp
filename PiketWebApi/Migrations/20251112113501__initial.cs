@@ -350,28 +350,6 @@ namespace PiketWebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TeacherAttendances",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TeacherId = table.Column<int>(type: "integer", nullable: true),
-                    TimeIn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    TimeOut = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    AttendanceStatus = table.Column<int>(type: "integer", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TeacherAttendances", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TeacherAttendances_Teachers_TeacherId",
-                        column: x => x.TeacherId,
-                        principalTable: "Teachers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ClassRoomMember",
                 columns: table => new
                 {
@@ -464,8 +442,8 @@ namespace PiketWebApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    PicketId = table.Column<int>(type: "integer", nullable: false),
                     StudentId = table.Column<int>(type: "integer", nullable: false),
+                    PicketId = table.Column<int>(type: "integer", nullable: false),
                     TimeIn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     TimeOut = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     AttendanceStatus = table.Column<int>(type: "integer", nullable: false),
@@ -485,6 +463,36 @@ namespace PiketWebApi.Migrations
                         name: "FK_StudentAttendaces_Students_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Students",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TeacherAttendances",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TeacherId = table.Column<int>(type: "integer", nullable: false),
+                    PicketId = table.Column<int>(type: "integer", nullable: false),
+                    TimeIn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    TimeOut = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    AttendanceStatus = table.Column<int>(type: "integer", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeacherAttendances", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TeacherAttendances_Picket_PicketId",
+                        column: x => x.PicketId,
+                        principalTable: "Picket",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TeacherAttendances_Teachers_TeacherId",
+                        column: x => x.TeacherId,
+                        principalTable: "Teachers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -626,6 +634,11 @@ namespace PiketWebApi.Migrations
                 name: "IX_Students_NIS",
                 table: "Students",
                 column: "NIS");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeacherAttendances_PicketId",
+                table: "TeacherAttendances",
+                column: "PicketId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TeacherAttendances_TeacherId",
