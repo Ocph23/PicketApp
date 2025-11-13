@@ -1,9 +1,10 @@
 <template>
   <AdminLayout>
     <PageHeader title="Absen Guru">
-      <div class="flex justify-end gap-1">
-        <VTSelect label="Bulan" :options="bulans"></VTSelect>
-        <VTSelect label="Tahun" :options="tahuns"></VTSelect>
+      <div class="flex justify-end items-center gap-1">
+        <VTSelect :size="'sm'" label="Bulan" :options="bulans"></VTSelect>
+        <VTSelect :size="'sm'" label="Tahun" :options="tahuns"></VTSelect>
+        <PrinterIcon class="w-10 h-auto cursor-pointer text-amber-400 hover:text-amber-600 bg-gray-200"></PrinterIcon>
       </div>
     </PageHeader>
   </AdminLayout>
@@ -15,6 +16,7 @@ import AdminLayout from '@/components/layouts/AdminLayout.vue';
 import PageHeader from '@/components/PageHeader.vue';
 import type { SelectOption } from '@/components/VTSelect/types';
 import VTSelect from '@/components/VTSelect/VTSelect.vue';
+import { PrinterIcon } from '@heroicons/vue/24/solid';
 import { DateTime } from 'luxon';
 
 
@@ -28,7 +30,7 @@ const tahuns = range(DateTime.now().year - 4, DateTime.now().year).map((item => 
 
 
 
-function range(start, end, step = 1) {
+function range(start:number, end:number, step = 1) {
   const result = [];
   if (step === 0) throw new Error("Step cannot be zero");
   const increasing = step > 0;

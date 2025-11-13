@@ -241,14 +241,14 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach(async (to) => {
+router.beforeEach(async (to: {
+  matched: any[], path: string 
+}) => {
   const token = localStorage.getItem('authToken')
   const auth = JSON.parse(token as string) as AuthResponse
   // const publicPages = ['/login', '/walikelas/login']
   // const walikelasPages = ['/walikelas', '/walikelas/kelas', '/walikelas/siswa']
   // const teacherPiketPages = ['/gurupiket', '/gurupiket/piket', '/gurupiket/siswa']
-
-
 
   if (to.path === '/') {
     if (auth && auth.isAdmin) {
