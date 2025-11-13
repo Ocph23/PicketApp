@@ -7,12 +7,12 @@
           <!-- Input Tahun -->
 
           <div class="mb-5">
-            <fwb-input v-model="data.form.year" type="number" placeholder="Tahun" label="Tahun" required />
+            <VTInput  v-model="data.form.year" type="number" placeholder="Tahun" label="Tahun" required />
           </div>
 
           <!-- Input Semester -->
           <div class="mb-5">
-            <fwb-input v-model="data.form.semester" type="number" placeholder="Semester" label="Semester" required />
+            <VTInput v-model="data.form.semester" type="number" placeholder="Semester" label="Semester" required />
           </div>
 
           <!-- Status Aktif -->
@@ -43,6 +43,7 @@ import { FwbCard, FwbInput, FwbSelect } from 'flowbite-vue'
 import PageHeader from '@/components/PageHeader.vue'
 import { useRouter } from 'vue-router'
 import type { SchoolYear } from '@/models'
+import VTInput from '@/components/VTInput/VTInput.vue'
 
 const router = useRouter()
 
@@ -75,3 +76,8 @@ const addData = async () => {
   }
 }
 </script>
+
+
+<style scoped>
+  
+</style>

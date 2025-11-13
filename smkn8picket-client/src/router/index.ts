@@ -99,7 +99,6 @@ const routes = [
         name: 'editGuru',
         component: () => import('@/views/admin/teacher/editGuru.vue'),
       },
-
       // routes schedule
       {
         path: 'Jadwal/:id',

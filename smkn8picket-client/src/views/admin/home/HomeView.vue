@@ -5,7 +5,7 @@
         <FwbCard class="col-6 p-5 !min-w-full ">
           <div class="flex flex-col items-start justify-start">
             <div class="w-full flex  items-start justify-between ">
-              <h1 class="text-center text-2xl xl:text-4xl font-bold">{{ data?.totalDepartments || 0 }}</h1>
+              <h1 class="text-center dark:text-white  text-2xl xl:text-4xl font-bold">{{ data?.totalDepartments || 0 }}</h1>
               <img src="/department.png" class="text-primary w-10 h-10" />
             </div>
             <h1 class="text-center text-xl xl:text-2xl text-teal-200">Total Jurusan</h1>
@@ -14,7 +14,7 @@
         <FwbCard class="col-6 p-5 !min-w-full ">
           <div class="flex flex-col items-start justify-start">
             <div class="w-full flex  items-start justify-between ">
-              <h1 class="text-center text-2xl xl:text-4xl font-bold">{{ data?.totalClassrooms || 0 }}</h1>
+              <h1 class="text-center dark:text-white text-2xl xl:text-4xl font-bold">{{ data?.totalClassrooms || 0 }}</h1>
               <img src="/classroom1.png" class="text-primary w-10 h-10" />
             </div>
             <h1 class="text-center text-xl xl:text-2xl text-teal-200">Total Kelas</h1>
@@ -23,7 +23,7 @@
         <FwbCard class="col-6 p-5 !min-w-full ">
           <div class="flex flex-col items-start justify-start">
             <div class="w-full flex  items-start justify-between ">
-              <h1 class="text-center text-2xl xl:text-4xl font-bold">{{ data?.totalTeachers || 0 }}</h1>
+              <h1 class="text-center dark:text-white text-2xl xl:text-4xl font-bold">{{ data?.totalTeachers || 0 }}</h1>
 
               <img src="/teacher.png" class="text-primary w-10 h-10" />
             </div>
@@ -32,11 +32,11 @@
               <div class="flex gap-4">
                 <div class="flex items-center ">
                   <img src="/male.png" class="text-primary w-5 h-5" />
-                  <h1 class="text-center text-2xl ">{{ data?.totalMaleTeachers || 0 }}</h1>
+                  <h1 class="text-center dark:text-white text-2xl ">{{ data?.totalMaleTeachers || 0 }}</h1>
                 </div>
                 <div class="flex items-center ">
                   <img src="/female.png" class="text-primary w-5 h-5" />
-                  <h1 class="text-center text-2xl ">{{ data?.totalFemaleTeachers || 0 }}</h1>
+                  <h1 class="text-center dark:text-white text-2xl ">{{ data?.totalFemaleTeachers || 0 }}</h1>
                 </div>
               </div>
             </div>
@@ -45,7 +45,7 @@
         <FwbCard class="col-6 p-5 !min-w-full ">
           <div class="flex flex-col items-start justify-start">
             <div class="w-full flex  items-start justify-between ">
-              <h1 class="text-center text-2xl xl:text-4xl font-bold">{{ data?.totalStudents || 0 }}</h1>
+              <h1 class="text-center dark:text-white text-2xl xl:text-4xl font-bold">{{ data?.totalStudents || 0 }}</h1>
               <img src="/students.png" class="text-primary w-10 h-10" />
             </div>
             <div class="flex justify-between w-full">
@@ -53,11 +53,11 @@
               <div class="flex gap-4">
                 <div class="flex items-center ">
                   <img src="/male.png" class="text-primary w-5 h-5" />
-                  <h1 class="text-center text-2xl ">{{ data?.totalMaleStudents || 0 }}</h1>
+                  <h1 class="text-center dark:text-white text-2xl ">{{ data?.totalMaleStudents || 0 }}</h1>
                 </div>
                 <div class="flex items-center ">
                   <img src="/female.png" class="text-primary w-5 h-5" />
-                  <h1 class="text-center text-2xl ">{{ data?.totalFemaleStudents || 0 }}</h1>
+                  <h1 class="text-center dark:text-white text-2xl ">{{ data?.totalFemaleStudents || 0 }}</h1>
                 </div>
               </div>
             </div>
@@ -70,8 +70,8 @@
       <div class="col-start-2 col-span-3 gap-4">
         <FwbCard class="p-5 !min-w-full ">
           <div>
-            <h1 class="text-center text-xl xl:text-2xl font-bold">GRAFIK TINGKAT KEHADIRAN SISWA</h1>
-            <h1 class="text-center text-xl xl:text-2xl font-bold">Tahun Ajaran {{ data?.schoolYearName }} {{
+            <h1 class="text-center dark:text-white text-xl xl:text-2xl font-bold">GRAFIK TINGKAT KEHADIRAN SISWA</h1>
+            <h1 class="text-center dark:text-white text-xl xl:text-2xl font-bold">Tahun Ajaran {{ data?.schoolYearName }} {{
               data?.semesterName }}</h1>
           </div>
           <ApexCharts type="bar" :options="chartOptions" :series="series">

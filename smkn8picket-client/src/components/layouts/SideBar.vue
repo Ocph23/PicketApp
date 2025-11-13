@@ -81,6 +81,23 @@
           Jadwal Guru Piket </fwb-sidebar-item>
       </template>
     </fwb-sidebar-dropdown-item-custome>
+    <fwb-sidebar-dropdown-item-custome>
+      <template #icon>
+        <ClipboardDocumentCheckIcon
+          class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+      </template>
+      <template #trigger> Laporan </template>
+      <template #default>
+        <fwb-sidebar-item link="/admin/laporan/absenguru" class="pl-11">
+          <template #icon>
+            <CalendarIcon
+              class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+          </template>
+          Absen Guru</fwb-sidebar-item>
+       
+      </template>
+    </fwb-sidebar-dropdown-item-custome>
+    
 
     <fwb-sidebar-item link="" @click="logout">
       <template #icon>
