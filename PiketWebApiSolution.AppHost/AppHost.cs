@@ -1,13 +1,12 @@
 ﻿var builder = DistributedApplication.CreateBuilder(args);
-var seq = builder.AddSeq("seq").WithDataVolume();
 
 // 🔹 Tambahkan Docker Compose environment (opsional)
-builder.AddDockerComposeEnvironment("compose")
-       .WithDashboard(dashboard =>
-       {
-           dashboard.WithHostPort(8181)
-                    .WithForwardedHeaders(enabled: true);
-       });
+//builder.AddDockerComposeEnvironment("compose")
+//       .WithDashboard(dashboard =>
+//       {
+//           dashboard.WithHostPort(8181)
+//                    .WithForwardedHeaders(enabled: true);
+//       });
 
 // 🔹 PostgreSQL + Database
 //var backupPath = Path.GetFullPath(@"D:\smk8\PicketApp\pgadmin_backups");
@@ -30,7 +29,6 @@ var redis = builder.AddRedis("cache");
 var picketapi = builder.AddProject<Projects.PiketWebApi>("piketapi")
     .WithReference(redis)
     .WithReference(db)
-    .WithReference(seq)
     .WaitFor(db);
 
 
@@ -42,7 +40,7 @@ var picketapi = builder.AddProject<Projects.PiketWebApi>("piketapi")
 
 
 
-builder.AddNpmApp("adminclient", "../../smkn8picket-client")
+builder.AddNpmApp("adminclient", "../smkn8picket-client")
     .WithReference(picketapi)
     .WaitFor(picketapi)
     .WithEnvironment("VITE_API_URL", picketapi.GetEndpoint("https"))

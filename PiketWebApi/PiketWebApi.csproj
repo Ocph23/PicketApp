@@ -32,7 +32,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AspireApp\AspireApp.ServiceDefaults\AspireApp.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\PiketWebApiSolution.ServiceDefaults\PiketWebApiSolution.ServiceDefaults.csproj" />
     <ProjectReference Include="..\SharedModel\SharedModel.csproj" />
   </ItemGroup>
   <ItemGroup>
