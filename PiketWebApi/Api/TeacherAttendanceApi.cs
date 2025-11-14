@@ -20,7 +20,7 @@ namespace PiketWebApi.Api
             group.MapGet("/", Get);
             group.MapGet("/{id}", GetById);
             group.MapGet("/byteacherid/{schoolYearId}/{teacherId}", GetAttendanceByTeacherId);
-            group.MapGet("/{id}/{month}/{year}", GetAbsenByTeacherIdMonthYear);
+            group.MapGet("/{month}/{year}", GetAttendaceMonthYear);
             group.MapPost("/", Post);
             group.MapPut("/{id}", Put);
             group.MapDelete("/{id}", Delete);
@@ -35,9 +35,9 @@ namespace PiketWebApi.Api
 
         }
 
-        private static async Task<IResult> GetAbsenByTeacherIdMonthYear(HttpContext context, ITeacherAttendaceService teacherService, int id, int month, int year)
+        private static async Task<IResult> GetAttendaceMonthYear(HttpContext context, ITeacherAttendaceService teacherService, int month, int year)
         {
-            var result = await teacherService.GetAbsenByTeacherIdMonthYear(id, month,year);
+            var result = await teacherService.GetAttendaceMonthYear(month,year);
             return result.Match(items => Results.Ok(items), errors => Results.BadRequest(result.CreateProblemDetail(context)));
         }
 

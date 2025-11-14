@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SharedModel;
 using System.Text.Json;
 
 namespace PiketWebApi.Data

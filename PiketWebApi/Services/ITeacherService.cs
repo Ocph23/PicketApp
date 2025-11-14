@@ -128,6 +128,8 @@ namespace PiketWebApi.Services
                 result.Name = model.Name;
                 result.Photo = model.Photo;
                 result.Address = model.Address;
+                result.Job = model.Job;
+                result.JobStatus = model.JobStatus;
                 dbContext.SaveChanges();
                 trans.Commit();
                 return await Task.FromResult(true);

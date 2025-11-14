@@ -1,78 +1,21 @@
 <template>
   <AdminLayout>
-    <div class="w-full grid grid-cols-4 gap-4 ">
+    <div class="w-full grid grid-cols-1 md:grid-cols-4 gap-4 ">
       <div class="flex flex-col gap-4">
-        <FwbCard class="col-6 p-5 !min-w-full ">
-          <div class="flex flex-col items-start justify-start">
-            <div class="w-full flex  items-start justify-between ">
-              <h1 class="text-center dark:text-white  text-2xl xl:text-4xl font-bold">{{ data?.totalDepartments || 0 }}</h1>
-              <img src="/department.png" class="text-primary w-10 h-10" />
-            </div>
-            <h1 class="text-center text-xl xl:text-2xl text-teal-200">Total Jurusan</h1>
-          </div>
-        </FwbCard>
-        <FwbCard class="col-6 p-5 !min-w-full ">
-          <div class="flex flex-col items-start justify-start">
-            <div class="w-full flex  items-start justify-between ">
-              <h1 class="text-center dark:text-white text-2xl xl:text-4xl font-bold">{{ data?.totalClassrooms || 0 }}</h1>
-              <img src="/classroom1.png" class="text-primary w-10 h-10" />
-            </div>
-            <h1 class="text-center text-xl xl:text-2xl text-teal-200">Total Kelas</h1>
-          </div>
-        </FwbCard>
-        <FwbCard class="col-6 p-5 !min-w-full ">
-          <div class="flex flex-col items-start justify-start">
-            <div class="w-full flex  items-start justify-between ">
-              <h1 class="text-center dark:text-white text-2xl xl:text-4xl font-bold">{{ data?.totalTeachers || 0 }}</h1>
-
-              <img src="/teacher.png" class="text-primary w-10 h-10" />
-            </div>
-            <div class="flex justify-between w-full">
-              <h1 class="text-center text-xl xl:text-2xl text-teal-200">Total Guru</h1>
-              <div class="flex gap-4">
-                <div class="flex items-center ">
-                  <img src="/male.png" class="text-primary w-5 h-5" />
-                  <h1 class="text-center dark:text-white text-2xl ">{{ data?.totalMaleTeachers || 0 }}</h1>
-                </div>
-                <div class="flex items-center ">
-                  <img src="/female.png" class="text-primary w-5 h-5" />
-                  <h1 class="text-center dark:text-white text-2xl ">{{ data?.totalFemaleTeachers || 0 }}</h1>
-                </div>
-              </div>
-            </div>
-          </div>
-        </FwbCard>
-        <FwbCard class="col-6 p-5 !min-w-full ">
-          <div class="flex flex-col items-start justify-start">
-            <div class="w-full flex  items-start justify-between ">
-              <h1 class="text-center dark:text-white text-2xl xl:text-4xl font-bold">{{ data?.totalStudents || 0 }}</h1>
-              <img src="/students.png" class="text-primary w-10 h-10" />
-            </div>
-            <div class="flex justify-between w-full">
-              <h1 class="text-center text-xl xl:text-2xl text-teal-200">Total Siswa</h1>
-              <div class="flex gap-4">
-                <div class="flex items-center ">
-                  <img src="/male.png" class="text-primary w-5 h-5" />
-                  <h1 class="text-center dark:text-white text-2xl ">{{ data?.totalMaleStudents || 0 }}</h1>
-                </div>
-                <div class="flex items-center ">
-                  <img src="/female.png" class="text-primary w-5 h-5" />
-                  <h1 class="text-center dark:text-white text-2xl ">{{ data?.totalFemaleStudents || 0 }}</h1>
-                </div>
-              </div>
-            </div>
-          </div>
-        </FwbCard>
-
-
-
+        <DashboardCard :total="data?.totalDepartments || 0" picture="/department.png" title="Total Jurusan" />
+        <DashboardCard :total="data?.totalClassrooms || 0" picture="/classroom1.png" title="Total Kelas" />
+        <DashboardCard :has-gender="true" :man="data?.totalMaleTeachers" :women="data?.totalFemaleTeachers"
+          :total="data?.totalTeachers || 0" picture="/teacher.png" title="Total Guru" />
+        <DashboardCard :has-gender="true" :man="data?.totalMaleStudents" :women="data?.totalFemaleStudents"
+          :total="data?.totalStudents || 0" picture="/students.png" title="Total Siswa" />
       </div>
-      <div class="col-start-2 col-span-3 gap-4">
+      <div class="md:col-span-3 gap-4">
         <FwbCard class="p-5 !min-w-full ">
           <div>
             <h1 class="text-center dark:text-white text-xl xl:text-2xl font-bold">GRAFIK TINGKAT KEHADIRAN SISWA</h1>
-            <h1 class="text-center dark:text-white text-xl xl:text-2xl font-bold">Tahun Ajaran {{ data?.schoolYearName }} {{
-              data?.semesterName }}</h1>
+            <h1 class="text-center dark:text-white text-xl xl:text-2xl font-bold">Tahun Ajaran {{ data?.schoolYearName
+              }} {{
+                data?.semesterName }}</h1>
           </div>
           <ApexCharts type="bar" :options="chartOptions" :series="series">
           </ApexCharts>
@@ -83,6 +26,7 @@
 </template>
 
 <script setup lang="ts">
+import DashboardCard from '@/components/DashboardCard.vue';
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import type DashboardResponse from '@/models/Responses/DashboardResponse';
 import DashboardService from '@/services/DashboardService';
@@ -91,7 +35,6 @@ import { FwbCard } from 'flowbite-vue';
 import { reactive, ref } from 'vue'
 import ApexCharts from 'vue3-apexcharts';
 
-const year = ref(new Date().getFullYear())
 const data = ref<DashboardResponse>();
 
 const chartOptions = reactive({

@@ -93,7 +93,7 @@
       </template>
       <template #body>
         <div class="form-control">
-          <AutoComplete placeholder="cari siswa" label="Ketua Kelas" :service="'student'" v-model="form">
+          <AutoComplete placeholder="cari siswa" label="Nama Siswa" :service="'student'" v-model="form">
           </AutoComplete>
         </div>
       </template>

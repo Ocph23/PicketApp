@@ -132,6 +132,8 @@ namespace PiketWebApi.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     RegisterNumber = table.Column<string>(type: "text", nullable: true),
+                    Job = table.Column<int>(type: "integer", nullable: false),
+                    JobStatus = table.Column<int>(type: "integer", nullable: false),
                     Gender = table.Column<int>(type: "integer", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
                     PlaceOfBorn = table.Column<string>(type: "text", nullable: true),

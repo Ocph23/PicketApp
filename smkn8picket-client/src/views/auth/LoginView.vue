@@ -1,37 +1,65 @@
 <template>
   <div class="min-h-screen w-full bg-white shadow-md dark:bg-gray-600 flex justify-center items-center">
-    <FwbCard class="p-5 md:w-[30%]">
-      <form @submit.prevent="login" class="w-full p-6 rounded-lg">
-        <div class="flex justify-center mb-6">
-          <img :src="Helper.infoSekolah.logo" class="w-1/2 sm:w-1/4" alt="SMK Logo" />
+    <div class="p-5 md:min-w-5xl m-5">
+      <div class="grid  grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="col-span-2 hidden md:block">
+          <div class="h-full flex flex-col justify-center items-center">
+            <img :src="Helper.infoSekolah.logo" class="w-1/5 m-5" alt="SMK Logo" />
+            <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2">
+              SITEM INFORMASI SEKOLAH
+            </FwbHeading>
+            <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2">
+              SEKOLAH MENENGAH KEJURUAN NEGERI 8
+            </FwbHeading>
+            <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2">
+              TEKNOLOGI INFORMASI DAN KOMUNIKASI
+            </FwbHeading>
+            <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2">
+              KOTA JAYAPURA
+            </FwbHeading>
+            <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2">
+              @{{ new Date().getFullYear() }}
+            </FwbHeading>
+          </div>
         </div>
-        <div class="mb-8">
-          <VTInput label="User Name" v-model="loginRequest.username" required></VTInput>
-        </div>
-        <div class="mb-4">
-          <VTInput :type="'password'" label="Password" v-model="loginRequest.password" required></VTInput>
-        </div>
-        <div class="mb-4">
-          <FwbSelect :placeholder="'Select Role'" label="Login As" v-model="loginAs" :options="[
-            { value: 'Piket', name: 'Piket' },
-            { value: 'WaliKelas', name: 'Wali Kelas' },
-            { value: 'Administrator', name: 'Administrator' },
-          ]" required class="mb-4"></FwbSelect>
-        </div>
+        <FwbCard>
+          <form @submit.prevent="login" class="w-full p-6 rounded-lg">
+            <div class="flex justify-center mb-6 ">
+              <img :src="Helper.infoSekolah.logo" class="w-1/3 md:hidden" alt="SMK Logo" />
+            </div>
+            <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2">
+              Login
+            </FwbHeading>
+            <div class="mb-8">
+              <VTInput label="User Name" v-model="loginRequest.username" required></VTInput>
+            </div>
+            <div class="mb-4">
+              <VTInput :type="'password'" label="Password" v-model="loginRequest.password" required></VTInput>
+            </div>
+            <div class="mb-4">
+              <FwbSelect :placeholder="'Select Role'" label="Login As" v-model="loginAs" :options="[
+                { value: 'Piket', name: 'Piket' },
+                { value: 'WaliKelas', name: 'Wali Kelas' },
+                { value: 'Administrator', name: 'Administrator' },
+              ]" required class="mb-4"></FwbSelect>
+            </div>
 
-        <div class="flex items-center mb-6">
-          <VTInput id="remember" type="checkbox" class="h-4 w-4" />
-          <FwbHeading tag="h6" for="remember" class="ml-2 block text-sm">Remember me</FwbHeading>
-        </div>
-        <button type="submit"
-          class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-          Login
-        </button>
-        <p v-if="errorMessage" class="text-red-500 text-center mt-4">
-          {{ errorMessage }}
-        </p>
-      </form>
-    </FwbCard>
+            <div class="flex items-center mb-6">
+              <VTInput id="remember" type="checkbox" class="h-4 w-4" />
+              <FwbHeading tag="h6" for="remember" class="ml-2 block text-sm">Remember me</FwbHeading>
+            </div>
+            <button type="submit"
+              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              Login
+            </button>
+            <p v-if="errorMessage" class="text-red-500 text-center mt-4">
+              {{ errorMessage }}
+            </p>
+          </form>
+        </FwbCard>
+      </div>
+
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -81,8 +109,7 @@ const login = async () => {
       }
 
       if (loginAs.value === 'WaliKelas') {
-        if (auth.roles.includes('HomeRoomTeacher'))
-          router.push('/walikelas')
+        if (auth.roles.includes('HomeRoomTeacher')) router.push('/walikelas')
         else {
           ToastService.dangerToast('Maaf anda belum terdaftar sebagai wali kelas')
           return

@@ -23,6 +23,20 @@ const Helper = {
     { value: '0', name: 'Laki-laki' },
   ],
 
+  jobs: [
+    { value: 0, name: 'Guru' },
+    { value: 1, name: 'Staff' },
+    { value: 2, name: 'Kepala Sekolah' },
+    { value: 3, name: 'Lainnya' }
+  ],
+
+  jobStatus: [
+    { value: 0, name: 'PNS' },
+    { value: 1, name: 'PPPK' },
+    { value: 2, name: 'Honorer' },
+    { value: 3, name: 'Lainnya' }
+  ],
+
   getAttendanceStatus: (value: number, isInitial: boolean = false) => {
     switch (value) {
       case 0:

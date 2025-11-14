@@ -19,6 +19,8 @@
               required />
           </div>
 
+
+
           <div class="mb-4">
             <VTInput label="Tempat Lahir" type="text" v-model="data.form.placeOfBorn" required />
           </div>
@@ -29,6 +31,15 @@
           <div class="mb-4">
             <VTInput label="Email" type="email" v-model="data.form.email" required />
           </div>
+          <div class="mb-4">
+            <VTSelect :options="Helper.jobs" label="Jabatan" type="number" v-model="data.form.job" required />
+          </div>
+
+          <div class="mb-4">
+            <VTSelect :options="Helper.jobStatus" label="Jenis Pegawai" type="number" v-model="data.form.jobStatus"
+              required />
+          </div>
+
         </div>
         <div class="mb-4">
           <fwb-textarea label="Alamat" placeholder="Alamat" v-model="data.form.address" />
@@ -51,6 +62,7 @@ import { Helper, type ErrorResponse } from '@/commons'
 import { FwbTextarea, FwbCard, FwbSelect, FwbButton } from 'flowbite-vue'
 import type { Teacher } from '@/models'
 import VTInput from '@/components/VTInput/VTInput.vue'
+import VTSelect from '@/components/VTSelect/VTSelect.vue'
 
 const data = reactive({
   form: {
@@ -58,6 +70,8 @@ const data = reactive({
     registerNumber: '',
     name: '',
     gender: '0',
+    job: 0,
+    jobStatus: 0,
     placeOfBorn: '',
     dateOfBorn: new Date(),
     email: '',
@@ -130,6 +144,9 @@ function setForm(teacher: Teacher) {
   data.form.placeOfBorn = teacher.placeOfBorn
   data.form.email = teacher.email
   data.form.address = teacher.address
+  data.form.userId = teacher.userId
+  data.form.job = teacher.job
+  data.form.jobStatus = teacher.jobStatus
   imageSrc.value = Helper.getTeacherAvatar(teacher.photo)
 }
 
@@ -142,6 +159,8 @@ function collectTeacher(form: {
   dateOfBorn: Date
   email: string
   address: string
+  job: number
+  jobStatus: number
   userId: string
 }) {
   const teacher = {
@@ -152,6 +171,8 @@ function collectTeacher(form: {
     registerNumber: form.registerNumber,
     email: form.email,
     address: form.address,
+    job: form.job,
+    jobStatus: form.jobStatus,
     gender: Number(form.gender),
   } as Teacher
 

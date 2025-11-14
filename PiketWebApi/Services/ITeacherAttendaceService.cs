@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PiketWebApi.Data;
 using PiketWebApi.Validators;
+using SharedModel;
 using SharedModel.Requests;
 using SharedModel.Responses;
 using System.Net.Sockets;
@@ -21,7 +22,7 @@ namespace PiketWebApi.Services
         Task<ErrorOr<TeacherAttendanceResponse>> PostAsync(TeacherAttendenceRequest model);
         Task<ErrorOr<IEnumerable<TeacherAttendanceSyncRequest>>> SyncData(IEnumerable<TeacherAttendanceSyncRequest> data);
         Task<ErrorOr<IEnumerable<TeacherAttendanceReportResponse>>> GetAttendanceByTeacherId(int yearSchoolId, int teacherId);
-        Task<ErrorOr<IEnumerable<TeacherAttendanceReportResponse>>> GetAbsenByTeacherIdMonthYear(int teacherId, int month, int year);
+        Task<ErrorOr<TeacherAttendanceReportResponse>> GetAttendaceMonthYear(int month, int year);
     }
 
 
@@ -235,16 +236,19 @@ namespace PiketWebApi.Services
                              from s in x.DefaultIfEmpty()
                              select new TeacherAttendanceReportResponse
                              {
-                                 TeacherId = s == null ? null : s.Id,
-                                 TeacherName = s == null ? null : s.Name,
-                                 PicketId = p.Id,
-                                 PicketDate = p.Date,
-                                 SchoolYearId = p.SchoolYearId,
-                                 Status = a == null ? SharedModel.AttendanceStatus.Alpa : a.AttendanceStatus,
-                                 TimeIn = a == null ? null : a.TimeIn,
-                                 TimeOut = a == null ? null : a.TimeOut,
-                                 Description = a == null ? null : a.Description
+                                 //TeacherId = s == null ? null : s.Id,
+                                 //TeacherName = s == null ? null : s.Name,
+                                 //PicketId = p.Id,
+                                 //PicketDate = p.Date,
+                                 //SchoolYearId = p.SchoolYearId,
+                                 //Status = a == null ? SharedModel.AttendanceStatus.Alpa : a.AttendanceStatus,
+                                 //TimeIn = a == null ? null : a.TimeIn,
+                                 //TimeOut = a == null ? null : a.TimeOut,
+                                 //Description = a == null ? null : a.Description
                              };
+
+
+
 
                 return await Task.FromResult(result.ToList());
             }
@@ -254,37 +258,47 @@ namespace PiketWebApi.Services
             }
         }
 
-        public async Task<ErrorOr<IEnumerable<TeacherAttendanceReportResponse>>> GetAbsenByTeacherIdMonthYear(int teacherId, int month, int year)
+        public async Task<ErrorOr<TeacherAttendanceReportResponse>> GetAttendaceMonthYear(int month, int year)
         {
             try
             {
                 var startDate = DateOnly.FromDateTime(new DateTime(year, month, 1));
                 var endDate = startDate.AddMonths(1).AddDays(-1);
                 var pickets = dbContext.Picket.Where(x => x.Date >= startDate && x.Date <= endDate)
-                .Include(x => x.TeacherAttendances.Where(x=>x.TeacherId==teacherId)).ThenInclude(x => x.Teacher).AsEnumerable();
+                .Include(x => x.TeacherAttendances).ThenInclude(x => x.Teacher).AsEnumerable();
 
-
-                List<TeacherAttendanceReportResponse> result = new List<TeacherAttendanceReportResponse>();
-                foreach (var item in pickets)
+                var teachers = dbContext.Teachers.AsEnumerable();
+                var report = teachers.Select(t => new TeacherAttendanceReport
                 {
-                    var att = from b in item.TeacherAttendances.Where(x => x.TeacherId == teacherId)
-                              select new TeacherAttendanceReportResponse
-                              {
-                                  TeacherId = b.TeacherId,
-                                  TeacherName = b.Teacher.Name,
-                                  PicketId = item.Id,
-                                  PicketDate = item.Date,
-                                  Status = b == null ? SharedModel.AttendanceStatus.Alpa : b.AttendanceStatus,
-                                  TimeIn = b?.TimeIn,
-                                  TimeOut = b == null ? null : b.TimeOut,
-                                  Description = b == null ? null : b.Description
-                              };
+                    TeacherId = t.Id,
+                    TeacherName = t.Name,
+                    Items = pickets.Select(p =>
+                    {
+                        var attendance = p.TeacherAttendances
+                            .FirstOrDefault(a => a.TeacherId == t.Id);
 
-                    result.AddRange(att);
-                }
+                        return new TeacherAttendaceReportItem
+                        {
+                            PicketDate = p.Date,
+                            Description = attendance?.Description,
+                            PicketId = p.Id,
+                            SchoolYearId = p.SchoolYearId,
+                            Status = attendance != null ? attendance.AttendanceStatus : AttendanceStatus.Alpa,
+                            TimeIn = attendance?.TimeIn,
+                            TimeOut = attendance?.TimeOut
+                        };
+                    })
+                });
 
-                return result.ToList();
 
+
+                TeacherAttendanceReportResponse attendanceReportResponse = new TeacherAttendanceReportResponse();
+                attendanceReportResponse.Month = month;
+                attendanceReportResponse.Year = year;
+                attendanceReportResponse.Pickets = pickets.Select(x => new { x.Id, x.SchoolYear, x.Date, x.EndAt });
+                attendanceReportResponse.Attendances = report.ToList();
+
+                return attendanceReportResponse;
             }
             catch (Exception ex)
             {

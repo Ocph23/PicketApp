@@ -12,7 +12,7 @@ using PiketWebApi.Data;
 namespace PiketWebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251112113501__initial")]
+    [Migration("20251114050035__initial")]
     partial class _initial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace PiketWebApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -615,6 +615,12 @@ namespace PiketWebApi.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("Gender")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Job")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("JobStatus")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")

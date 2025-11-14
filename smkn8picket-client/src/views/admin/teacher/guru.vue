@@ -15,6 +15,8 @@
             <fwb-table-head-cell>Jenis Kelamin</fwb-table-head-cell>
             <fwb-table-head-cell>TTL</fwb-table-head-cell>
             <fwb-table-head-cell>Email</fwb-table-head-cell>
+            <fwb-table-head-cell>Jabatan</fwb-table-head-cell>
+            <fwb-table-head-cell>Jenis Pegawai</fwb-table-head-cell>
             <fwb-table-head-cell class="w-5">
               <span class="sr-only"></span>
             </fwb-table-head-cell>
@@ -32,6 +34,8 @@
                   Helper.getDateTimeString(new Date(teacher.dateOfBorn), 'dd-MM-yyyy') }}
               </fwb-table-cell>
               <fwb-table-cell>{{ teacher.email }}</fwb-table-cell>
+              <fwb-table-cell>{{Helper.jobs.find(x => x.value === teacher.job)?.name}}</fwb-table-cell>
+              <fwb-table-cell>{{Helper.jobStatus.find(x => x.value === teacher.jobStatus)?.name}}</fwb-table-cell>
               <fwb-table-cell>
                 <div class="flex items-center">
                   <router-link :to="`/admin/guru/${teacher.id}/edit`">

@@ -21,10 +21,19 @@
           <div class="mb-4">
             <VTInput label="Tanggal Lahir" type="date" v-model="data.form.dateOfBorn" required />
           </div>
-
           <div class="mb-4">
             <VTInput label="Email" type="email" v-model="data.form.email" required />
           </div>
+          <div class="mb-4">
+            <VTSelect :options="Helper.jobs" label="Jabatan" type="number" v-model="data.form.job" required />
+          </div>
+
+          <div class="mb-4">
+            <VTSelect :options="Helper.jobStatus" label="Jenis Pegawai" type="number" v-model="data.form.jobStatus"
+              required />
+          </div>
+
+
         </div>
         <div class="mb-4">
           <fwb-textarea label="Alamat" placeholder="Alamat" v-model="data.form.address" />
@@ -59,6 +68,8 @@ const data = reactive({
     registerNumber: '',
     name: '',
     gender: '0',
+    job: 0,
+    jobStatus: 0,
     placeOfBorn: '',
     dateOfBorn: '',
     email: '',
@@ -84,6 +95,8 @@ const addData = async () => {
       placeOfBorn: data.form.placeOfBorn,
       registerNumber: data.form.registerNumber,
       email: data.form.email,
+      job: data.form.job,
+      jobStatus: data.form.jobStatus,
       address: data.form.address,
       gender: Number(data.form.gender),
     } as Teacher

@@ -50,4 +50,22 @@
         Pelanggaran,
         Lainnya
     }
+
+    public enum Job
+    {
+        Guru,
+        Staf,
+        KepalaSelolah,
+        Lainnya
+
+    }
+
+
+    public enum JobStatus
+    {
+        PNS,
+        PPPK,
+        Honorer,
+        Lainnya
+    }
 }
