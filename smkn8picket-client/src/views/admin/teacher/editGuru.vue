@@ -15,7 +15,7 @@
             <VTInput label="Nama" type="text" v-model="data.form.name" required />
           </div>
           <div class="mb-4">
-            <fwb-select :options="Helper.genders" label="Jenis Kelamin" type="number" v-model="data.form.gender"
+            <VTSelect :options="Helper.genders" label="Jenis Kelamin" type="number" v-model="data.form.gender"
               required />
           </div>
 
@@ -59,10 +59,10 @@ import { ToastService, TeacherService } from '@/services'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import { Helper, type ErrorResponse } from '@/commons'
-import { FwbTextarea, FwbCard, FwbSelect, FwbButton } from 'flowbite-vue'
+import { FwbTextarea, FwbCard, FwbButton } from 'flowbite-vue'
 import type { Teacher } from '@/models'
 import VTInput from '@/components/VTInput/VTInput.vue'
-import VTSelect from '@/components/VTSelect/VTSelect.vue'
+import { VTSelect } from '@ocph23/vtocph23'
 
 const data = reactive({
   form: {

@@ -1,25 +1,26 @@
 <template>
   <AdminLayout>
-    <div class="no-print relative overflow-x-auto mt-1 p-3">
-      <PageHeader title="DATA ABSEN GURU & STAF"> </PageHeader>
-      <div class="flex justify-between mb-3">
-        <div class="flex">
-          <FwbHeading :tag="'h6'"></FwbHeading>
-        </div>
-        <div class="flex items-center gap-2 mt-2">
-          <div class="flex gap-2">
-            <FwbSelect placeholder="Bulan" label="Bulan" :options="months" v-model="selectedMontAndYear.month">
-            </FwbSelect>
-            <FwbSelect placeholder="Tahun" label="Tahun" :options="years" v-model="selectedMontAndYear.year">
-            </FwbSelect>
+    <VTCard title="DATA ABSEN GURU & STAF" class="no-print relative overflow-x-auto mt-1 p-3">
+      <template #right-side>
+        <div class="flex justify-between mb-3">
+          <div class="flex">
+            <FwbHeading :tag="'h6'"></FwbHeading>
           </div>
-          <FwbButton @click="cariAbsen">Cari Absens</FwbButton>
-          <FwbButton v-if="attendances.length > 0" :color="'yellow'" type="submit"
-            class="flex flex-row items-center justify-center p-2 w-28" @click="print">
-            <PrinterIcon class="w-5 h-5"></PrinterIcon>
-          </FwbButton>
+          <div class="flex items-center gap-2 mt-2">
+            <div class="flex gap-2">
+              <FwbSelect placeholder="Bulan" label="Bulan" :options="months" v-model="selectedMontAndYear.month">
+              </FwbSelect>
+              <FwbSelect placeholder="Tahun" label="Tahun" :options="years" v-model="selectedMontAndYear.year">
+              </FwbSelect>
+            </div>
+            <FwbButton @click="cariAbsen">Cari Absens</FwbButton>
+            <FwbButton v-if="attendances.length > 0" :color="'yellow'" type="submit"
+              class="flex flex-row items-center justify-center p-2 w-28" @click="print">
+              <PrinterIcon class="w-5 h-5"></PrinterIcon>
+            </FwbButton>
+          </div>
         </div>
-      </div>
+      </template>
       <fwb-table>
         <fwb-table-row>
           <fwb-table-head-cell class="w-5" rowspan="2">No</fwb-table-head-cell>
@@ -41,14 +42,12 @@
               {{ Helper.getAttendanceStatus(item.status, true) }}
             </fwb-table-cell>
             <fwb-table-head-cell class="w-1">
-              <router-link :to="`/Siswa/${data.studentId}/detail`">
-                <DetailIcon></DetailIcon>
-              </router-link>
+
             </fwb-table-head-cell>
           </fwb-table-row>
         </fwb-table-body>
       </fwb-table>
-    </div>
+    </VTCard>
 
     <!-- <classroomabsenprint :classroom="classroom" v-if="showPrint"></classroomabsenprint> -->
   </AdminLayout>
@@ -57,10 +56,7 @@
 <script setup lang="ts">
 import { Helper } from '@/commons'
 import { TeacherAttendanceService, ToastService } from '@/services'
-import { orderBy, groupBy, forEach, type Dictionary } from 'lodash'
 import { ref } from 'vue'
-import { useRoute } from 'vue-router'
-import PageHeader from '@/components/PageHeader.vue'
 //import classroomabsenprint from './classroomabsenprint.vue'
 
 import {
@@ -74,14 +70,13 @@ import {
   FwbTableRow,
 } from 'flowbite-vue'
 import { PrinterIcon } from '@heroicons/vue/24/solid'
-import PrintStore from '@/stores/PrintModelStore'
 import type PrintAbsenModel from '@/models/AbsenPrintModel'
-import DetailIcon from '@/components/icons/DetailIcon.vue'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import type { TeacherAttendanceReport } from '@/models'
-const printStore = PrintStore()
+import { VTCard } from '@ocph23/vtocph23'
+// import PrintStore from '@/stores/PrintModelStore'
+// const printStore = PrintStore()
 
-const route = useRoute()
 
 const attendances = ref([] as Array<PrintAbsenModel>)
 const source = ref<TeacherAttendanceReport>()
@@ -116,7 +111,7 @@ const cariAbsen = () => {
 }
 
 const print = () => {
-  printStore.setAbsen(attendances.value, dataTanggal.value)
+  // printStore.setAbsen(attendances.value, dataTanggal.value)
   showPrint.value = true
   setTimeout(() => {
     window.print()

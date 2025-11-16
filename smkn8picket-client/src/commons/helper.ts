@@ -19,8 +19,8 @@ const Helper = {
   },
 
   genders: [
-    { value: '1', name: 'Perempuan' },
-    { value: '0', name: 'Laki-laki' },
+    { value: 1, name: 'Perempuan' },
+    { value: 0, name: 'Laki-laki' },
   ],
 
   jobs: [

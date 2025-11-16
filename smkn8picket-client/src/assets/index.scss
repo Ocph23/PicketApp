@@ -1,11 +1,18 @@
+$border: 1px solid rgb(241, 241, 241);
+table,
+tr,
+td,
+th {
+  border: $border !important;
+}
+
 tr {
-  border: 2px solid rgb(233, 233, 233);
+  border: $border;
   padding: 3px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .table-print {
-  $border: 1px solid rgb(77, 77, 77);
   width: 100%;
   thead,
   tbody {

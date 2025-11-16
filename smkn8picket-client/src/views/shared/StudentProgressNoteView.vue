@@ -111,7 +111,7 @@ import { PrinterIcon } from '@heroicons/vue/24/solid';
 import type StudentProgressNoteRequest from '@/models/Requests/StudentProgressNoteRequest';
 import AuthService from '@/services/AuthService';
 import EditIcon from '@/components/icons/EditIcon.vue';
-import VTSelect from '@/components/VTSelect/VTSelect.vue';
+import { VTSelect } from '@ocph23/vtocph23';
 
 
 const props = defineProps({

@@ -1,23 +1,16 @@
 <template>
   <AdminLayout>
-    <div class="no-print">
-      <h2
-        class="max-w-lg text-center mb-6 text-3xl font-bold leading-none tracking-tight text-gray-900 dark:text-white sm:text-4xl md:mx-auto">
-        Jadwal Picket
-
-      </h2>
-      <h6 class="text-center text-xl font-bold leading-none tracking-tight text-gray-900 dark:text-white  md:mx-auto">
+    <VTCard title="Jadwal Piket" class="no-print">
+      <template #right-side>
+        <PrinterIcon class="w-8 h-8 cursor-pointer text-amber-400" @click="print"></PrinterIcon>
+      </template>
+      <h6
+        class="text-center mb-8 text-xl font-bold leading-none tracking-tight text-gray-900 dark:text-white  md:mx-auto">
         <span v-if="data.schoolYear" class="relative inline-block">
           Tahun Ajaran : {{ data.schoolYear.name }} {{ data.schoolYear.semesterName }}
         </span>
       </h6>
 
-      <div class="flex justify-end">
-        <fwb-button :color="'yellow'" type="submit" class="flex flex-row items-center justify-center p-0"
-          @click="print">
-          <PrinterIcon class="w-7 h-7 text-amber-400"></PrinterIcon>
-        </fwb-button>
-      </div>
 
       <div class="grid grid-cols-2 gap-2">
         <div v-for="item in dayOfWeeks" :key="item.name" class="my-2">
@@ -130,7 +123,7 @@
           </div>
         </template>
       </fwb-modal>
-    </div>
+    </VTCard>
   </AdminLayout>
 
   <PiketSchedulePrint :schedules="schedules" :school-year="data.schoolYear" v-if="showPrint"></PiketSchedulePrint>
@@ -161,6 +154,7 @@ import {
 } from 'flowbite-vue'
 
 import PiketSchedulePrint from '@/views/shared/PiketSchedulePrint.vue'
+import { VTCard } from '@ocph23/vtocph23'
 
 const route = useRoute()
 const modal = ref(false)

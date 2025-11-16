@@ -1,6 +1,10 @@
-@import 'tailwindcss';
+@import '../../node_modules/@ocph23/vtocph23/dist/index.css';
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+/*  npx tailwindcss -i ./src/assets/main.css -o ./src/assets/main.output.css --watch   */
 .print-only {
   display: none !important;
 }

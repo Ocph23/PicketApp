@@ -1,6 +1,6 @@
 <template>
-  <fwb-sidebar>
-    <fwb-sidebar-item>
+  <VTSidebar>
+    <VTSidebarItem>
       <template #icon>
         <svg class=" w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900
     dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -11,49 +11,50 @@
         </svg>
       </template>
       <template #default>Dashboard</template>
-    </fwb-sidebar-item>
-    <fwb-sidebar-item>
+    </VTSidebarItem>
+    <VTSidebarItem>
       <template #icon>
         <HomeIcon
           class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
       </template>
-      <template #default>Home</template>
-    </fwb-sidebar-item>
-    <fwb-sidebar-item link="/admin/tahun-ajaran">
+      <template #default>Home
+      </template>
+    </VTSidebarItem>
+    <VTSidebarItem link="/admin/tahun-ajaran">
       <template #icon>
         <CalendarIcon
           class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
       </template>
       <template #default>Tahun Ajaran</template>
-    </fwb-sidebar-item>
-    <fwb-sidebar-item link="/admin/jurusan">
+    </VTSidebarItem>
+    <VTSidebarItem link="/admin/jurusan">
       <template #icon>
         <TagIcon
           class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
       </template>
       <template #default>Jurusan</template>
-    </fwb-sidebar-item>
-    <fwb-sidebar-item link="/admin/guru">
+    </VTSidebarItem>
+    <VTSidebarItem link="/admin/guru">
       <template #icon>
         <UsersIcon
           class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
       </template>
       <template #default>Guru</template>
-    </fwb-sidebar-item>
-    <fwb-sidebar-item link="/admin/siswa">
+    </VTSidebarItem>
+    <VTSidebarItem link="/admin/siswa">
       <template #icon>
         <AcademicCapIcon
           class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
       </template>
       <template #default>Siswa</template>
-    </fwb-sidebar-item>
-    <fwb-sidebar-item link="/admin/classroom">
+    </VTSidebarItem>
+    <VTSidebarItem link="/admin/classroom">
       <template #icon>
         <CubeIcon
           class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
       </template>
       <template #default>Kelas</template>
-    </fwb-sidebar-item>
+    </VTSidebarItem>
     <fwb-sidebar-dropdown-item-custome>
       <template #icon>
         <ClipboardDocumentCheckIcon
@@ -61,24 +62,27 @@
       </template>
       <template #trigger> Picket </template>
       <template #default>
-        <fwb-sidebar-item link="/admin/hariini" class="pl-11">
+        <VTSidebarItem link="/admin/hariini" class="pl-11">
           <template #icon>
             <CalendarIcon
               class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
           </template>
-          Hari Ini </fwb-sidebar-item>
-        <fwb-sidebar-item link="/admin/history" class="pl-11">
+          Hari Ini
+        </VTSidebarItem>
+        <VTSidebarItem link="/admin/history" class="pl-11">
           <template #icon>
             <ClockIcon
               class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
           </template>
-          Riwayat Piket </fwb-sidebar-item>
-        <fwb-sidebar-item link="/admin/jadwalpiket" class="pl-11">
+          Riwayat Piket
+        </VTSidebarItem>
+        <VTSidebarItem link="/admin/jadwalpiket" class="pl-11">
           <template #icon>
             <ClockIcon
               class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
           </template>
-          Jadwal Guru Piket </fwb-sidebar-item>
+          Jadwal Guru Piket
+        </VTSidebarItem>
       </template>
     </fwb-sidebar-dropdown-item-custome>
     <fwb-sidebar-dropdown-item-custome>
@@ -88,35 +92,36 @@
       </template>
       <template #trigger> Laporan </template>
       <template #default>
-        <fwb-sidebar-item link="/admin/laporan/absenguru" class="pl-11">
+        <VTSidebarItem link="/admin/laporan/absenguru" class="pl-11">
           <template #icon>
             <CalendarIcon
               class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
           </template>
-          Absen Guru</fwb-sidebar-item>
-       
+          Absen Guru
+        </VTSidebarItem>
+
       </template>
     </fwb-sidebar-dropdown-item-custome>
-    
 
-    <fwb-sidebar-item link="" @click="logout">
+
+    <VTSidebarItem link="" @click="logout">
       <template #icon>
         <LockClosedIcon
           class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
       </template>
       <template #default>Keluar</template>
-    </fwb-sidebar-item>
+    </VTSidebarItem>
 
 
 
 
-  </fwb-sidebar>
+  </VTSidebar>
 </template>
 <script setup lang="ts">
-import { FwbSidebar, FwbSidebarItem } from 'flowbite-vue'
 import { CalendarIcon, HomeIcon, AcademicCapIcon, UsersIcon, TagIcon, CubeIcon, ClockIcon, ClipboardDocumentCheckIcon, LockClosedIcon } from '@heroicons/vue/24/solid'
 import { DialogService } from '@/services';
 import FwbSidebarDropdownItemCustome from '@/components/FwbSidebarDropdownItemCustome.vue'
+import { VTSidebar, VTSidebarItem } from '@ocph23/vtocph23';
 
 
 

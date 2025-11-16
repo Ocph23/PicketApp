@@ -1,65 +1,52 @@
 <template>
   <AdminLayout>
-    <div>
-      <PageHeader title="Data Guru & Staff">
+    <VTCard title="Data Guru & Staff">
+      <template #right-side>
         <router-link :to="{ name: 'addGuru' }">
           <AddIcon class="w-7 h-7" />
         </router-link>
-      </PageHeader>
-      <div class="relative overflow-x-auto  shadow-md sm:rounded-lg mt-1">
-        <fwb-table>
-          <fwb-table-head>
-            <fwb-table-head-cell>No</fwb-table-head-cell>
-            <fwb-table-head-cell>Nama</fwb-table-head-cell>
-            <fwb-table-head-cell>NUPTK</fwb-table-head-cell>
-            <fwb-table-head-cell>Jenis Kelamin</fwb-table-head-cell>
-            <fwb-table-head-cell>TTL</fwb-table-head-cell>
-            <fwb-table-head-cell>Email</fwb-table-head-cell>
-            <fwb-table-head-cell>Jabatan</fwb-table-head-cell>
-            <fwb-table-head-cell>Jenis Pegawai</fwb-table-head-cell>
-            <fwb-table-head-cell class="w-5">
-              <span class="sr-only"></span>
-            </fwb-table-head-cell>
-          </fwb-table-head>
-          <fwb-table-body class="overscroll-y-auto !max-h-[50vh]">
-            <fwb-table-row v-for="(teacher, index) in data.teachers" :key="index">
-              <fwb-table-cell>{{ index + 1 }}</fwb-table-cell>
-              <fwb-table-cell class="flex items-center gap-2">
-                <img class="w-8 h-8 rounded-full" :src="Helper.getTeacherAvatar(teacher.photo)">
-                {{ teacher.name }}</fwb-table-cell>
-              <fwb-table-cell>{{ teacher.registerNumber }}</fwb-table-cell>
-              <fwb-table-cell> {{ teacher.gender === 0 ? "Laki-laki" : "Perempuan" }}</fwb-table-cell>
-              <fwb-table-cell>
-                {{ teacher.placeOfBorn }}, {{ !teacher.dateOfBorn ? "" :
-                  Helper.getDateTimeString(new Date(teacher.dateOfBorn), 'dd-MM-yyyy') }}
-              </fwb-table-cell>
-              <fwb-table-cell>{{ teacher.email }}</fwb-table-cell>
-              <fwb-table-cell>{{Helper.jobs.find(x => x.value === teacher.job)?.name}}</fwb-table-cell>
-              <fwb-table-cell>{{Helper.jobStatus.find(x => x.value === teacher.jobStatus)?.name}}</fwb-table-cell>
-              <fwb-table-cell>
-                <div class="flex items-center">
-                  <router-link :to="`/admin/guru/${teacher.id}/edit`">
-                    <button class="text-white flex">
-                      <EditIcon></EditIcon>
-                    </button>
-                  </router-link>
-                  <button @click="confirmDelete(teacher)" class="text-white flex cursor-pointer">
-                    <DeleteIcon />
-                  </button>
-                  <button @click="selectTeacher(teacher)" class="text-white flex cursor-pointer">
-                    <LockClosedIcon class="w-5 h-5 text-sky-600 hover:text-sky-900" />
-                  </button>
-                </div>
-              </fwb-table-cell>
-            </fwb-table-row>
-
-          </fwb-table-body>
-        </fwb-table>
-      </div>
-    </div>
+      </template>
+      <VTTable ref="vtTable" :table-name="'tabel-guru'" :bordered="true" :source="data.teachers" :columns="[
+        { title: 'No', name: 'no', sortable: false, type: 'Custome' },
+        { title: 'Nama', propName: 'name', isMobileHeader: true, sortable: true },
+        { title: 'NUPTK', propName: 'registerNumber', sortable: true },
+        { title: 'Jenis Kelamin', propName: 'gender', sortable: true, name: 'gender', type: 'Custome' },
+        { title: 'TTL', propName: 'dateOfBorn', sortable: true },
+        { title: 'Email', propName: 'email', sortable: true },
+        { title: 'Jabatan', propName: 'job', sortable: true, name: 'job', type: 'Custome' },
+        { title: 'Jenis Pegawai', propName: 'jobStatus', name: 'jobStatus', type: 'Custome', sortable: true },
+        { title: 'Aksi', name: 'actions', sortable: false, type: 'Custome' },
+      ] as VTTableColumn[]">
+        <template #no="row">
+          {{ row.index + 1 }}
+        </template>
+        <template #actions="row">
+          <div class="flex items-center gap-2">
+            <router-link :to="`/admin/guru/${row.data.id}/edit`">
+              <button class="text-white flex">
+                <EditIcon></EditIcon>
+              </button>
+            </router-link>
+            <button @click="confirmDelete(row.data)" class="text-white flex cursor-pointer">
+              <DeleteIcon />
+            </button>
+            <button @click="selectTeacher(row.data)" class="text-white flex cursor-pointer">
+              <LockClosedIcon class="w-5 h-5 text-sky-600 hover:text-sky-900" />
+            </button>
+          </div>
+        </template>
+        <template #gender="row">
+          {{Helper.genders.find(x => x.value === row.data.gender)?.name}}
+        </template>
+        <template #job="row">
+          {{Helper.jobs.find(x => x.value === row.data.job)?.name}}
+        </template>
+        <template #jobStatus="row">
+          {{Helper.jobStatus.find(x => x.value === row.data.jobStatus)?.name}}
+        </template>
+      </VTTable>
+    </VTCard>
   </AdminLayout>
-
-
 
   <FwbModal class="modal opacity-[99%]" v-if="modal" :size="'xl'" @close="modal = false" v-model="modal"
     :persistent="true">
@@ -142,8 +129,9 @@ import {
 import type { Teacher } from "@/models";
 import { LockClosedIcon } from "@heroicons/vue/20/solid";
 import AuthService from "@/services/AuthService";
+import { VTCard, VTTable, type VTTableColumn } from "@ocph23/vtocph23";
 
-
+const vtTable = ref<InstanceType<typeof VTTable> | null>(null);
 const modal = ref(false);
 const teacher = reactive<{
   profile: Teacher,
@@ -192,6 +180,7 @@ const getData = async () => {
     const response = await TeacherService.get();
     if (response.isSuccess) {
       data.teachers = response.data as Teacher[];
+      vtTable.value?.refresh();
     }
   } catch (error) {
     console.error("Error fetching data:", error);

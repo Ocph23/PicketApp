@@ -1,27 +1,22 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  purge: [
-    './index.html', './src/**/*.{vue,js,ts,jsx,tsx}',
-    'node_modules/flowbite-vue/**/*.{js,jsx,ts,tsx,vue}',
-    'node_modules/flowbite/**/*.{js,jsx,ts,tsx}'
-  ],
+  purge: ['./src/**/*.{vue,js,ts,jsx,tsx}'],
+  content: [],
   darkMode: false, // or 'media' or 'class'
-  content: [
-
-  ],
   theme: {
+    screens: {
+      hp: '344px',
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1536px',
+    },
     extend: {
-      backgroundOpacity: {
-        '10': '0.1',
-        '20': '0.2',
-        '95': '0.95',
-      },
       fontFamily: {
-        poppins: ['Poppins']
-      }
+        poppins: ['Poppins'],
+      },
     },
   },
-  plugins: [
-    require('flowbite/plugin')
-  ],
+  plugins: [],
 }

@@ -1,85 +1,55 @@
 <template>
-  <div>
-    <PageHeader title="Data Siswa">
+  <VTCard title="Data Siswa">
+    <template #right-side>
       <router-link :to="{ name: 'addSiswa' }">
         <AddIcon class="w-7 h-7" />
       </router-link>
-    </PageHeader>
-    <div class="mt-1">
-      <div class="flex flex-row items-center sm:justify-between">
-        <VTSelect :options="data.pageSizes" placeholder="per halaman" v-model="data.paginate.pageSize"
-          @change="changePageSize">
-          <template #prefix>
-            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor"
-              viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"
-                stroke-width="2" />
-            </svg>
-          </template>
-        </VTSelect>
-        <fwb-input v-model="data.paginate.searchTerm" placeholder="cari siswa..." @change="searchTextChange">
-          <template #prefix>
-            <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor"
-              viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"
-                stroke-width="2" />
-            </svg>
-          </template>
-        </fwb-input>
-      </div>
-      <fwb-table class="w-full mt-5">
-        <fwb-table-head>
-          <fwb-table-head-cell>No</fwb-table-head-cell>
-          <fwb-table-head-cell>Nama</fwb-table-head-cell>
-          <fwb-table-head-cell>NIPD/NISN</fwb-table-head-cell>
-          <fwb-table-head-cell class="w-5">Kelamin</fwb-table-head-cell>
-          <fwb-table-head-cell>Tempat, Tanggal Lahir</fwb-table-head-cell>
-          <fwb-table-head-cell>Hp Orang Tua</fwb-table-head-cell>
-          <fwb-table-head-cell>Status</fwb-table-head-cell>
-          <fwb-table-head-cell>
-            <span class="sr-only"></span>
-          </fwb-table-head-cell>
-        </fwb-table-head>
-        <fwb-table-body>
-          <fwb-table-row v-for="(student, index) in paginateState.paginateResult.data as Student[]" :key="student.id">
-            <fwb-table-cell class="w-[20px]">{{ index + 1 }}</fwb-table-cell>
-            <fwb-table-cell class="flex">
-              <img class="w-8 h-8 rounded-full" :src="Helper.getStudentAvatar(student.photo)" />
-              <span class="ml-2">{{ student.name }}</span></fwb-table-cell>
-            <fwb-table-cell>
-              {{ student.nis }} <span v-if="student.nisn"> / {{ student.nisn }}</span>
-            </fwb-table-cell>
-            <fwb-table-cell>
-              {{ student.gender === 0 ? 'Laki-laki' : 'Perempuan' }}</fwb-table-cell>
-            <fwb-table-cell>{{ student.placeOfBorn }},
-              {{ student.dateOfBorn == null ? '' : DateTime.fromJSDate(new
-                Date(student.dateOfBorn)).toFormat('dd-MM-yyyy')
-              }}</fwb-table-cell>
-            <fwb-table-cell>{{ student.parentPhoneNumber }}</fwb-table-cell>
-            <fwb-table-cell>{{ Helper.studentStatus(student.status) }}</fwb-table-cell>
-            <fwb-table-cell class="flex gap-1">
-              <router-link :to="isPiket ? `/piket/siswa/${student.id}/detail` : `/admin/siswa/${student.id}/detail`">
 
-                <DetailIcon></DetailIcon>
-              </router-link>
-              <router-link :to="`/admin/siswa/${student.id}/edit`" v-if="!isPiket">
-                <EditIcon></EditIcon>
-              </router-link>
-              <button @click="confirmDelete(student)" class="text-white flex" v-if="!isPiket">
-                <DeleteIcon />
-              </button>
-            </fwb-table-cell>
-          </fwb-table-row>
-          <fwb-table-row>
-            <fwb-table-cell colspan="8" class="!px-0 !py-0">
-              <PaginationView v-if="paginateState.paginateResult" :paginate="data.paginate" @onChangePage="getData">
-              </PaginationView>
-            </fwb-table-cell>
-          </fwb-table-row>
-        </fwb-table-body>
-      </fwb-table>
+    </template>
+    <div class="mt-1">
+      <VTTableNew :method="'Paginate'" :columns="columns" :source="dataTable" class="mt-4"
+        v-on:on-change="onTableChange">
+        <template #no="row">
+          {{ row.index + 1 }}
+        </template>
+        <template #student="row">
+          <div class="flex items-center  gap-1">
+            <img class="w-8 h-8 rounded-full" :src="Helper.getStudentAvatar(row.data.photo)" />
+            <span class="ml-2">{{ row.data.name }}</span>
+
+          </div>
+        </template>
+        <template #nis="row">
+          {{ row.data.nis }} <span v-if="row.data.nisn"> / {{ row.data.nisn }}</span>
+        </template>
+        <template #gender="row">
+          {{Helper.genders.find(g => g.value === row.data.gender)?.name}}
+        </template>
+        <template #status="row">
+          {{ Helper.studentStatus(row.data.status) }}
+        </template>
+        <template #ttl="row">
+          {{ row.data.placeOfBorn }},
+          {{ row.data.dateOfBorn == null ? '' : DateTime.fromJSDate(new
+            Date(row.data.dateOfBorn)).toFormat('dd-MM-yyyy')
+          }}
+        </template>
+        <template #actions="row">
+          <div class="flex gap-1">
+            <router-link :to="isPiket ? `/piket/siswa/${row.data.id}/detail` : `/admin/siswa/${row.data.id}/detail`">
+              <DetailIcon></DetailIcon>
+            </router-link>
+            <router-link :to="`/admin/siswa/${row.data.id}/edit`" v-if="!isPiket">
+              <EditIcon></EditIcon>
+            </router-link>
+            <button @click="confirmDelete(row.data)" class="text-white flex" v-if="!isPiket">
+              <DeleteIcon />
+            </button>
+          </div>
+        </template>
+      </VTTableNew>
     </div>
-  </div>
+  </VTCard>
 </template>
 
 <script setup lang="ts">
@@ -87,47 +57,48 @@ import { onMounted, reactive, ref } from 'vue'
 import { DialogService, ToastService, StudentService } from '@/services'
 import { Helper } from '@/commons'
 import { AddIcon, EditIcon, DeleteIcon } from '@/components/icons'
-import PaginationView from '@/components/PaginationView.vue'
 import PaginationStore from '@/stores/PaginationStore'
-import PageHeader from '@/components/PageHeader.vue'
 import { type Pagination, type Student } from '@/models'
-
-import {
-  FwbInput,
-  FwbSelect,
-  FwbTable,
-  FwbTableCell,
-  FwbTableRow,
-  FwbTableBody,
-  FwbTableHeadCell,
-  FwbTableHead,
-} from 'flowbite-vue'
 
 import type { PaginateResponse } from '@/models/Responses'
 import { DateTime } from 'luxon'
 import DetailIcon from '@/components/icons/DetailIcon.vue'
 import AuthService from '@/services/AuthService'
-import VTSelect from '@/components/VTSelect/VTSelect.vue'
+import { VTCard, VTTableNew } from '@ocph23/vtocph23'
+import type { VTTableColumn, VTTablePagination, VTTableSource } from '@ocph23/vtocph23/components/VTTable/index.js'
 
 const paginateState = PaginationStore()
 
-const data = reactive({
-  paginateResult: {} as PaginateResponse,
-  students: [] as Student[],
-  pageSizes: [
-    { value: '10', name: '10' },
-    { value: '20', name: '20' },
-    { value: '50', name: '50' },
-    { value: '100', name: '100' },
-  ],
+const dataTable = reactive<VTTableSource>({
+  data: [],
+  totalRecords: 0,
   paginate: {
-    page: 1,
-    pageSize: '10',
+    currentPage: 1,
+    pageSize: 10,
     searchTerm: '',
     sortOrder: 'asc',
     columnOrder: 'date',
-  } as Pagination,
-})
+  },
+});
+
+
+const columns = [
+  { title: 'No', name: 'no', type: 'Custome', headerClass: 'w-[20px]' },
+  { title: 'Nama', name: 'student', type: 'Custome' },
+  { title: 'NIPD/NISN', name: 'nis', type: 'Custome', },
+  { title: 'Kelamin', name: 'gender', type: 'Custome', headerClass: 'w-5' },
+  { title: 'Tempat, Tanggal Lahir', name: 'ttl', type: 'Custome' },
+  { title: 'Hp Orang Tua', propName: 'parentPhoneNumber' },
+  { title: 'Status', name: 'status', type: 'Custome' },
+  { title: 'Aksi', name: 'actions', type: 'Custome', headerClass: 'w-10' },
+] as VTTableColumn[]
+
+
+const onTableChange = (paginate: VTTablePagination) => {
+  dataTable.paginate = paginate;
+  getData(paginate);
+};
+
 
 const isPiket = ref(false)
 AuthService.isPiket().then((x) => {
@@ -138,10 +109,19 @@ AuthService.isPiket().then((x) => {
 
 
 // Fungsi untuk mengambil data siswa (GET)p
-const getData = async (paginate: Pagination) => {
+const getData = async (vtPaginate: VTTablePagination) => {
+  const paginate = {
+    page: vtPaginate.currentPage,
+    pageSize: String(vtPaginate.pageSize),
+    searchTerm: vtPaginate.searchTerm,
+    sortOrder: vtPaginate.sortOrder,
+    columnOrder: vtPaginate.columnOrder,
+  } as Pagination
   const result = await StudentService.Pageninate(paginate)
   if (result.isSuccess) {
-    data.paginateResult = result.data as PaginateResponse
+    const paginateResult = result.data as PaginateResponse
+    dataTable.data = paginateResult.data as Student[]
+    dataTable.totalRecords = paginateResult.totalRecords
     paginateState.setPaginateResult(result.data as PaginateResponse)
   }
 }
@@ -152,8 +132,8 @@ const deleteData = async (student: Student) => {
     const response = await StudentService.delete(student.id)
     if (response.isSuccess) {
       ToastService.successToast('Data berhasil dihapus.')
-      const index = data.students.indexOf(student)
-      data.students.splice(index, 1)
+      const index = dataTable.data.indexOf(student)
+      dataTable.data.splice(index, 1)
     }
   } catch (error) {
     console.error('Error deleting data:', error)
@@ -173,19 +153,14 @@ const confirmDelete = (student: Student) => {
   })
 }
 
-const changePageSize = () => {
-  paginateState.setPaginateResult({} as PaginateResponse)
-  data.paginate.page = 1
-  getData(data.paginate)
-}
-
-const searchTextChange = () => {
-  data.paginate.page = 1
-  getData(data.paginate)
-}
 
 onMounted(() => {
-  paginateState.setPaginateResult({} as PaginateResponse)
-  getData(data.paginate)
+  getData(dataTable.paginate || {
+    currentPage: 1,
+    pageSize: 5,
+    searchTerm: '',
+    sortOrder: 'asc',
+    columnOrder: 'date',
+  } as VTTablePagination);
 })
 </script>

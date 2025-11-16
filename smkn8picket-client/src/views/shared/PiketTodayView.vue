@@ -1,10 +1,8 @@
 <template>
-  <div class="no-print">
-    <PageHeader :title="picketId ? 'Detail Piket ' : 'Piket Hari Ini'">
-      <FwbButton :color="'yellow'" @click="print" class="cursor-pointer">
-        <PrinterIcon class="w-5 h-5 text-amber-400"></PrinterIcon>
-      </FwbButton>
-    </PageHeader>
+  <VTCard :title="picketId ? 'Detail Piket ' : 'Piket Hari Ini'" class="no-print">
+    <template #right-side>
+      <PrinterIcon class="w-8 h-8 cursor-pointer text-amber-400" @click="print"></PrinterIcon>
+    </template>
 
     <div v-if="!picketId && showMessage">
       <div class="alert alert-warning">
@@ -69,7 +67,7 @@
       </div>
     </div>
 
-  </div>
+  </VTCard>
 
   <PiketTodayViewPrint v-if="showPrint" :data="data.picket"></PiketTodayViewPrint>
 
@@ -84,11 +82,9 @@ import { Helper } from '@/commons'
 import { PicketService, ToastService } from '@/services'
 import type { Picket } from '@/models'
 import type { RequestResponse } from '@/models/Responses'
-import PageHeader from '@/components/PageHeader.vue'
 import {
   FwbTab,
   FwbTabs,
-  FwbButton,
 } from 'flowbite-vue'
 import PicketAbsen from './PicketAbsen.vue'
 import PicketDailyJournalView from './PicketDailyJournalView.vue'
@@ -97,6 +93,7 @@ import { PrinterIcon } from '@heroicons/vue/24/solid'
 import PiketTodayViewPrint from './PiketTodayViewPrint.vue'
 import StudentsLateAndComeHomeEarlyView from './StudentsLateAndComeHomeEarlyView.vue'
 import type { LateAndComeHomeEarlyResponse } from '@/models/LateAndComeHomeEarly'
+import { VTCard } from '@ocph23/vtocph23'
 
 const activeTab = ref('kejadian')
 const systemMessage = ref('')

@@ -1,20 +1,24 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import { DialogService, ToastService, DepartmentService } from '@/services'
 import { DeleteIcon, AddIcon, EditIcon } from '@/components/icons'
 import PageHeader from '@/components/PageHeader.vue'
 
-import {
-  FwbTable,
-  FwbTableBody,
-  FwbTableCell,
-  FwbTableHead,
-  FwbTableHeadCell,
-  FwbTableRow,
-} from 'flowbite-vue'
+
+import { VTCard, VTTable, type VTTableColumn } from '@ocph23/vtocph23'
 import type { Department } from '@/models'
+
+const departmentTable = ref<InstanceType<typeof VTTable> | null>(null)
+
+const departmentColumns = [
+  { title: 'No', name: 'no', sortable: false, type: 'Custome' },
+  { title: 'Nama', propName: 'name', isMobileHeader: true, sortable: true },
+  { title: 'Kode Jurusan', propName: 'initial', sortable: true },
+  { title: 'Deskripsi Jurusan', propName: 'description', sortable: false },
+  { title: 'Aksi', name: 'actions', sortable: false, type: 'Custome' },
+] as VTTableColumn[];
 
 const data = reactive({
   departments: [] as Department[],
@@ -28,6 +32,7 @@ const getData = async () => {
     const response = await DepartmentService.get()
     if (response.isSuccess) {
       data.departments = response.data as Department[]
+      departmentTable.value?.refresh()
     }
   } catch (error) {
     console.error('Error fetching data:', error)
@@ -69,46 +74,30 @@ onMounted(getData)
 </script>
 <template>
   <AdminLayout>
-    <div class="">
-      <PageHeader title="Data Jurusan">
+    <VTCard title="Data Jurusan">
+      <template #right-side>
         <router-link :to="{ name: 'addJurusan' }">
           <AddIcon class="w-7 h-7" />
         </router-link>
-      </PageHeader>
-
-      <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-1">
-        <fwb-table>
-          <fwb-table-head>
-            <fwb-table-head-cell>No</fwb-table-head-cell>
-            <fwb-table-head-cell>Nama</fwb-table-head-cell>
-            <fwb-table-head-cell>Kode Jurusan</fwb-table-head-cell>
-            <fwb-table-head-cell>Deskripsi Jurusan</fwb-table-head-cell>
-            <fwb-table-head-cell class="w-5">
-              <span class="sr-only">Action</span>
-            </fwb-table-head-cell>
-          </fwb-table-head>
-          <fwb-table-body>
-            <fwb-table-row v-for="(department, index) in data.departments" :key="index">
-              <fwb-table-cell>{{ index + 1 }}</fwb-table-cell>
-              <fwb-table-cell>{{ department.name }}</fwb-table-cell>
-              <fwb-table-cell>{{ department.initial }}</fwb-table-cell>
-              <fwb-table-cell>{{ department.description }}</fwb-table-cell>
-              <fwb-table-cell>
-                <div class="flex items-center">
-                  <router-link :to="`/admin/jurusan/${department.id}/edit`">
-                    <button class="text-white flex">
-                      <EditIcon />
-                    </button>
-                  </router-link>
-                  <button @click="confirmDelete(department)" class="text-white flex">
-                    <DeleteIcon />
-                  </button>
-                </div>
-              </fwb-table-cell>
-            </fwb-table-row>
-          </fwb-table-body>
-        </fwb-table>
-      </div>
-    </div>
+      </template>
+      <VTTable ref="departmentTable" :columns="departmentColumns" :source="data.departments"
+        table-name="departmentTable">
+        <template #actions="row">
+          <div class="flex items-center space-x-2">
+            <router-link :to="`/admin/jurusan/${row.data.id}/edit`">
+              <button class="text-white flex">
+                <EditIcon />
+              </button>
+            </router-link>
+            <button @click="confirmDelete(row.data)" class="text-white flex">
+              <DeleteIcon />
+            </button>
+          </div>
+        </template>
+        <template #no="row">
+          {{ row.index + 1 }}
+        </template>
+      </VTTable>
+    </VTCard>
   </AdminLayout>
 </template>

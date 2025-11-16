@@ -1,75 +1,80 @@
 <template>
   <AdminLayout>
-    <div>
-      <PageHeader title="Data Kelas" />
-      <div class="flex justify-between items-center mb-4">
+    <VTCard title="Data Kelas">
+      <template #right-side>
         <div class="flex items-center gap-2">
           <AddIcon class="w-7 h-7" @click="showModalx" />
         </div>
-        <div class="flex items-center gap-2">
-          <div>
-            <div class="flex justify-between gap-2">
-              <div class="mb-4">
-                <FwbSelect :options="schoolYears" label="Tahun Ajaran" v-model="schoolYearSelected" @change="showData()"
-                  required />
-              </div>
-            </div>
-          </div>
+      </template>
+      <div class="flex justify-end mb-4">
+        <div class="mb-4">
+          <FwbSelect :options="schoolYears" label="Tahun Ajaran" v-model="schoolYearSelected" @change="showData()"
+            required />
         </div>
       </div>
 
-      <!-- Classroom Table -->
-      <div class=" shadow-md sm:rounded-lg mt-1">
-        <fwb-table>
-          <fwb-table-head>
-            <fwb-table-head-cell>No</fwb-table-head-cell>
-            <fwb-table-head-cell>Nama Kelas</fwb-table-head-cell>
-            <fwb-table-head-cell>Tingkat</fwb-table-head-cell>
-            <fwb-table-head-cell>Nama Jurusan</fwb-table-head-cell>
-            <fwb-table-head-cell>Ketua Kelas</fwb-table-head-cell>
-            <fwb-table-head-cell>Wali Kelas</fwb-table-head-cell>
-            <fwb-table-head-cell>TA</fwb-table-head-cell>
-            <fwb-table-head-cell>Action</fwb-table-head-cell>
-          </fwb-table-head>
-          <fwb-table-body v-if="classrooms.length > 0">
-            <fwb-table-row v-for="(classroom, index) in classrooms.sort((a, b) => a.level - b.level)" :key="index"
-              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <fwb-table-cell>{{ index + 1 }}</fwb-table-cell>
-              <fwb-table-cell>{{ classroom.className }}-{{ classroom.departmentInitial }}</fwb-table-cell>
-              <fwb-table-cell>{{ classroom.level }}</fwb-table-cell>
-              <fwb-table-cell>{{ classroom.departmentName }}</fwb-table-cell>
-              <fwb-table-cell>{{ classroom.classLeaderName }}</fwb-table-cell>
-              <fwb-table-cell>{{ classroom.homeRoomTeacherName }}</fwb-table-cell>
-              <fwb-table-cell>{{ classroom.year }}/{{ classroom.year + 1 }}</fwb-table-cell>
-              <fwb-table-cell class="flex gap-2 items-center justify-start">
-                <button v-if="schoolYearActive" @click="editClassroom(classroom)"
-                  class="text-black rounded-lg hover:text-slate-500 transition-all duration-200">
-                  <EditIcon></EditIcon>
-                </button>
+      <VTTable ref="vtTable" table-name="tClassrooms" :columns="[
+        { title: 'No', name: 'no', type: 'Custome' },
+        { title: 'Kelas', propName: 'className', isMobileHeader: true },
+        { title: 'Tingkat', propName: 'level' },
+        { title: 'Jurusan', propName: 'departmentName' },
+        { title: 'Ketua Kelas', propName: 'classLeaderName' },
+        { title: 'Wali Kelas', propName: 'homeRoomTeacherName' },
+        { title: 'Tahun Ajaran', propName: 'year' },
+        { title: 'Aksi', name: 'actions', type: 'Custome', },
+      ] as VTTableColumn[]" :source="classrooms">
 
-                <button v-if="schoolYearActive" @click="deleteData(classroom.id)"
-                  class="transition-all duration-200 text-red-500 hover:text-red-700 rounded-lg">
-                  <DeleteIcon></DeleteIcon>
-                </button>
-                <button v-if="!schoolYearActive && classroom.level < 3" @click="confirmCreateNewClassRoom(classroom)"
-                  class="text-black rounded-lg hover:text-slate-500 transition-all duration-200">
-                  <AddIcon class="w-4 h-4" />
-                </button>
-                <router-link :to="`/admin/classroom/${classroom.id}`">
+        <template #no="row">
+          {{ row.index + 1 }}
+        </template>
+
+        <template #actions="row">
+          <div class="flex gap-2 items-center justify-start">
+            <button v-if="schoolYearActive" @click="editClassroom(row.data)"
+              class="text-black rounded-lg hover:text-slate-500 transition-all duration-200">
+              <EditIcon></EditIcon>
+            </button>
+
+            <button v-if="schoolYearActive" @click="deleteData(row.data.id)"
+              class="transition-all duration-200 text-red-500 hover:text-red-700 rounded-lg">
+              <DeleteIcon></DeleteIcon>
+            </button>
+            <button v-if="!schoolYearActive && row.data.level < 3" @click="confirmCreateNewClassRoom(row.data)"
+              class="text-black rounded-lg hover:text-slate-500 transition-all duration-200">
+              <AddIcon class="w-4 h-4" />
+            </button>
+            <router-link :to="`/admin/classroom/${row.data.id}`">
+              <VTToolTip data="row.data">
+                <template #trigger>
                   <InformationCircleIcon class="w-5 h-5 text-blue-500" />
-                </router-link>
-                <router-link :to="`/admin/classroom/absen/${classroom.id}`">
+                </template>
+                <template #content>
+                  Detail Kelas
+                </template>
+              </VTToolTip>
+            </router-link>
+            <router-link :to="`/admin/classroom/absen/${row.data.id}`">
+              <VTToolTip :data="row.data">
+                <template #trigger>
                   <DetailIcon />
-                </router-link>
-              </fwb-table-cell>
-            </fwb-table-row>
-          </fwb-table-body>
-        </fwb-table>
+                </template>
+                <template #content>
+                  Data Absen
+                </template>
+              </VTToolTip>
+            </router-link>
+          </div>
+        </template>
+
+      </VTTable>
+      <div class=" shadow-md sm:rounded-lg mt-1">
+
+
       </div>
 
 
 
-    </div>
+    </VTCard>
 
   </AdminLayout>
   <fwb-modal-custome position="center" size="md" not-escapable persistent class="opacity-[99%]" v-if="isShowModal"
@@ -178,12 +183,14 @@ import {
   FwbTableHead,
   FwbTableHeadCell,
   FwbTableRow,
+  FwbTooltip,
 } from 'flowbite-vue'
 import { InformationCircleIcon } from '@heroicons/vue/24/solid'
 import type ClassRoomFromLastClassRequest from '@/models/Requests/ClassRoomFromLastClassRequest'
 import VTInput from '@/components/VTInput/VTInput.vue'
+import { VTCard, VTTable, VTToolTip, type VTTableColumn } from '@ocph23/vtocph23'
 
-
+const vtTable = ref<InstanceType<typeof VTTable> | null>(null);
 const data = reactive({
   errors: [],
   ketuaText: '',
@@ -236,6 +243,7 @@ const showData = () => {
   ClassRoomService.getBySchoolYearId(Number(schoolYearSelected.value)).then((response) => {
     if (response.isSuccess) {
       classrooms.value = response.data as ClassRoom[]
+      vtTable.value?.refresh();
     } else {
       ToastService.dangerToast(Helper.readDetailError(response.error as ErrorResponse))
     }

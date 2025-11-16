@@ -57,8 +57,7 @@ import PageHeader from '@/components/PageHeader.vue'
 import type { Teacher } from '@/models'
 import { DateTime } from 'luxon'
 import VTInput from '@/components/VTInput/VTInput.vue'
-import VTSelect from '@/components/VTSelect/VTSelect.vue'
-
+import { VTSelect } from '@ocph23/vtocph23'
 
 
 const router = useRouter()
