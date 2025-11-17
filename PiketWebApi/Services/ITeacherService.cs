@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PiketWebApi.Data;
 using System.Linq;
 
@@ -143,39 +144,43 @@ namespace PiketWebApi.Services
 
         public async Task<ErrorOr<Teacher>> PostAsync(Teacher model)
         {
-            var trans = dbContext.Database.BeginTransaction();
-            try
-            {
-                var validator = new Validators.TeacherValidator();
-                var validatorResult = validator.Validate(model);
-                if (!validatorResult.IsValid)
-                    return validatorResult.GetErrors();
+            var strategy = dbContext.Database.CreateExecutionStrategy();
+            return await strategy.ExecuteAsync<ErrorOr<Teacher>>(async () =>
+             {
+                 var trans = await dbContext.Database.BeginTransactionAsync();
+                 try
+                 {
+                     var validator = new Validators.TeacherValidator();
+                     var validatorResult = validator.Validate(model);
+                     if (!validatorResult.IsValid)
+                         return validatorResult.GetErrors();
 
+                     if (!string.IsNullOrEmpty(model.Email))
+                     {
+                         var userResult = await Helper.CreateUser(userManager,
+                             new ApplicationUser { Email = model.Email, EmailConfirmed = true, Name = model.Name, UserName = model.Email },
+                             "Teacher");
+                         if (userResult.IsError)
+                         {
+                             await trans.RollbackAsync();
+                             return userResult.Errors;
+                         }
+                         model.UserId = userResult.Value.Id;
+                     }
 
-                if (!string.IsNullOrEmpty(model.Email))
-                {
-                    var userResult = await Helper.CreateUser(userManager,
-                        new ApplicationUser { Email = model.Email, EmailConfirmed = true, Name = model.Name, UserName = model.Email },
-                        "Teacher");
-                    if (userResult.IsError)
-                    {
-                        trans.Rollback();
-                        return userResult.Errors;
-                    }
-                    model.UserId = userResult.Value.Id;
-                }
+                     await dbContext.Teachers.AddAsync(model);
+                     await dbContext.SaveChangesAsync();
+                     await trans.CommitAsync();
+                     await cacheService.SetAsync($"teacher-{model.Id}", model);
+                     return model;
+                 }
+                 catch (Exception ex)
+                 {
+                     trans.Rollback();
+                     return Error.Conflict(ex.Message);
+                 }
 
-                var result = dbContext.Teachers.Add(model);
-                dbContext.SaveChanges();
-                trans.Commit();
-                await cacheService.SetAsync($"teacher-{model.Id}", result);
-                return model;
-            }
-            catch (Exception ex)
-            {
-                trans.Rollback();
-                throw;
-            }
+             });
         }
 
         public async Task<ErrorOr<IEnumerable<Teacher>>> GetAsync()

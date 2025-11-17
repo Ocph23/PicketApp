@@ -68,16 +68,6 @@ const routes = [
         name: 'guru',
         component: () => import('@/views/admin/teacher/guru.vue'),
       },
-      {
-        path: 'guru/add',
-        name: 'addGuru',
-        component: () => import('@/views/admin/teacher/addGuru.vue'),
-      },
-      {
-        path: 'guru/:id/edit',
-        name: 'editGuru',
-        component: () => import('@/views/admin/teacher/editGuru.vue'),
-      },
       // routes schedule
       {
         path: 'Jadwal/:id',
