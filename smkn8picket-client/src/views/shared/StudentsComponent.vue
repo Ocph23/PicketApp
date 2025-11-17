@@ -4,39 +4,49 @@
       <router-link :to="{ name: 'addSiswa' }">
         <AddIcon class="w-7 h-7" />
       </router-link>
-
     </template>
     <div class="mt-1">
-      <VTTableNew :method="'Paginate'" :columns="columns" :source="dataTable" class="mt-4"
-        v-on:on-change="onTableChange">
+      <VTTableNew
+        :method="'Paginate'"
+        :columns="columns"
+        :source="dataTable"
+        v-on:on-change="onTableChange"
+      >
         <template #no="row">
           {{ row.index + 1 }}
         </template>
         <template #student="row">
-          <div class="flex items-center  gap-1">
+          <div class="flex items-center gap-1">
             <img class="w-8 h-8 rounded-full" :src="Helper.getStudentAvatar(row.data.photo)" />
             <span class="ml-2">{{ row.data.name }}</span>
-
           </div>
         </template>
         <template #nis="row">
           {{ row.data.nis }} <span v-if="row.data.nisn"> / {{ row.data.nisn }}</span>
         </template>
         <template #gender="row">
-          {{Helper.genders.find(g => g.value === row.data.gender)?.name}}
+          {{ Helper.genders.find((g) => g.value === row.data.gender)?.name }}
         </template>
         <template #status="row">
           {{ Helper.studentStatus(row.data.status) }}
         </template>
         <template #ttl="row">
           {{ row.data.placeOfBorn }},
-          {{ row.data.dateOfBorn == null ? '' : DateTime.fromJSDate(new
-            Date(row.data.dateOfBorn)).toFormat('dd-MM-yyyy')
+          {{
+            row.data.dateOfBorn == null
+              ? ''
+              : DateTime.fromJSDate(new Date(row.data.dateOfBorn)).toFormat('dd-MM-yyyy')
           }}
         </template>
         <template #actions="row">
           <div class="flex gap-1">
-            <router-link :to="isPiket ? `/piket/siswa/${row.data.id}/detail` : `/admin/siswa/${row.data.id}/detail`">
+            <router-link
+              :to="
+                isPiket
+                  ? `/piket/siswa/${row.data.id}/detail`
+                  : `/admin/siswa/${row.data.id}/detail`
+              "
+            >
               <DetailIcon></DetailIcon>
             </router-link>
             <router-link :to="`/admin/siswa/${row.data.id}/edit`" v-if="!isPiket">
@@ -65,7 +75,11 @@ import { DateTime } from 'luxon'
 import DetailIcon from '@/components/icons/DetailIcon.vue'
 import AuthService from '@/services/AuthService'
 import { VTCard, VTTableNew } from '@ocph23/vtocph23'
-import type { VTTableColumn, VTTablePagination, VTTableSource } from '@ocph23/vtocph23/components/VTTable/index.js'
+import type {
+  VTTableColumn,
+  VTTablePagination,
+  VTTableSource,
+} from '@ocph23/vtocph23/components/VTTable/index.js'
 
 const paginateState = PaginationStore()
 
@@ -79,13 +93,12 @@ const dataTable = reactive<VTTableSource>({
     sortOrder: 'asc',
     columnOrder: 'date',
   },
-});
-
+})
 
 const columns = [
   { title: 'No', name: 'no', type: 'Custome', headerClass: 'w-[20px]' },
-  { title: 'Nama', name: 'student', type: 'Custome' },
-  { title: 'NIPD/NISN', name: 'nis', type: 'Custome', },
+  { title: 'Nama', name: 'student', propName: 'name', type: 'Custome', isMobileHeader: true },
+  { title: 'NIPD/NISN', name: 'nis', type: 'Custome', propName: 'nisn' },
   { title: 'Kelamin', name: 'gender', type: 'Custome', headerClass: 'w-5' },
   { title: 'Tempat, Tanggal Lahir', name: 'ttl', type: 'Custome' },
   { title: 'Hp Orang Tua', propName: 'parentPhoneNumber' },
@@ -93,12 +106,10 @@ const columns = [
   { title: 'Aksi', name: 'actions', type: 'Custome', headerClass: 'w-10' },
 ] as VTTableColumn[]
 
-
 const onTableChange = (paginate: VTTablePagination) => {
-  dataTable.paginate = paginate;
-  getData(paginate);
-};
-
+  dataTable.paginate = paginate
+  getData(paginate)
+}
 
 const isPiket = ref(false)
 AuthService.isPiket().then((x) => {
@@ -106,7 +117,6 @@ AuthService.isPiket().then((x) => {
     isPiket.value = x as boolean
   }
 })
-
 
 // Fungsi untuk mengambil data siswa (GET)p
 const getData = async (vtPaginate: VTTablePagination) => {
@@ -153,14 +163,16 @@ const confirmDelete = (student: Student) => {
   })
 }
 
-
 onMounted(() => {
-  getData(dataTable.paginate || {
-    currentPage: 1,
-    pageSize: 5,
-    searchTerm: '',
-    sortOrder: 'asc',
-    columnOrder: 'date',
-  } as VTTablePagination);
+  getData(
+    dataTable.paginate ||
+      ({
+        currentPage: 1,
+        pageSize: 5,
+        searchTerm: '',
+        sortOrder: 'asc',
+        columnOrder: 'date',
+      } as VTTablePagination),
+  )
 })
 </script>

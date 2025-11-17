@@ -26,22 +26,11 @@ const routes = [
         meta: { requiresAuth: true },
       },
 
-
       // routes tahun ajaran
       {
         path: 'Tahun-ajaran',
         name: 'Tahun-ajaran',
         component: () => import('@/views/admin/shcoolyear/tahunAjaran.vue'),
-      },
-      {
-        path: 'Tahun-ajaran/add',
-        name: 'addShoolyear',
-        component: () => import('@/views/admin/shcoolyear/addTahunAjaran.vue'),
-      },
-      {
-        path: 'Tahun-ajaran/:id/edit',
-        name: 'editSchoolyear',
-        component: () => import('@/views/admin/shcoolyear/editTahunAjaran.vue'),
       },
 
       //routes Departmen
@@ -49,16 +38,6 @@ const routes = [
         path: 'Jurusan',
         name: 'Jurusan',
         component: () => import('@/views/admin/jurusan/jurusan.vue'),
-      },
-      {
-        path: 'Jurusan/add',
-        name: 'addJurusan',
-        component: () => import('@/views/admin/jurusan/addJurusan.vue'),
-      },
-      {
-        path: 'Jurusan/:id/edit',
-        name: 'editJurusan',
-        component: () => import('@/views/admin/jurusan/editJurusan.vue'),
       },
 
       // routes student
@@ -205,17 +184,14 @@ const routes = [
     redirect: '/walikelas/home',
     children: [
       {
-
         path: 'home',
         component: () => import('@/views/walikelas/HomeView.vue'),
       },
       {
-
         path: 'kelas',
         component: () => import('@/views/walikelas/KelasView.vue'),
       },
       {
-
         path: 'kelas/:id',
         component: () => import('@/views/walikelas/KelasDetailView.vue'),
       },
@@ -233,7 +209,6 @@ const routes = [
       },
     ],
   },
-
 ]
 
 const router = createRouter({
@@ -241,9 +216,7 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach(async (to: {
-  matched: any[], path: string 
-}) => {
+router.beforeEach(async (to: { matched: any[]; path: string }) => {
   const token = localStorage.getItem('authToken')
   const auth = JSON.parse(token as string) as AuthResponse
   // const publicPages = ['/login', '/walikelas/login']
@@ -262,29 +235,26 @@ router.beforeEach(async (to: {
     }
   }
 
-  if (auth && to.matched.find(x => x.path == '/admin')) {
+  if (auth && to.matched.find((x) => x.path == '/admin')) {
     if (auth.loginAs != 'Administrator') {
       ToastService.dangerToast('Maaf anda tidak memiliki akses ke halaman ini')
       return '/login'
     }
   }
 
-
-  if (auth && to.matched.find(x => x.path == '/walikelas')) {
+  if (auth && to.matched.find((x) => x.path == '/walikelas')) {
     if (auth.loginAs != 'WaliKelas') {
       ToastService.dangerToast('Maaf anda tidak memiliki akses ke halaman ini')
       return '/login'
     }
   }
 
-
-  if (auth && to.matched.find(x => x.path == '/piket')) {
+  if (auth && to.matched.find((x) => x.path == '/piket')) {
     if (!auth.isTeacherPicket) {
       ToastService.dangerToast('Maaf anda tidak memiliki akses ke halaman ini')
       return '/login'
     }
   }
-
 })
 
 export default router
