@@ -1,8 +1,8 @@
 import type { AutoCompleteSuggestion, Student, Teacher } from "@/models";
 import StudentService from "./StudentService";
 import TeacherService from "./TeacherService";
-import ToastService from "./ToastService";
 import type { ErrorResponse } from "@/commons";
+import { VTToastService } from "@ocph23/vtocph23";
 
 const AutoCompleteService = {
   get: async (service: string, query: string) => {
@@ -10,7 +10,7 @@ const AutoCompleteService = {
       const result = await StudentService.search(query);
       if (!result.data) {
         const error = result.error as ErrorResponse;
-        ToastService.dangerToast(error.detail);
+        VTToastService.error(error.detail);
         return;
       }
       const studens = result.data as Student[];

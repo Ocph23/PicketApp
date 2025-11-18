@@ -1,12 +1,11 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "smkn8picket-client",
       "dependencies": {
         "@heroicons/vue": "^2.2.0",
-        "@ocph23/vtocph23": "^0.3.18",
+        "@ocph23/vtocph23": "0.3.21",
         "@types/luxon": "^3.6.2",
         "@vuelidate/core": "^2.0.3",
         "@vuelidate/validators": "^2.0.4",
@@ -248,7 +247,7 @@
 
     "@nodelib/fs.walk": ["@nodelib/fs.walk@1.2.8", "", { "dependencies": { "@nodelib/fs.scandir": "2.1.5", "fastq": "^1.6.0" } }, "sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg=="],
 
-    "@ocph23/vtocph23": ["@ocph23/vtocph23@0.3.18", "", { "dependencies": { "@heroicons/vue": "^2.2.0", "@lottiefiles/dotlottie-vue": "^0.8.0", "@vuelidate/core": "^2.0.3", "@vuelidate/validators": "^2.0.4", "@vueuse/core": "10.10.0", "aos": "^2.3.4", "axios": "^1.7.9", "classnames": "2.5.1", "floating-vue": "^5.2.2", "flowbite": "^2.5.2", "flowbite-vue": "0.1.6", "lodash-es": "4.17.21", "nanoid": "^5.0.9", "pinia": "^2.3.0", "tailwind-merge": "2.3.0", "ts-luxon": "^6.2.0", "vue": "^3.4.x", "vue-router": "^4.5.0", "zod": "^4.0.17" }, "optionalDependencies": { "@rollup/rollup-linux-x64-gnu": "4.9.5" }, "peerDependencies": { "tailwindcss": "^3" } }, "sha512-8xfS1UjAjPGA3pp9EkFbLm3uNBasLNQkb5fq4KViS4HEOB2pb7Qftoz4v2rHKPk4Fp9WYStIXxmeGNaIfzXJLg=="],
+    "@ocph23/vtocph23": ["@ocph23/vtocph23@0.3.21", "", { "dependencies": { "@heroicons/vue": "^2.2.0", "@lottiefiles/dotlottie-vue": "^0.8.0", "@vuelidate/core": "^2.0.3", "@vuelidate/validators": "^2.0.4", "@vueuse/core": "10.10.0", "aos": "^2.3.4", "axios": "^1.7.9", "classnames": "2.5.1", "floating-vue": "^5.2.2", "flowbite": "^2.5.2", "flowbite-vue": "0.1.6", "lodash-es": "4.17.21", "nanoid": "^5.0.9", "pinia": "^2.3.0", "tailwind-merge": "2.3.0", "ts-luxon": "^6.2.0", "vue": "^3.4.x", "vue-router": "^4.5.0", "zod": "^4.0.17" }, "optionalDependencies": { "@rollup/rollup-linux-x64-gnu": "4.9.5" }, "peerDependencies": { "tailwindcss": "^3" } }, "sha512-Xj6tBtrRZ+/pQ5BFeuPtcL67drqQ0sCzyxAr0C/kRL63r5MDaJdISLl1oUIi7yvRZhYLoCfJGANVD1Il1O325Q=="],
 
     "@one-ini/wasm": ["@one-ini/wasm@0.1.1", "", {}, "sha512-XuySG1E38YScSJoMlqovLru4KTUNSjgVTIjyh7qMX6aNN5HY5Ct5LhRJdxO79JtTzKfzV/bnWpz+zquYrISsvw=="],
 

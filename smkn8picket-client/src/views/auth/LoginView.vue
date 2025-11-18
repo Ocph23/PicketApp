@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen w-full bg-white shadow-md dark:bg-gray-600 flex justify-center items-center">
-    <div class="p-5 md:min-w-5xl m-5">
-      <div class="grid  grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="w-full p-5 m-5">
+      <div class="w-full grid grid-cols-1 md:!grid-cols-3 items-center gap-4">
         <div class="col-span-2 hidden md:block">
-          <div class="h-full flex flex-col justify-center items-center">
+          <div class="flex flex-col justify-center items-center">
             <img :src="Helper.infoSekolah.logo" class="w-1/5 m-5" alt="SMK Logo" />
             <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2">
               SITEM INFORMASI SEKOLAH
@@ -14,22 +14,18 @@
             <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2">
               TEKNOLOGI INFORMASI DAN KOMUNIKASI
             </FwbHeading>
-            <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2">
-              KOTA JAYAPURA
-            </FwbHeading>
+            <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2"> KOTA JAYAPURA </FwbHeading>
             <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2">
               @{{ new Date().getFullYear() }}
             </FwbHeading>
           </div>
         </div>
-        <FwbCard>
-          <form @submit.prevent="login" class="w-full p-6 rounded-lg">
-            <div class="flex justify-center mb-6 ">
-              <img :src="Helper.infoSekolah.logo" class="w-1/3 md:hidden" alt="SMK Logo" />
+        <VTCard class="col-span-1 px-5">
+          <form @submit.prevent="login" class="w-full">
+            <div class="flex justify-center md:hidden">
+              <img :src="Helper.infoSekolah.logo" class="w-1/3" alt="SMK Logo" />
             </div>
-            <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2">
-              Login
-            </FwbHeading>
+            <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2"> Login </FwbHeading>
             <div class="mb-8">
               <VTInput label="User Name" v-model="loginRequest.username" required></VTInput>
             </div>
@@ -56,9 +52,8 @@
               {{ errorMessage }}
             </p>
           </form>
-        </FwbCard>
+        </VTCard>
       </div>
-
     </div>
   </div>
 </template>
@@ -69,10 +64,11 @@ import AuthService from '@/services/AuthService'
 import axios from 'axios'
 import type { LoginRequest } from '@/models/Requests'
 import type { AuthResponse, Schedule } from '@/models'
-import { FwbCard, FwbHeading, FwbSelect } from 'flowbite-vue'
-import { ScheduleService, ToastService } from '@/services'
+import { FwbHeading, FwbSelect } from 'flowbite-vue'
+import { ScheduleService } from '@/services'
 import { Helper, type ErrorResponse } from '@/commons'
 import VTInput from '@/components/VTInput/VTInput.vue'
+import { VTCard, VTToastService } from '@ocph23/vtocph23'
 
 const loginRequest = ref({} as LoginRequest)
 const errorMessage = ref('')
@@ -89,7 +85,7 @@ const login = async () => {
       axios.defaults.headers.common['Authorization'] = auth ? 'Bearer ' + auth.token : ''
       if (loginAs.value === 'Piket') {
         if (auth.profile == null || auth.profile.id == null) {
-          ToastService.dangerToast('Maaf anda belum terdaftar sebagai guru')
+          VTToastService.error('Maaf anda belum terdaftar sebagai guru')
           return
         }
         const response = await ScheduleService.get()
@@ -102,7 +98,7 @@ const login = async () => {
             localStorage.setItem('authToken', JSON.stringify(auth))
             router.push('/piket')
           } else {
-            ToastService.dangerToast('Maaf anda tidak sedang piket hari ini')
+            VTToastService.error('Maaf anda tidak sedang piket hari ini')
             return
           }
         }
@@ -111,7 +107,7 @@ const login = async () => {
       if (loginAs.value === 'WaliKelas') {
         if (auth.roles.includes('HomeRoomTeacher')) router.push('/walikelas')
         else {
-          ToastService.dangerToast('Maaf anda belum terdaftar sebagai wali kelas')
+          VTToastService.error('Maaf anda belum terdaftar sebagai wali kelas')
           return
         }
       }
@@ -122,7 +118,7 @@ const login = async () => {
           localStorage.setItem('authToken', JSON.stringify(auth))
           router.push('/')
         } else {
-          ToastService.dangerToast('Maaf anda bukan administrator')
+          VTToastService.error('Maaf anda bukan administrator')
           return
         }
       }
@@ -130,11 +126,11 @@ const login = async () => {
     } else {
       const err = response.error as ErrorResponse
 
-      ToastService.dangerToast(err.detail || 'Periksa kembali username dan password')
+      VTToastService.error(err.detail || 'Periksa kembali username dan password')
     }
   } catch (error) {
     const err = error as ErrorResponse
-    ToastService.dangerToast(err?.detail || err?.message || 'Login failed')
+    VTToastService.error(err?.detail || err?.message || 'Login failed')
   }
 }
 </script>

@@ -1,5 +1,6 @@
 import './assets/main.output.css'
 import './assets/index.scss'
+import '../node_modules/@ocph23/vtocph23/dist/index.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'

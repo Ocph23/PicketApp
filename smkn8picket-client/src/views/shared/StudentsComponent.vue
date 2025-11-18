@@ -6,13 +6,8 @@
       </router-link>
     </template>
     <div class="mt-1">
-      <VTTableNew
-        table-name="tbl_siswa"
-        :method="'Paginate'"
-        :columns="columns"
-        :source="dataTable"
-        v-on:on-change="onTableChange"
-      >
+      <VTTableNew table-name="tbl_siswa" :method="'Paginate'" :columns="columns" :source="dataTable"
+        v-on:on-change="onTableChange">
         <template #no="row">
           {{ row.index + 1 }}
         </template>
@@ -26,7 +21,7 @@
           {{ row.data.nis }} <span v-if="row.data.nisn"> / {{ row.data.nisn }}</span>
         </template>
         <template #gender="row">
-          {{ Helper.genders.find((g) => g.value === row.data.gender)?.name }}
+          {{Helper.genders.find((g) => g.value === row.data.gender)?.name}}
         </template>
         <template #status="row">
           {{ Helper.studentStatus(row.data.status) }}
@@ -41,13 +36,10 @@
         </template>
         <template #actions="row">
           <div class="flex gap-1">
-            <router-link
-              :to="
-                isPiket
-                  ? `/piket/siswa/${row.data.id}/detail`
-                  : `/admin/siswa/${row.data.id}/detail`
-              "
-            >
+            <router-link :to="isPiket
+              ? `/piket/siswa/${row.data.id}/detail`
+              : `/admin/siswa/${row.data.id}/detail`
+              ">
               <DetailIcon></DetailIcon>
             </router-link>
             <router-link :to="`/admin/siswa/${row.data.id}/edit`" v-if="!isPiket">
@@ -65,7 +57,7 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { DialogService, ToastService, StudentService } from '@/services'
+import { DialogService, StudentService } from '@/services'
 import { Helper } from '@/commons'
 import { AddIcon, EditIcon, DeleteIcon } from '@/components/icons'
 import PaginationStore from '@/stores/PaginationStore'
@@ -75,7 +67,7 @@ import type { PaginateResponse } from '@/models/Responses'
 import { DateTime } from 'luxon'
 import DetailIcon from '@/components/icons/DetailIcon.vue'
 import AuthService from '@/services/AuthService'
-import { VTCard, VTTableNew } from '@ocph23/vtocph23'
+import { VTCard, VTTableNew, VTToastService } from '@ocph23/vtocph23'
 import type {
   VTTableColumn,
   VTTablePagination,
@@ -84,7 +76,7 @@ import type {
 
 const paginateState = PaginationStore()
 
-const dataTable = reactive<VTTableSource>({
+const dataTable = reactive<VTTableSource<Student>>({
   data: [],
   totalRecords: 0,
   paginate: {
@@ -142,7 +134,7 @@ const deleteData = async (student: Student) => {
   try {
     const response = await StudentService.delete(student.id)
     if (response.isSuccess) {
-      ToastService.successToast('Data berhasil dihapus.')
+      VTToastService.success('Data berhasil dihapus.')
       const index = dataTable.data.indexOf(student)
       dataTable.data.splice(index, 1)
     }
@@ -167,13 +159,13 @@ const confirmDelete = (student: Student) => {
 onMounted(() => {
   getData(
     dataTable.paginate ||
-      ({
-        currentPage: 1,
-        pageSize: 5,
-        searchTerm: '',
-        sortOrder: 'asc',
-        columnOrder: 'date',
-      } as VTTablePagination),
+    ({
+      currentPage: 1,
+      pageSize: 5,
+      searchTerm: '',
+      sortOrder: 'asc',
+      columnOrder: 'date',
+    } as VTTablePagination),
   )
 })
 </script>

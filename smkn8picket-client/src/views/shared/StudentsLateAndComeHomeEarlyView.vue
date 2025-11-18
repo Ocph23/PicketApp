@@ -111,9 +111,9 @@ const save = async (request: LateAndComeHomeEarlyRequest) => {
     const data = response.data as LateAndComeHomeEarlyResponse;
     datas?.push(data);
     modal.value = false;
-    ToastService.successToast("Berhasil Menambahkan Catatan Kejadian");
+    VTToastService.success("Berhasil Menambahkan Catatan Kejadian");
   } else {
-    ToastService.dangerToast("Gagal Menambahkan Catatan Kejadian")
+    VTToastService.error("Gagal Menambahkan Catatan Kejadian")
   }
 }
 
@@ -126,9 +126,9 @@ const confirmDelete = (attendance: LateAndComeHomeEarlyResponse) => {
       if (i !== undefined && i !== -1) {
         datas?.splice(i, 1);
       }
-      ToastService.successToast("Berhasil Menghapus Data ")
+      VTToastService.success("Berhasil Menghapus Data ")
     } else {
-      ToastService.dangerToast("Gagal Menghapus Data ")
+      VTToastService.error("Gagal Menghapus Data ")
     }
   })
 }

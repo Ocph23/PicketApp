@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ToastService, DepartmentService } from '@/services'
+import { DepartmentService } from '@/services'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import { FwbInput, FwbCard, FwbTextarea, FwbButton } from 'flowbite-vue'
 import type { Department } from '@/models'
 import { Helper, type ErrorDetail } from '@/commons'
 import VTInput from '@/components/VTInput/VTInput.vue'
+import { VTToastService } from '@ocph23/vtocph23'
 
 const data = reactive({ form: {} as Department, errors: [] as ErrorDetail[] })
 const router = useRouter()
@@ -31,15 +32,15 @@ const updateDepartment = async () => {
   try {
     const response = await DepartmentService.put(departmentId, data.form)
     if (response.isSuccess) {
-      ToastService.successToast('Data berhasil disimpan.')
+      VTToastService.success('Data berhasil disimpan.')
       router.push({ path: '/admin/Jurusan' })
     } else {
       data.errors = response.error?.errors as ErrorDetail[]
-      ToastService.dangerToast(Helper.readError(data.errors, 'Message'))
+      VTToastService.error(Helper.readError(data.errors, 'Message'))
     }
   } catch (error) {
     const err = error as ErrorDetail
-    ToastService.dangerToast(err.description)
+    VTToastService.error(err.description)
   }
 }
 </script>

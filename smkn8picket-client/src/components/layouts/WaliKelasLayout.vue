@@ -1,29 +1,31 @@
 <script setup lang="ts">
 import Header from '@/components/layouts/Header.vue'
-import SideBarWaliKelas from '@/components/layouts/SideBarWaliKelas.vue'
-import { DialogService } from '@/services'
+import Sidebar from '@/components/layouts/SideBar.vue'
 import { ref } from 'vue'
-const showSide = ref(true)
+import PicketSideBar from './PicketSideBar.vue'
+import SideBarWaliKelas from './SideBarWaliKelas.vue'
+
+const showMenu = ref(true)
+const menuClass = ref('md:ml-64')
 
 const clickMenu = () => {
-  showSide.value = !showSide.value
-}
-
-
-
-const logout = () => {
-  DialogService.showDialog('Yakin keluar ?', null, 'warning').then(() => {
-    localStorage.removeItem('authToken')
-    window.location.href = '/login'
-  })
+  if (showMenu.value) {
+    menuClass.value = 'md:ml-0'
+  } else {
+    menuClass.value = 'md:ml-64'
+  }
+  showMenu.value = !showMenu.value
 }
 </script>
 
 <template class="no-print">
-  <Header id="header" @on-click-menu="clickMenu" @on-click-logout="logout"></Header>
-  <SideBarWaliKelas id="sidebar" @on-click-menu="clickMenu"
-    :class="showSide ? '-translate-x-full  sm:translate-x-0' : ' sm:translate-x-0'"></SideBarWaliKelas>
-  <div class="min-h-screen  p-8 pt-20 sm:ml-64 bg-[#ebecee]  shadow-md dark:bg-gray-600 " id="xbody">
+  <Header id="header" @on-click-menu="clickMenu"></Header>
+  <SideBarWaliKelas v-if="showMenu" @on-click-menu="clickMenu"></SideBarWaliKelas>
+  <div
+    :class="menuClass"
+    class="min-h-screen p-8 pt-20 bg-[#ffffff] shadow-md dark:bg-gray-600"
+    id="xbody"
+  >
     <slot></slot>
   </div>
 </template>

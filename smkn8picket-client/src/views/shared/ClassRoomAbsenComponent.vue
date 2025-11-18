@@ -81,7 +81,7 @@
 <script setup lang="ts">
 import { Helper } from '@/commons'
 import type { ClassRoom, StudentAttendance } from '@/models'
-import { ClassRoomService, StudentAttendanceService, ToastService } from '@/services'
+import { ClassRoomService, StudentAttendanceService } from '@/services'
 import { orderBy, groupBy, forEach, type Dictionary } from 'lodash'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -104,6 +104,7 @@ import { PrinterIcon } from '@heroicons/vue/24/solid'
 import PrintStore from '@/stores/PrintModelStore';
 import type PrintAbsenModel from '@/models/AbsenPrintModel'
 import DetailIcon from '@/components/icons/DetailIcon.vue'
+import { VTToastService } from '@ocph23/vtocph23'
 const printStore = PrintStore();
 
 
@@ -143,7 +144,7 @@ const classroom = ref({} as ClassRoom)
 
 ClassRoomService.getById(Number(route.params.id)).then((response) => {
   if (!response.isSuccess) {
-    ToastService.dangerToast('Data tidak ditemukan')
+    VTToastService.error('Data tidak ditemukan')
     return
   }
   classroom.value = response.data as ClassRoom
@@ -151,7 +152,7 @@ ClassRoomService.getById(Number(route.params.id)).then((response) => {
 
 const cariAbsen = () => {
   if (!selectedMontAndYear.value.month || !selectedMontAndYear.value.year) {
-    ToastService.warningToast('Anda Harus Memilih Bulan dan Tahun')
+    VTToastService.warning('Anda Harus Memilih Bulan dan Tahun')
     return
   }
 

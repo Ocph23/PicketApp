@@ -76,12 +76,13 @@ import {
 import { ref } from 'vue';
 import AddIcon from '@/components/icons/AddIcon.vue';
 import type DailyJournal from '@/models/DailyJournal';
-import { DialogService, PicketService, ToastService } from '@/services';
+import { DialogService, PicketService } from '@/services';
 import { EditIcon, DeleteIcon } from '@/components/icons';
 import Helper from '@/commons/helper';
 import AuthService from '@/services/AuthService';
 import { DateTime } from 'luxon';
 import VTInput from '@/components/VTInput/VTInput.vue';
+import { VTToastService } from '@ocph23/vtocph23';
 
 
 const props = defineProps({ data: Array<DailyJournal>, canAdd: Boolean })
@@ -107,9 +108,9 @@ const saveJurnal = async (journal: DailyJournal) => {
     const response = await PicketService.putJournal(journal.id, journal);
     if (response.isSuccess) {
       modal.value = false;
-      ToastService.successToast("Berhasil mengubah Catatan Kejadian");
+      VTToastService.success("Berhasil mengubah Catatan Kejadian");
     } else {
-      ToastService.dangerToast("Gagal Mengubah Catatan Kejadian")
+      VTToastService.error("Gagal Mengubah Catatan Kejadian")
     }
   } else {
     const response = await PicketService.postJournal(journal);
@@ -117,9 +118,9 @@ const saveJurnal = async (journal: DailyJournal) => {
       const data = response.data as DailyJournal;
       datas.value?.push(data);
       modal.value = false;
-      ToastService.successToast("Berhasil Menambahkan Catatan Kejadian");
+      VTToastService.success("Berhasil Menambahkan Catatan Kejadian");
     } else {
-      ToastService.dangerToast("Gagal Menambahkan Catatan Kejadian")
+      VTToastService.error("Gagal Menambahkan Catatan Kejadian")
     }
   }
 }
@@ -134,9 +135,9 @@ const confirmDelete = (journal: DailyJournal) => {
         datas.value?.splice(i, 1);
 
       }
-      ToastService.successToast("Berhasil Menghapus Catatan Kejadian")
+      VTToastService.success("Berhasil Menghapus Catatan Kejadian")
     } else {
-      ToastService.dangerToast("Gagal Menghapus Catatan Kejadian")
+      VTToastService.error("Gagal Menghapus Catatan Kejadian")
     }
   })
 }

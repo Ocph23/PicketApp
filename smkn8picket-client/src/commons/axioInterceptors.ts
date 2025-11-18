@@ -1,5 +1,5 @@
+import { VTToastService } from '@ocph23/vtocph23'
 import axios, { AxiosError, type AxiosResponse } from 'axios'
-import { ToastService } from '@/services'
 
 const authString = localStorage.getItem('authToken')
 const auth = JSON.parse(authString!)
@@ -10,11 +10,11 @@ axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers.put['Access-Control-Allow-Origin'] = '*';
 
 const onNotFound = () => {
-  ToastService.dangerToast('Alamat URL Tidak Ditemukan.')
+  VTToastService.error('Alamat URL Tidak Ditemukan.')
 }
 
 const onError = () => {
-  ToastService.dangerToast(
+  VTToastService.error(
     'Maaf terjadi kesalahan. Coba Uangi lagi/Silahkan Hubungi administrator.',
   )
 }
@@ -28,7 +28,7 @@ axios.interceptors.response.use(
     try {
       const axiosError = err as AxiosError
       if (axiosError.code === 'ERR_NETWORK') {
-        ToastService.dangerToast('Koneksi ke server terputus/tidak ada. Periksa koneksi internet atau server Anda.')
+        VTToastService.error('Koneksi ke server terputus/tidak ada. Periksa koneksi internet atau server Anda.')
         return err
       }
 
@@ -36,7 +36,7 @@ axios.interceptors.response.use(
       const axiosResponse = axiosError.response as AxiosResponse
       if (axiosResponse) {
         if (axiosResponse.status == 401) {
-          // ToastService.dangerToast(axiosError.message)
+          // VTToastService.danger(axiosError.message)
           return err
         }
 
@@ -51,7 +51,7 @@ axios.interceptors.response.use(
 
         if (axiosResponse.status == 503) {
           onError()
-          // ToastService.dangerToast(response.messages.err);
+          // VTToastService.danger(response.messages.err);
           // const router = useRouter();
           // router.push(`/error-page${axiosResponse.status}`);
           return err
@@ -67,7 +67,7 @@ axios.interceptors.response.use(
       }
     } catch (error) {
       const err = error as Error
-      ToastService.dangerToast(err.message)
+      VTToastService.error(err.message)
     }
   },
 )

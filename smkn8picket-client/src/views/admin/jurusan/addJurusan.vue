@@ -3,11 +3,12 @@ import { useRouter } from "vue-router";
 import AdminLayout from "@/components/layouts/AdminLayout.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import { reactive } from "vue";
-import { ToastService, DepartmentService } from "@/services";
+import { DepartmentService } from "@/services";
 import { Helper, type ErrorDetail } from "@/commons";
 import { FwbCard, FwbTextarea, FwbButton } from 'flowbite-vue'
 import type { Department } from "@/models";
 import VTInput from '@/components/VTInput/VTInput.vue'
+import { VTToastService } from "@ocph23/vtocph23";
 
 const router = useRouter();
 
@@ -20,13 +21,13 @@ const addData = async () => {
   try {
     const response = await DepartmentService.post(data.form);
     if (response.isSuccess) {
-      ToastService.successToast("Data berhasil disimpan.");
+      VTToastService.success("Data berhasil disimpan.");
       router.push({ path: "/admin/Jurusan" });
     } else {
       const error = response.error;
       if (error && error.errors) {
         data.errors = error.errors;
-        ToastService.dangerToast(Helper.readError(error.errors, "Message"));
+        VTToastService.error(Helper.readError(error.errors, "Message"));
       }
     }
   } catch (error) {

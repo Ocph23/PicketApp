@@ -27,7 +27,7 @@
         <fwb-table-cell>{{ absen.className }} - {{ absen.departmentName }}</fwb-table-cell>
         <fwb-table-cell>{{ DateTime.fromJSDate(new Date(absen.timeIn)).toFormat("HH:mm:ss") }}</fwb-table-cell>
         <fwb-table-cell>{{ absen.timeOut ? DateTime.fromJSDate(new Date(absen.timeOut)).toFormat("HH:mm:ss") : "-"
-          }}</fwb-table-cell>
+        }}</fwb-table-cell>
         <fwb-table-cell>{{ Helper.getAttendanceStatus(absen.status) }}</fwb-table-cell>
         <fwb-table-cell>
           <button @click="confirmDelete(absen)" class="text-white flex">
@@ -77,17 +77,18 @@ import {
   FwbTableHeadCell,
   FwbTableHead,
   FwbModal,
-  FwbHeading, FwbInput, FwbTextarea, FwbButton
+  FwbHeading, FwbTextarea, FwbButton
 } from 'flowbite-vue'
 import { forEach, groupBy } from 'lodash';
 import { ref } from 'vue';
 import AddIcon from '@/components/icons/AddIcon.vue';
 import AutoComplete from '@/components/AutoComplete.vue';
 import type StudentAttendanceRequest from '@/models/Requests/StudentAttendanceRequest';
-import { DialogService, StudentAttendanceService, ToastService } from '@/services';
+import { DialogService, StudentAttendanceService } from '@/services';
 import DeleteIcon from '@/components/icons/DeleteIcon.vue';
 import { DateTime } from 'luxon';
 import VTInput from '@/components/VTInput/VTInput.vue';
+import { VTToastService } from '@ocph23/vtocph23';
 
 const props = defineProps<{ picket: Picket, canAdd: boolean }>()
 const model = ref<StudentAttendanceRequest>({} as StudentAttendanceRequest);
@@ -142,9 +143,9 @@ const save = async (request: StudentAttendanceRequest) => {
     const data = response.data as StudentAttendance;
     datas.value?.push(data);
     modal.value = false;
-    ToastService.successToast("Berhasil Menambahkan Absen");
+    VTToastService.success("Berhasil Menambahkan Absen");
   } else {
-    ToastService.dangerToast(response.error?.detail ?? 'Gagal Menambahkan Absen');
+    VTToastService.error(response.error?.detail ?? 'Gagal Menambahkan Absen');
   }
 }
 
@@ -157,9 +158,9 @@ const confirmDelete = (attendance: StudentAttendance) => {
       if (i !== undefined && i !== -1) {
         datas.value?.splice(i, 1);
       }
-      ToastService.successToast("Berhasil Menghapus Data Absen")
+      VTToastService.success("Berhasil Menghapus Data Absen")
     } else {
-      ToastService.dangerToast("Gagal Menghapus Data Absen")
+      VTToastService.error("Gagal Menghapus Data Absen")
     }
   })
 }

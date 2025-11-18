@@ -121,7 +121,7 @@ const showData = () => {
     if (response.isSuccess) {
       classrooms.value = response.data as ClassRoom[]
     } else {
-      ToastService.dangerToast(Helper.readDetailError(response.error as ErrorResponse))
+      VTToastService.error(Helper.readDetailError(response.error as ErrorResponse))
     }
   })
 }

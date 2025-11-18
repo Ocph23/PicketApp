@@ -133,7 +133,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { DialogService, ToastService, TeacherService, ScheduleService, SchoolYearService } from '@/services'
+import { DialogService, TeacherService, ScheduleService, SchoolYearService } from '@/services'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import { Helper, type Dictionary } from '@/commons'
 import type { Schedule, SchoolYear, Teacher } from '@/models'
@@ -154,7 +154,7 @@ import {
 } from 'flowbite-vue'
 
 import PiketSchedulePrint from '@/views/shared/PiketSchedulePrint.vue'
-import { VTCard } from '@ocph23/vtocph23'
+import { VTCard, VTToastService } from '@ocph23/vtocph23'
 
 const route = useRoute()
 const modal = ref(false)
@@ -232,9 +232,9 @@ const addTeacherToSchedule = async (teacher: Teacher) => {
     schedule.photo = teacher.photo
     schedules.value[weekName].push(schedule)
     modal.value = false
-    ToastService.successToast('Data berhasil disimpan !')
+    VTToastService.success('Data berhasil disimpan !')
   } else {
-    ToastService.dangerToast('Data gagal disimpan !')
+    VTToastService.error('Data gagal disimpan !')
   }
 }
 
@@ -271,11 +271,11 @@ const deleteData = (schedule: Schedule) => {
   DialogService.showDialog('Yakin Hapus Data ?', schedule.id, 'danger').then(() => {
     ScheduleService.delete(schedule.id).then((deleteResponse) => {
       if (deleteResponse.isSuccess) {
-        ToastService.successToast('Data berhasil dihapus')
+        VTToastService.success('Data berhasil dihapus')
         const index = schedules.value[schedule.dayOfWeek].indexOf(schedule)
         schedules.value[schedule.dayOfWeek].splice(index, 1)
       } else {
-        ToastService.dangerToast('Data gagal dihapus')
+        VTToastService.error('Data gagal dihapus')
       }
     })
   })

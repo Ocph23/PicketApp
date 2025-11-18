@@ -113,7 +113,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { DialogService, ToastService, ClassRoomService, SchoolYearService } from '@/services'
+import { DialogService, ClassRoomService, SchoolYearService } from '@/services'
 import AutoComplete from '@/components/AutoComplete.vue'
 import { Helper, type ErrorResponse } from '@/commons'
 import { AddIcon, DeleteIcon } from '@/components/icons'
@@ -138,6 +138,7 @@ import { PrinterIcon } from '@heroicons/vue/24/solid'
 import { DateTime } from 'luxon'
 import AuthService from '@/services/AuthService'
 import PrintStore from '@/stores/PrintModelStore';
+import { VTToastService } from '@ocph23/vtocph23'
 const printStore = PrintStore();
 
 const props = defineProps({
@@ -177,7 +178,7 @@ const showPrint = ref(false)
 try {
   ClassRoomService.getById(props.classroomId).then((response) => {
     if (!response.isSuccess) {
-      ToastService.dangerToast('Data tidak ditemukan')
+      VTToastService.error('Data tidak ditemukan')
       return
     }
     classroom.value = response.data as ClassRoom
@@ -218,10 +219,10 @@ const addClassroom = async () => {
           classroom.value.students.push(student)
           showModal.value = false
           resetForm()
-          ToastService.successToast('Data berhasil tambahkan')
+          VTToastService.success('Data berhasil tambahkan')
         } else {
           data.error = response.error as ErrorResponse;
-          ToastService.dangerToast(Helper.readDetailError(data.error))
+          VTToastService.error(Helper.readDetailError(data.error))
         }
       })
     }
@@ -288,7 +289,7 @@ const deleteData = async (student: Student) => {
     try {
       const response = await ClassRoomService.removeStudent(classroom.value.id, student.id)
       if (response.isSuccess) {
-        ToastService.successToast('Data berhasil dihapus.')
+        VTToastService.success('Data berhasil dihapus.')
         const index = classroom.value.students.indexOf(student)
         classroom.value.students.splice(index, 1)
       }

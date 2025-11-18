@@ -110,7 +110,7 @@ const openPicket = async () => {
     data.picket = response.data as Picket
     showMessage.value = false;
   } else {
-    ToastService.dangerToast(response.error != null ? response.error.detail : '')
+    VTToastService.error(response.error != null ? response.error.detail : '')
   }
 }
 

@@ -1,6 +1,6 @@
 import type { AuthResponse } from '@/models'
-import { ToastService } from '@/services'
 import AdminView from '@/views/admin/AdminView.vue'
+import { VTToastService } from '@ocph23/vtocph23'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -206,7 +206,7 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach(async (to: { matched: any[]; path: string }) => {
+router.beforeEach(async (to: { matched: { path: string }[]; path: string }) => {
   const token = localStorage.getItem('authToken')
   const auth = JSON.parse(token as string) as AuthResponse
   // const publicPages = ['/login', '/walikelas/login']
@@ -227,21 +227,21 @@ router.beforeEach(async (to: { matched: any[]; path: string }) => {
 
   if (auth && to.matched.find((x) => x.path == '/admin')) {
     if (auth.loginAs != 'Administrator') {
-      ToastService.dangerToast('Maaf anda tidak memiliki akses ke halaman ini')
+      VTToastService.error('Maaf anda tidak memiliki akses ke halaman ini')
       return '/login'
     }
   }
 
   if (auth && to.matched.find((x) => x.path == '/walikelas')) {
     if (auth.loginAs != 'WaliKelas') {
-      ToastService.dangerToast('Maaf anda tidak memiliki akses ke halaman ini')
+      VTToastService.error('Maaf anda tidak memiliki akses ke halaman ini')
       return '/login'
     }
   }
 
   if (auth && to.matched.find((x) => x.path == '/piket')) {
     if (!auth.isTeacherPicket) {
-      ToastService.dangerToast('Maaf anda tidak memiliki akses ke halaman ini')
+      VTToastService.error('Maaf anda tidak memiliki akses ke halaman ini')
       return '/login'
     }
   }

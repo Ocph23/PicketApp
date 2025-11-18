@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <PageHeader title="Data Absen" class="mt-5">
       <div class="flex justify-between gap-2">
         <div class="mb-4">
@@ -32,7 +31,7 @@
             Date(absen.timeIn)).toFormat("HH:mm:ss") }}</span>
           </fwb-table-cell>
           <fwb-table-cell>{{ absen.timeOut ? DateTime.fromJSDate(new Date(absen.timeOut)).toFormat("HH:mm:ss") : "-"
-          }}</fwb-table-cell>
+            }}</fwb-table-cell>
           <fwb-table-cell>
 
           </fwb-table-cell>

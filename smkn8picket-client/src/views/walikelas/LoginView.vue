@@ -36,7 +36,7 @@ import type { LoginRequest } from '@/models/Requests'
 import type { AuthResponse, } from '@/models'
 import { FwbCard, FwbHeading, FwbInput } from 'flowbite-vue'
 import { Helper } from '@/commons'
-import { ToastService } from '@/services'
+import {  ToastService } from '@/services'
 
 const loginRequest = ref({} as LoginRequest)
 const errorMessage = ref('')
@@ -55,7 +55,7 @@ const login = async () => {
         localStorage.setItem('authToken', JSON.stringify(auth))
         router.push('/walikelas/home')
       } else {
-        ToastService.dangerToast("Maaf anda belum pernah menjadi wali kelas, silahkan hubungi admin sekolah untuk mengaktifkan akun anda sebagai wali kelas.")
+        VTToastService.error("Maaf anda belum pernah menjadi wali kelas, silahkan hubungi admin sekolah untuk mengaktifkan akun anda sebagai wali kelas.")
         router.push('/walikelas/login')
       }
 

@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
-import { DialogService, ToastService, DepartmentService } from '@/services'
+import { DialogService, DepartmentService } from '@/services'
 import { DeleteIcon, AddIcon, EditIcon } from '@/components/icons'
 
 import {
@@ -13,6 +13,7 @@ import {
   VTModal,
   VTTable,
   VTTextArea,
+  VTToastService,
   type VTTableColumn,
 } from '@ocph23/vtocph23'
 import type { Department } from '@/models'
@@ -66,7 +67,7 @@ const deleteData = async (department: Department) => {
     try {
       const response = await DepartmentService.delete(department.id)
       if (response.isSuccess) {
-        ToastService.successToast('Data berhasil dihapus.')
+        VTToastService.success('Data berhasil dihapus.')
         const index = data.departments.indexOf(department)
         data.departments.splice(index, 1)
       }
@@ -86,7 +87,7 @@ const saveData = async () => {
     if (data.form.id) {
       const response = await DepartmentService.put(data.form.id, data.form)
       if (response.isSuccess) {
-        ToastService.successToast('Data berhasil diubah')
+        VTToastService.success('Data berhasil diubah')
         const department = data.departments.find((x) => x.id == data.form.id)
         if (department) {
           department.name = data.form.name
@@ -99,23 +100,23 @@ const saveData = async () => {
         showModal.value = false
       } else {
         const err = response.error as ErrorResponse
-        ToastService.dangerToast(Helper.readDetailError(err))
+        VTToastService.error(Helper.readDetailError(err))
       }
     } else {
       const response = await DepartmentService.post(data.form)
       if (response.isSuccess) {
-        ToastService.successToast('Data berhasil ditambahkan')
+        VTToastService.success('Data berhasil ditambahkan')
         data.departments.push(response.data as Department)
         departmentTable.value?.refresh()
         data.form = {} as Department
         showModal.value = false
       } else {
         const err = response.error as ErrorResponse
-        ToastService.dangerToast(Helper.readDetailError(err))
+        VTToastService.error(Helper.readDetailError(err))
       }
     }
   } catch {
-    ToastService.dangerToast('Terjadi kesalahan saat menambahkan data')
+    VTToastService.error('Terjadi kesalahan saat menambahkan data')
   }
 }
 
@@ -127,12 +128,8 @@ onMounted(getData)
       <template #right-side>
         <AddIcon class="w-7 h-7 cursor-pointer" @click="showModal = true" />
       </template>
-      <VTTable
-        ref="departmentTable"
-        :columns="departmentColumns"
-        :source="data.departments"
-        table-name="departmentTable"
-      >
+      <VTTable ref="departmentTable" :columns="departmentColumns" :source="data.departments"
+        table-name="departmentTable">
         <template #actions="row">
           <div class="flex items-center space-x-2">
             <button class="text-white flex" @click="editData(row.data)">
@@ -159,37 +156,24 @@ onMounted(getData)
         <!-- Input Tahun -->
 
         <div class="mb-5">
-          <VTInput
-            v-model="data.form.name"
-            placeholder="Nama Jurusan"
-            label="Nama Jurusan"
-            required
-          />
+          <VTInput v-model="data.form.name" placeholder="Nama Jurusan" label="Nama Jurusan" required />
         </div>
 
         <div class="mb-5">
           <VTInput v-model="data.form.initial" placeholder="Inisial" label="Inisial" required />
         </div>
         <div class="mb-5">
-          <VTTextArea
-            v-model="data.form.description"
-            placeholder="Deskripsi Jurusan"
-            label="Deskripsi Jurusan"
-            required
-          />
+          <VTTextArea v-model="data.form.description" placeholder="Deskripsi Jurusan" label="Deskripsi Jurusan"
+            required />
         </div>
 
         <!-- Tombol Update -->
         <div class="flex justify-end gap-2">
-          <VTButton
-            color="red"
-            @click="
-              () => {
-                showModal = false
-              }
-            "
-            >Batal</VTButton
-          >
+          <VTButton color="red" @click="
+            () => {
+              showModal = false
+            }
+          ">Batal</VTButton>
           <VTButtonSave type="submit">Simpan</VTButtonSave>
         </div>
       </form>

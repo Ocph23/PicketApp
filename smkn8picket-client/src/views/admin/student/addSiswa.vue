@@ -47,14 +47,14 @@
 import { useRouter } from 'vue-router'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import { reactive } from 'vue'
-import { StudentService, ToastService } from '@/services'
+import { StudentService } from '@/services'
 import { Helper } from '@/commons'
 import { FwbCard, FwbButton, FwbTextarea } from 'flowbite-vue'
 import PageHeader from '@/components/PageHeader.vue'
 import type { Student } from '@/models'
 import { DateTime } from 'luxon'
 import VTInput from '@/components/VTInput/VTInput.vue'
-import { VTSelect } from '@ocph23/vtocph23'
+import { VTSelect, VTToastService } from '@ocph23/vtocph23'
 
 const router = useRouter()
 
@@ -83,10 +83,10 @@ const addData = async () => {
     const student = collectStudent(data.formData)
     const response = await StudentService.post(student)
     if (response.isSuccess) {
-      ToastService.successToast('Data berhasil disimpan.')
+      VTToastService.success('Data berhasil disimpan.')
       router.push({ path: '/admin/siswa' })
     } else {
-      ToastService.dangerToast(Helper.readError(data.errors, 'Message'))
+      VTToastService.error(Helper.readError(data.errors, 'Message'))
     }
   } catch (error) {
     console.error('Error adding data:', error)

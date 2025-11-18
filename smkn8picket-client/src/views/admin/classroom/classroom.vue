@@ -160,7 +160,6 @@ import { ref, reactive, computed } from 'vue'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import FwbModalCustome from '@/components/FwbModalCustome.vue'
 import {
-  ToastService,
   ClassRoomService,
   DepartmentService,
   TeacherService,
@@ -170,25 +169,17 @@ import {
 import { Helper, type ErrorResponse, type RequestResponse } from '@/commons'
 import AutoComplete from '@/components/AutoComplete.vue'
 import { DeleteIcon, EditIcon, AddIcon, DetailIcon } from '@/components/icons'
-import PageHeader from '@/components/PageHeader.vue'
 import type { ClassRoomRequest, ClassRoom, Department, Teacher, AutoCompleteSuggestion, SchoolYear } from '@/models'
 import AutoCompleteStore from '@/stores/AutoCompleteStore'
 
 import {
   FwbButton,
-  FwbInput, FwbSelect,
-  FwbTable,
-  FwbTableBody,
-  FwbTableCell,
-  FwbTableHead,
-  FwbTableHeadCell,
-  FwbTableRow,
-  FwbTooltip,
+  FwbSelect,
 } from 'flowbite-vue'
 import { InformationCircleIcon } from '@heroicons/vue/24/solid'
 import type ClassRoomFromLastClassRequest from '@/models/Requests/ClassRoomFromLastClassRequest'
 import VTInput from '@/components/VTInput/VTInput.vue'
-import { VTCard, VTTable, VTToolTip, type VTTableColumn } from '@ocph23/vtocph23'
+import { VTCard, VTTable, VTToastService, VTToolTip, type VTTableColumn } from '@ocph23/vtocph23'
 
 const vtTable = ref<InstanceType<typeof VTTable> | null>(null);
 const data = reactive({
@@ -245,7 +236,7 @@ const showData = () => {
       classrooms.value = response.data as ClassRoom[]
       vtTable.value?.refresh();
     } else {
-      ToastService.dangerToast(Helper.readDetailError(response.error as ErrorResponse))
+      VTToastService.error(Helper.readDetailError(response.error as ErrorResponse))
     }
   })
 }
@@ -303,9 +294,9 @@ const addClassroom = async () => {
           classrooms.value.push(response.data as ClassRoom)
           isShowModal.value = false
           resetForm()
-          ToastService.successToast('Data berhasil tambahkan')
+          VTToastService.success('Data berhasil tambahkan')
         } else {
-          ToastService.dangerToast(Helper.readDetailError(response.error as ErrorResponse))
+          VTToastService.error(Helper.readDetailError(response.error as ErrorResponse))
         }
       })
     } else {
@@ -319,11 +310,11 @@ const addClassroom = async () => {
           selectedClassRoom.departmentId = Number(form.value.departmentId)
           selectedClassRoom.classLeaderId = form.value.classLeader.id
           selectedClassRoom.homeRoomTeacherId = form.value.homeRoomTeacher.id
-          ToastService.successToast('Data berhasil diubah')
+          VTToastService.success('Data berhasil diubah')
           resetForm()
         } else {
           const err = response.error as ErrorResponse
-          ToastService.dangerToast(Helper.readDetailError(err))
+          VTToastService.error(Helper.readDetailError(err))
         }
       })
     }
@@ -379,9 +370,9 @@ const deleteData = (id: number) => {
   DialogService.showDialog('Yakin hapus data ? ', null, 'danger').then(async () => {
     const deleted = await ClassRoomService.delete(id)
     if (deleted) {
-      ToastService.successToast('Data berhasil di hapus.')
+      VTToastService.success('Data berhasil di hapus.')
     } else {
-      ToastService.dangerToast('Data gagal berhasil di hapus.')
+      VTToastService.error('Data gagal berhasil di hapus.')
     }
   })
 }
@@ -411,12 +402,12 @@ const createClassRoom = () => {
 
   ClassRoomService.createNewClassFromClassRoom(formData).then((response) => {
     if (response.isSuccess) {
-      ToastService.successToast('Kelas baru berhasil dibuat.')
+      VTToastService.success('Kelas baru berhasil dibuat.')
       showData()
       isShowCreateNewClassRoomModal.value = false
       resetForm()
     } else {
-      ToastService.dangerToast(Helper.readDetailError(response.error as ErrorResponse))
+      VTToastService.error(Helper.readDetailError(response.error as ErrorResponse))
     }
   })
 }

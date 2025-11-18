@@ -57,17 +57,16 @@
 
     <!-- <classroomabsenprint :classroom="classroom" v-if="showPrint"></classroomabsenprint> -->
   </AdminLayout>
-  <TeacherAttendanceReportPrint v-if="displayData?.length" 
-    :pickets="source?.pickets"
-    :jenis="Helper.jobStatus.find(x=>x.value==jobStatusSelected)?.name ||'semua'"
-    :bulan="months.find(x=>x.value==selectedMontAndYear.month)?.name"
-     :tahun="selectedMontAndYear.year" :attendances="displayData">
+  <TeacherAttendanceReportPrint v-if="displayData?.length" :pickets="source?.pickets"
+    :jenis="Helper.jobStatus.find(x => x.value == jobStatusSelected)?.name || 'semua'"
+    :bulan="months.find(x => x.value == selectedMontAndYear.month)?.name" :tahun="selectedMontAndYear.year"
+    :attendances="displayData">
   </TeacherAttendanceReportPrint>
 </template>
 
 <script setup lang="ts">
 import { Helper } from '@/commons'
-import { TeacherAttendanceService, ToastService } from '@/services'
+import { TeacherAttendanceService, } from '@/services'
 import { ref } from 'vue'
 
 import TeacherAttendanceReportPrint from '@/views/shared/TeacherAttendanceReportPrint.vue'
@@ -87,8 +86,7 @@ import { PrinterIcon } from '@heroicons/vue/24/solid'
 import type PrintAbsenModel from '@/models/AbsenPrintModel'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import type { TeacherAttendanceReport } from '@/models'
-import { VTCard, VTIconPrint, VTSelect } from '@ocph23/vtocph23'
-import { helpers } from '@vuelidate/validators'
+import { VTCard, VTIconPrint, VTSelect, VTToastService } from '@ocph23/vtocph23'
 // import PrintStore from '@/stores/PrintModelStore'
 // const printStore = PrintStore()
 
@@ -127,7 +125,7 @@ const selectedMontAndYear = ref({ month: '', year: '' })
 
 const cariAbsen = () => {
   if (!selectedMontAndYear.value.month || !selectedMontAndYear.value.year) {
-    ToastService.warningToast('Anda Harus Memilih Bulan dan Tahun')
+    VTToastService.warning('Anda Harus Memilih Bulan dan Tahun')
     return
   }
 
@@ -153,7 +151,7 @@ const print = () => {
   }, 1000)
 }
 
-const filterPegawai = (data: any) => {
+const filterPegawai = (data: unknown) => {
   displayData.value = source.value?.attendances.filter(x => x.jobStatus == data);
 }
 

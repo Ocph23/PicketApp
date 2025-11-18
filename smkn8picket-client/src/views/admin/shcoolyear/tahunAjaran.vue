@@ -70,7 +70,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
-import { DialogService, SchoolYearService, ToastService } from '@/services'
+import { DialogService, SchoolYearService } from '@/services'
 import { AddIcon } from '@/components/icons'
 import type { SchoolYear } from '@/models'
 import {
@@ -84,6 +84,7 @@ import {
   VTModal,
   VTSelect,
   VTTable,
+  VTToastService,
   type VTTableColumn,
 } from '@ocph23/vtocph23'
 import { Helper, type ErrorResponse } from '@/commons'
@@ -149,29 +150,29 @@ const saveData = async () => {
 
       const response = await SchoolYearService.put(form.value.id, schoolYear)
       if (response.isSuccess) {
-        ToastService.successToast('Data berhasil diubah')
+        VTToastService.success('Data berhasil diubah')
         vtTable.value?.refresh()
         form.value = {} as SchoolYear
         showEditModal.value = false
       } else {
         const err = response.error as ErrorResponse
-        ToastService.dangerToast(Helper.readDetailError(err))
+        VTToastService.error(Helper.readDetailError(err))
       }
     } else {
       const response = await SchoolYearService.post(schoolYear)
       if (response.isSuccess) {
-        ToastService.successToast('Data berhasil ditambahkan')
+        VTToastService.success('Data berhasil ditambahkan')
         data.schoolYears.push(response.data as SchoolYear)
         vtTable.value?.refresh()
         form.value = {} as SchoolYear
         showEditModal.value = false
       } else {
         const err = response.error as ErrorResponse
-        ToastService.dangerToast(Helper.readDetailError(err))
+        VTToastService.error(Helper.readDetailError(err))
       }
     }
   } catch {
-    ToastService.dangerToast('Terjadi kesalahan saat menambahkan data')
+    VTToastService.error('Terjadi kesalahan saat menambahkan data')
   }
 }
 
@@ -180,7 +181,7 @@ const deleteData = async (schoolYear: SchoolYear) => {
   try {
     const response = await SchoolYearService.delete(schoolYear.id)
     if (response.isSuccess) {
-      ToastService.successToast('Data berhasil dihapus.')
+      VTToastService.success('Data berhasil dihapus.')
       const index = data.schoolYears.indexOf(schoolYear)
       data.schoolYears.splice(index, 1)
       vtTable.value?.refresh()

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import './commons/axioInterceptors'
-import { ToasProvider, DialogProvider } from '@/commons';
+import { VTBusyProgressView, VTDialogView, VTToastView } from '@ocph23/vtocph23';
 
 </script>
 
 <template>
-  <DialogProvider />
-  <ToasProvider />
+  <VTBusyProgressView />
+  <VTDialogView />
+  <VTToastView />
   <RouterView />
 </template>
 

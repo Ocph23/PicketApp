@@ -81,7 +81,7 @@ import AuthService from '@/services/AuthService';
 import { FwbHeading, FwbDropdown, FwbButton, FwbModal } from 'flowbite-vue';
 import { onMounted, ref } from 'vue';
 import VTInput from '../VTInput/VTInput.vue';
-import { DialogService, ToastService } from '@/services';
+import { VTDialogService, VTToastService } from '@ocph23/vtocph23';
 
 const emit = defineEmits(['onClickMenu', 'onClickLogout'])
 
@@ -104,7 +104,7 @@ const clickMenu = () => {
 }
 
 const logout = () => {
-  DialogService.showDialog('Yakin keluar ?', null, 'warning').then(() => {
+  VTDialogService.asyncShowDialog('Perhatian', 'Yakin keluar ?', null, 'warning').then(() => {
     localStorage.removeItem('authToken')
     window.location.href = '/login'
   })
@@ -198,13 +198,13 @@ const changePassword = () => {
 
     AuthService.changePassword(form.value.userName, form.value.token, form.value.password).then((res) => {
       if (res.isSuccess) {
-        ToastService.successToast("Password berhasil diubah");
+        VTToastService.success("Password berhasil diubah");
         changePasswordModal.value = false;
       }
     })
   } catch (error) {
     const err = error as Error;
-    ToastService.dangerToast(err.message);
+    VTToastService.error(err.message);
   }
 
 }

@@ -21,8 +21,7 @@
             <VTInput label="Nama" type="text" v-model="data.form.name" required />
           </div>
           <div class="mb-4">
-            <VTSelect :options="Helper.genders" label="Jenis Kelamin" type="text" v-model="data.form.gender"
-              required />
+            <VTSelect :options="Helper.genders" label="Jenis Kelamin" type="text" v-model="data.form.gender" required />
           </div>
           <div class="mb-4">
             <VTInput label="Tempat Lahir" type="text" v-model="data.form.placeOfBorn" required />
@@ -57,15 +56,15 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ToastService, StudentService } from '@/services'
+import { StudentService } from '@/services'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import { Helper, type ErrorResponse } from '@/commons'
-import { FwbCard, FwbButton, FwbSelect, FwbTextarea } from 'flowbite-vue'
+import { FwbCard, FwbButton, FwbTextarea } from 'flowbite-vue'
 import PageHeader from '@/components/PageHeader.vue'
 import type { Student } from '@/models'
 import { DateTime } from 'luxon'
 import VTInput from '@/components/VTInput/VTInput.vue'
-import { VTSelect } from '@ocph23/vtocph23'
+import { VTSelect, VTToastService } from '@ocph23/vtocph23'
 
 // const activeTab = ref('biodata')
 
@@ -107,12 +106,12 @@ const updateStudent = async () => {
     const siswa = collectStudent(data.form)
     const response = await StudentService.put(studentId, siswa)
     if (response.isSuccess) {
-      ToastService.successToast('Data berhasil disimpan.')
+      VTToastService.success('Data berhasil disimpan.')
       router.push({ path: '/admin/siswa' })
     } else {
       console.log('API Error Response:', response.error)
       data.error = response.error as ErrorResponse
-      ToastService.dangerToast(Helper.readError(data.error.errors, 'Message'))
+      VTToastService.error(Helper.readError(data.error.errors, 'Message'))
     }
   } catch (error) {
     console.error('Error saving teacher data:', error)
@@ -130,10 +129,10 @@ const updateStudent = async () => {
 //         imageSrc.value = 'data:image/png;base64,' + base64
 //         const response = await StudentService.updateFoto(data.form.id, base64)
 //         if (response.isSuccess) {
-//           ToastService.successToast('Photo berhasil diganti !')
+//           VTToastService.success('Photo berhasil diganti !')
 //         } else {
 //           const x = response.error as ErrorResponse
-//           ToastService.dangerToast(x.detail)
+//           VTToastService.error(x.detail)
 //         }
 //       })
 //     }
@@ -154,11 +153,11 @@ const changePhoto = async () => {
 
         const response = await StudentService.updateFoto(data.form.id, base64.split(',')[1]);
         if (response.isSuccess) {
-          ToastService.successToast('Photo berhasil diganti !')
+          VTToastService.success('Photo berhasil diganti !')
         } else {
           const x = response.error as ErrorResponse
           if (x && x.detail) {
-            ToastService.dangerToast(x.detail)
+            VTToastService.error(x.detail)
           }
         }
       }
@@ -168,10 +167,10 @@ const changePhoto = async () => {
       //   imageSrc.value = 'data:image/png;base64,' + base64
       //   const response = await StudentService.updateFoto(data.form.id, base64)
       //   if (response.isSuccess) {
-      //     ToastService.successToast('Photo berhasil diganti !')
+      //     VTToastService.success('Photo berhasil diganti !')
       //   } else {
       //     const x = response.error as ErrorResponse
-      //     ToastService.dangerToast(x.detail)
+      //     VTToastService.error(x.detail)
       //   }
       // })
     }
