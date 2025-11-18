@@ -13,15 +13,11 @@
       <div class="flex  flex-col">
         <div class="flex">
           <label class="w-32 ">Bulan & Tahun</label>
-          <label for="className" class=" capitalize">: {{bulan}}/tahun</label>
+          <label for="className" class=" capitalize">: {{ bulan }} {{tahun}}</label>
         </div>
         <div class="flex">
-          <label class="w-32 ">Nama Jurusan</label>
-          <label for="className" class=" capitalize">: Terganggu</label>
-        </div>
-        <div class="flex">
-          <label class="w-32 ">Nama Jurusan</label>
-          <label for="className" class=" capitalize">: Terganggu</label>
+          <label class="w-32 ">Jenis Pegawai  </label>
+          <label for="className" class=" capitalize">: {{jenis}}</label>
         </div>
       </div>
     </div>
@@ -31,12 +27,12 @@
           <tr>
             <th class="border px-4 py-2" rowspan="2">No</th>
             <th class="border px-4 py-2" rowspan="2">Nama</th>
-            <th class="border px-4 py-2" :colspan="attendances[0].items.length">Tanggal</th>
+            <th class="border px-4 py-2">Tanggal</th>
           </tr>
           <tr>
-            <!-- <th class="border px-4 py-2" v-for="item in dates" :key="item">{{
-              new Date(item).getDate()
-            }}</th> -->
+            <th class="text-center" v-for="item in props.pickets" :key="item.id ?? 0">
+              {{ new Date(item.date).getDate() }}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -45,7 +41,7 @@
             <td class="text-left">{{ data.teacherName }}</td>
             <td class="text-center w-10" v-for="(item) in data.items" :key="item.picketId"> {{
               Helper.getAttendanceStatus(item.status, true)
-            }}</td>
+              }}</td>
           </tr>
         </tbody>
       </table>
@@ -62,20 +58,25 @@
 </template>
 
 <script setup lang="ts">
-import PrintStore from '@/stores/PrintModelStore';
 import LogoAppp from '@/components/LogoApp.vue';
 import { FwbHeading } from 'flowbite-vue';
 import { Helper } from '@/commons';
 
 
 const props = defineProps<{
-  bulan:string,
-  tahun:string,
-  jenis:string,
-  attendances: {
+  bulan?: string,
+  tahun?: string,
+  jenis?: string,
+  pickets?: {
+    id: null
+    schoolYearId: number
+    date: Date
+    endAt: string
+  }[],
+  attendances?: {
     teacherId: number
     teacherName: string
-    jobStatus : number
+    jobStatus: number
     items: {
       picketId: number
       status: number
@@ -91,6 +92,12 @@ const props = defineProps<{
 </script>
 
 <style scoped>
+
+td,th{
+  border: 1px solid rgb(222, 222, 222) !important;
+  padding: 5px !important;
+}
+
 label {
   font-size: 12px;
 }

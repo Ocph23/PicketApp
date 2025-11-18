@@ -57,9 +57,11 @@
 
     <!-- <classroomabsenprint :classroom="classroom" v-if="showPrint"></classroomabsenprint> -->
   </AdminLayout>
-  <TeacherAttendanceReportPrint v-if="displayData?.length" :jenis="''"
-    :pickets="source?.pickets??[]"
-    :bulan="selectedMontAndYear.month" , :tahun="selectedMontAndYear.year" :attendances="displayData ?? []">
+  <TeacherAttendanceReportPrint v-if="displayData?.length" 
+    :pickets="source?.pickets"
+    :jenis="Helper.jobStatus.find(x=>x.value==jobStatusSelected)?.name ||'semua'"
+    :bulan="months.find(x=>x.value==selectedMontAndYear.month)?.name"
+     :tahun="selectedMontAndYear.year" :attendances="displayData">
   </TeacherAttendanceReportPrint>
 </template>
 
