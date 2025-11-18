@@ -7,6 +7,7 @@
     </template>
     <div class="mt-1">
       <VTTableNew
+        table-name="tbl_siswa"
         :method="'Paginate'"
         :columns="columns"
         :source="dataTable"

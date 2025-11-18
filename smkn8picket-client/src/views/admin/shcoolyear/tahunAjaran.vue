@@ -4,13 +4,8 @@
       <template #right-side>
         <AddIcon @click="editModal(null)" class="w-7 h-7 cursor-pointer" />
       </template>
-      <VTTable
-        :table-name="'tabel_ta'"
-        :bordered="true"
-        ref="vtTable"
-        :source="data.schoolYears"
-        :columns="teacherColumns"
-      >
+      <VTTable :table-name="'tabel_ta'" :bordered="true" ref="vtTable" :source="data.schoolYears"
+        :columns="teacherColumns">
         <template #no="row">
           {{ row.index + 1 }}
         </template>
@@ -19,19 +14,9 @@
         </template>
         <template #action="row">
           <div class="flex items-center gap-2">
-            <VTButtonAction
-              @click="editModal(row.data)"
-              :style="'warning'"
-              :type="'edit'"
-              class="text-white flex"
-            >
+            <VTButtonAction @click="editModal(row.data)" :style="'warning'" :type="'edit'" class="text-white flex">
             </VTButtonAction>
-            <VTButtonAction
-              :type="'delete'"
-              :style="'danger'"
-              @click="confirmDelete(row.data)"
-              class="text-white flex"
-            >
+            <VTButtonAction :type="'delete'" :style="'danger'" @click="confirmDelete(row.data)" class="text-white flex">
             </VTButtonAction>
             <router-link :to="`/admin/Jadwal/${row.id}`">
               <VTButtonAction :type="'default'" :style="'info'" class="text-white flex">
@@ -58,40 +43,24 @@
 
         <!-- Input Semester -->
         <div class="mb-5">
-          <VTInput
-            v-model="form.semester"
-            type="number"
-            placeholder="Semester"
-            label="Semester"
-            required
-          />
+          <VTInput v-model="form.semester" type="number" placeholder="Semester" label="Semester" required />
         </div>
 
         <!-- Status Aktif -->
         <div class="mb-5">
-          <VTSelect
-            v-model="form.actived"
-            :options="[
-              { name: 'Aktif', value: 'true' },
-              { name: 'Tidak Aktif', value: 'false' },
-            ]"
-            placeholder="Pilih Status"
-            label="Status Aktif"
-            required
-          />
+          <VTSelect v-model="form.actived" :options="[
+            { name: 'Aktif', value: 'true' },
+            { name: 'Tidak Aktif', value: 'false' },
+          ]" placeholder="Pilih Status" label="Status Aktif" required />
         </div>
 
         <!-- Tombol Update -->
         <div class="flex justify-end gap-2">
-          <VTButton
-            color="red"
-            @click="
-              () => {
-                showEditModal = false
-              }
-            "
-            >Batal</VTButton
-          >
+          <VTButton color="red" @click="
+            () => {
+              showEditModal = false
+            }
+          ">Batal</VTButton>
           <VTButtonSave type="submit">Simpan</VTButtonSave>
         </div>
       </form>
@@ -170,13 +139,13 @@ const getData = async () => {
 
 const saveData = async () => {
   try {
+    const schoolYear = {
+      id: form.value.id,
+      semester: form.value.semester,
+      year: form.value.year,
+      actived: Boolean(form.value.actived),
+    } as SchoolYear
     if (form.value.id) {
-      const schoolYear = {
-        id: form.value.id,
-        semester: form.value.semester,
-        year: form.value.year,
-        actived: Boolean(form.value.actived),
-      } as SchoolYear
 
       const response = await SchoolYearService.put(form.value.id, schoolYear)
       if (response.isSuccess) {
@@ -189,7 +158,7 @@ const saveData = async () => {
         ToastService.dangerToast(Helper.readDetailError(err))
       }
     } else {
-      const response = await SchoolYearService.post(form.value)
+      const response = await SchoolYearService.post(schoolYear)
       if (response.isSuccess) {
         ToastService.successToast('Data berhasil ditambahkan')
         data.schoolYears.push(response.data as SchoolYear)

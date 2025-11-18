@@ -272,6 +272,7 @@ namespace PiketWebApi.Services
                 {
                     TeacherId = t.Id,
                     TeacherName = t.Name,
+                    JobStatus = t.JobStatus,
                     Items = pickets.Select(p =>
                     {
                         var attendance = p.TeacherAttendances
@@ -289,8 +290,6 @@ namespace PiketWebApi.Services
                         };
                     })
                 });
-
-
 
                 TeacherAttendanceReportResponse attendanceReportResponse = new TeacherAttendanceReportResponse();
                 attendanceReportResponse.Month = month;

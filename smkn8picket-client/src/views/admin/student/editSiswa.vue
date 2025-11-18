@@ -21,7 +21,7 @@
             <VTInput label="Nama" type="text" v-model="data.form.name" required />
           </div>
           <div class="mb-4">
-            <fwb-select :options="Helper.genders" label="Jenis Kelamin" type="text" v-model="data.form.gender"
+            <VTSelect :options="Helper.genders" label="Jenis Kelamin" type="text" v-model="data.form.gender"
               required />
           </div>
           <div class="mb-4">
@@ -65,6 +65,7 @@ import PageHeader from '@/components/PageHeader.vue'
 import type { Student } from '@/models'
 import { DateTime } from 'luxon'
 import VTInput from '@/components/VTInput/VTInput.vue'
+import { VTSelect } from '@ocph23/vtocph23'
 
 // const activeTab = ref('biodata')
 

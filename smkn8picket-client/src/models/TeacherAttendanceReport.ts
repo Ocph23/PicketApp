@@ -10,6 +10,7 @@ export default interface TeacherAttendanceReport {
   attendances: {
     teacherId: number
     teacherName: string
+    jobStatus : number
     items: {
       picketId: number
       status: number

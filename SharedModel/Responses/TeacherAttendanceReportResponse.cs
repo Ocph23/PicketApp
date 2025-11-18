@@ -19,6 +19,7 @@ public class TeacherAttendanceReport
 {
     public int? TeacherId { get; set; }
     public string? TeacherName { get; set; }
+    public JobStatus JobStatus {get;set;}
     public IEnumerable<TeacherAttendaceReportItem> Items { get; set; } = new List<TeacherAttendaceReportItem>();
 
    
