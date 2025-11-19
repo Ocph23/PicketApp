@@ -113,7 +113,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { DialogService, ClassRoomService, SchoolYearService } from '@/services'
+import { ClassRoomService, SchoolYearService } from '@/services'
 import AutoComplete from '@/components/AutoComplete.vue'
 import { Helper, type ErrorResponse } from '@/commons'
 import { AddIcon, DeleteIcon } from '@/components/icons'
@@ -138,7 +138,7 @@ import { PrinterIcon } from '@heroicons/vue/24/solid'
 import { DateTime } from 'luxon'
 import AuthService from '@/services/AuthService'
 import PrintStore from '@/stores/PrintModelStore';
-import { VTToastService } from '@ocph23/vtocph23'
+import { VTDialogService, VTToastService } from '@ocph23/vtocph23'
 const printStore = PrintStore();
 
 const props = defineProps({
@@ -272,11 +272,11 @@ const resetForm = () => {
 // }
 
 const confirmDelete = (student: Student) => {
-  DialogService.showDialog(
+  VTDialogService.asyncShowDialog(
+    'Perhatian',
     `Apakah Anda yakin ingin menghapus siswa '${student.name}' dari kelas ?`,
     student,
     'warning',
-    3000,
     'Batal',
     'Hapus',
   ).then(() => {

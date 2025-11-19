@@ -104,7 +104,7 @@
     </fwb-sidebar-dropdown-item-custome>
 
 
-    <VTSidebarItem link="" @click="logout">
+    <VTSidebarItem @click="logout">
       <template #icon>
         <LockClosedIcon
           class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
@@ -119,14 +119,13 @@
 </template>
 <script setup lang="ts">
 import { CalendarIcon, HomeIcon, AcademicCapIcon, UsersIcon, TagIcon, CubeIcon, ClockIcon, ClipboardDocumentCheckIcon, LockClosedIcon } from '@heroicons/vue/24/solid'
-import { DialogService } from '@/services';
 import FwbSidebarDropdownItemCustome from '@/components/FwbSidebarDropdownItemCustome.vue'
-import { VTSidebar, VTSidebarItem } from '@ocph23/vtocph23';
+import { VTDialogService, VTSidebar, VTSidebarItem } from '@ocph23/vtocph23';
 
 
 
 const logout = () => {
-  DialogService.showDialog('Yakin keluar ?', null, 'warning').then(() => {
+  VTDialogService.asyncShowDialog('Perhatian', 'Yakin keluar ?', null, 'danger').then(() => {
     localStorage.removeItem('authToken')
     window.location.href = '/login'
   })

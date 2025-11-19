@@ -1,7 +1,7 @@
 <template>
   <AdminLayout>
     <VTCard title="Jadwal Piket" class="no-print">
-      <template #right-side>
+      <template #rightSide>
         <PrinterIcon class="w-8 h-8 cursor-pointer text-amber-400" @click="print"></PrinterIcon>
       </template>
       <h6
@@ -133,7 +133,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { DialogService, TeacherService, ScheduleService, SchoolYearService } from '@/services'
+import { TeacherService, ScheduleService, SchoolYearService } from '@/services'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
 import { Helper, type Dictionary } from '@/commons'
 import type { Schedule, SchoolYear, Teacher } from '@/models'
@@ -154,7 +154,7 @@ import {
 } from 'flowbite-vue'
 
 import PiketSchedulePrint from '@/views/shared/PiketSchedulePrint.vue'
-import { VTCard, VTToastService } from '@ocph23/vtocph23'
+import { VTCard, VTDialogService, VTToastService } from '@ocph23/vtocph23'
 
 const route = useRoute()
 const modal = ref(false)
@@ -268,7 +268,7 @@ const showModal = (dayOfWeek: number) => {
 }
 
 const deleteData = (schedule: Schedule) => {
-  DialogService.showDialog('Yakin Hapus Data ?', schedule.id, 'danger').then(() => {
+  VTDialogService.asyncShowDialog('Perhatian', 'Yakin Hapus Data ?', schedule.id, 'danger').then(() => {
     ScheduleService.delete(schedule.id).then((deleteResponse) => {
       if (deleteResponse.isSuccess) {
         VTToastService.success('Data berhasil dihapus')

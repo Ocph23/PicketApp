@@ -1,8 +1,9 @@
 <template>
   <VTCard :title="picketId ? 'Detail Piket ' : 'Piket Hari Ini'" class="no-print">
-    <template #right-side>
+    <template #rightSide>
       <PrinterIcon class="w-8 h-8 cursor-pointer text-amber-400" @click="print"></PrinterIcon>
     </template>
+
 
     <div v-if="!picketId && showMessage">
       <div class="alert alert-warning">
@@ -16,38 +17,43 @@
         </button>
       </div>
     </div>
-    <div v-if="data.picket.id">
-      <div class="space-y-3 p-4 rounded-lg shadow-md">
-        <div class="flex">
-          <label class="labelTitle dark:text-white">Tanggal</label>
-          <label class="labelValue dark:text-white">: {{ Helper.getDateTimeString(new Date(data.picket.date),
-            'dd-mm-yyyy') }}
-          </label>
+    <div>
+      <div class="flex justify-between rounded-lg shadow-md">
+        <div class="space-y-3 p-4 ">
+          <div class="flex">
+            <label class="labelTitle dark:text-white">Tanggal</label>
+            <label class="labelValue dark:text-white">:
+              {{ DateTime.fromISO(data.picket.date).setLocale('id').toFormat('cccc, dd LLLL yyyy') }}
+            </label>
+          </div>
+          <div class="flex">
+            <label class="labelTitle dark:text-white">Cuaca</label>
+            <label class="labelValue dark:text-white">: {{Helper.wheatherOptions.find(x => x.value ===
+              data.picket.weather)?.name
+              }}</label>
+          </div>
+          <div class="flex">
+            <label class="labelTitle dark:text-white">Mulai Jam</label>
+            <label class="labelValue dark:text-white">: {{ data.picket.startAt }} </label>
+          </div>
+          <div class="flex">
+            <label class="labelTitle dark:text-white">Berakhir Jam</label>
+            <label class="labelValue dark:text-white">: {{ data.picket.endAt }} </label>
+          </div>
+          <!-- <div class="flex">
+            <label class="labelTitle dark:text-white">Jumlah Guru</label>
+            <label class="labelValue dark:text-white">: </label>
+          </div>
+          <div class="flex">
+            <label class="labelTitle dark:text-white">Jumlah Siswa</label>
+            <label class="labelValue dark:text-white">: </label>
+          </div> -->
+          <div class="flex">
+            <label class="labelTitle dark:text-white">Picket Dibuka oleh</label>
+            <label class="labelValue dark:text-white">: {{ data.picket.createdName }}</label>
+          </div>
         </div>
-        <div class="flex">
-          <label class="labelTitle dark:text-white">Cuaca</label>
-          <label class="labelValue dark:text-white">: {{ Helper.getWeartherString(data.picket.weather) }}</label>
-        </div>
-        <div class="flex">
-          <label class="labelTitle dark:text-white">Mulai Jam</label>
-          <label class="labelValue dark:text-white">: {{ data.picket.startAt }} </label>
-        </div>
-        <div class="flex">
-          <label class="labelTitle dark:text-white">Berakhir Jam</label>
-          <label class="labelValue dark:text-white">: {{ data.picket.endAt }} </label>
-        </div>
-        <!-- <div class="flex">
-          <label class="labelTitle dark:text-white">Jumlah Guru</label>
-          <label class="labelValue dark:text-white">: </label>
-        </div>
-        <div class="flex">
-          <label class="labelTitle dark:text-white">Jumlah Siswa</label>
-          <label class="labelValue dark:text-white">: </label>
-        </div> -->
-        <div class="flex">
-          <label class="labelTitle dark:text-white">Picket Dibuka oleh</label>
-          <label class="labelValue dark:text-white">: {{ data.picket.createdName }}</label>
-        </div>
+        <EditIcon class="w-5 h-5 m-2 cursor-pointer text-amber-400" @click="edit"></EditIcon>
       </div>
       <div class="mt-10">
         <fwb-tabs v-model="activeTab" class="p-3">
@@ -69,8 +75,28 @@
 
   </VTCard>
 
-  <PiketTodayViewPrint v-if="showPrint" :data="data.picket"></PiketTodayViewPrint>
+  <VTModal v-if="showModal" :size="'md'" persistent>
+    <template #header> Edit Piket </template>
+    <template #body>
+      <VTInput class="mb-2" label="Tanggal" v-model="editModel.date" :type="'date'" :disabled="true"></VTInput>
+      <VTSelect class="mb-2" label="Cuaca" v-model="editModel.weather" :options="Helper.wheatherOptions">
+      </VTSelect>
+      <VTInput class="mb-2" label="Jam Mulai" v-model="editModel.startAt" :type="'time'"></VTInput>
+      <VTInput class="mb-2" label="Jam Selesai" v-model="editModel.endAt" :type="'time'"></VTInput>
+    </template>
+    <template #footer>
+      <div class="flex justify-end gap-2">
+        <VTButton :color="'alternative'" @click="showModal = false">
+          Batal
+        </VTButton>
+        <VTButtonSave @click="savePicket">
+          Simpan
+        </VTButtonSave>
+      </div>
+    </template>
+  </VTModal>
 
+  <PiketTodayViewPrint v-if="showPrint" :data="data.picket"></PiketTodayViewPrint>
 
 </template>
 
@@ -79,7 +105,7 @@ import { useRoute } from 'vue-router'
 import { ref, onMounted, reactive } from 'vue'
 import { Helper } from '@/commons'
 
-import { PicketService, ToastService } from '@/services'
+import { PicketService } from '@/services'
 import type { Picket } from '@/models'
 import type { RequestResponse } from '@/models/Responses'
 import {
@@ -93,11 +119,15 @@ import { PrinterIcon } from '@heroicons/vue/24/solid'
 import PiketTodayViewPrint from './PiketTodayViewPrint.vue'
 import StudentsLateAndComeHomeEarlyView from './StudentsLateAndComeHomeEarlyView.vue'
 import type { LateAndComeHomeEarlyResponse } from '@/models/LateAndComeHomeEarly'
-import { VTCard } from '@ocph23/vtocph23'
+import { VTButton, VTButtonSave, VTCard, VTModal, VTSelect, VTToastService } from '@ocph23/vtocph23'
+import { DateTime } from 'luxon'
+import VTInput from '@/components/VTInput/VTInput.vue'
+import EditIcon from '@/components/icons/EditIcon.vue'
 
 const activeTab = ref('kejadian')
 const systemMessage = ref('')
 const showMessage = ref(false)
+const showModal = ref(false)
 const data = reactive({ picket: { studentsLateAndComeHomeEarly: [] as LateAndComeHomeEarlyResponse[] } as Picket })
 const showPrint = ref(false)
 const isAdminOrPicket = ref(false);
@@ -124,13 +154,33 @@ onMounted(async () => {
   }
 
   if (!response.isSuccess) {
-    systemMessage.value = `Piket hari ini,  ${Helper.getIndonesiaDay(new Date().getDay())}, ${Helper.getDateTimeString(new Date(), 'dd-MM-yyyy')} belum dibuka.`
+    systemMessage.value = `Piket hari ini,  ${DateTime.fromISO(data.picket.date).setLocale('id').toFormat('cccc, dd LLLL yyyy')} belum dibuka.`
     showMessage.value = true
   } else {
     data.picket = response.data as Picket
     showMessage.value = false
   }
 })
+
+
+let editModel = reactive({} as Picket)
+const edit = () => {
+  editModel = { ...data.picket }
+  showModal.value = true
+}
+
+const savePicket = async () => {
+  const response: RequestResponse = await PicketService.putPicket(editModel.id, editModel)
+  if (response.isSuccess) {
+    showModal.value = false
+    data.picket.weather = editModel.weather
+    data.picket.startAt = editModel.startAt
+    data.picket.endAt = editModel.endAt
+    VTToastService.success('Data Piket berhasil disimpan')
+  } else {
+    VTToastService.error(response.error != null ? response.error.detail : '')
+  }
+}
 
 
 

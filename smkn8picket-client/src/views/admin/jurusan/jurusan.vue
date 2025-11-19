@@ -2,13 +2,14 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
-import { DialogService, DepartmentService } from '@/services'
+import { DepartmentService } from '@/services'
 import { DeleteIcon, AddIcon, EditIcon } from '@/components/icons'
 
 import {
   VTButton,
   VTButtonSave,
   VTCard,
+  VTDialogService,
   VTInput,
   VTModal,
   VTTable,
@@ -49,11 +50,11 @@ const getData = async () => {
 }
 
 const confirmDelete = (department: Department) => {
-  DialogService.showDialog(
+  VTDialogService.asyncShowDialog(
+    'Perhatian',
     `Apakah Anda yakin ingin menghapus jurusan ${department.name} ?`,
     department,
     'danger',
-    3000,
     'Batal',
     'Hapus',
   ).then(() => {
@@ -125,7 +126,7 @@ onMounted(getData)
 <template>
   <AdminLayout>
     <VTCard title="Data Jurusan">
-      <template #right-side>
+      <template #rightSide>
         <AddIcon class="w-7 h-7 cursor-pointer" @click="showModal = true" />
       </template>
       <VTTable ref="departmentTable" :columns="departmentColumns" :source="data.departments"

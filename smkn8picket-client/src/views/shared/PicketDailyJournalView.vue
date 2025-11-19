@@ -4,86 +4,61 @@
       <AddIcon @click="createNew" class="w-7 h-7" />
     </button>
   </PageHeader>
-  <fwb-table>
-    <fwb-table-head>
-      <fwb-table-head-cell>No</fwb-table-head-cell>
-      <fwb-table-head-cell>Waktu</fwb-table-head-cell>
-      <fwb-table-head-cell>Judul</fwb-table-head-cell>
-      <fwb-table-head-cell>Kejadian</fwb-table-head-cell>
-      <fwb-table-head-cell>Dibuat Oleh</fwb-table-head-cell>
-      <fwb-table-head-cell></fwb-table-head-cell>
-    </fwb-table-head>
-    <fwb-table-body>
-      <fwb-table-row v-for="(journal, index) in datas" :key="journal.id">
-        <fwb-table-cell>
-          {{ index + 1 }}
-        </fwb-table-cell>
-        <fwb-table-cell>{{ Helper.getDateTimeString(new Date(journal.createAt), 'HH:mm:ss') }}</fwb-table-cell>
-        <fwb-table-cell>{{ journal.title }}</fwb-table-cell>
-        <fwb-table-cell>{{ journal.content }}</fwb-table-cell>
-        <fwb-table-cell>{{ journal.teacherName }}</fwb-table-cell>
-        <fwb-table-cell>
-          <div class="flex items-center" v-if="journal.teacherId === teacherLoginId">
-            <button class="text-white flex" @click="edit(journal)">
-              <EditIcon />
-            </button>
-            <button @click="confirmDelete(journal)" class="text-white flex">
-              <DeleteIcon />
-            </button>
-          </div>
-        </fwb-table-cell>
-      </fwb-table-row>
-    </fwb-table-body>
-  </fwb-table>
 
-  <FwbModal class="modal opacity-[99%]" v-if="modal" :size="'3xl'" @close="modal = false" :persistent="true">
+  <VTTableNew method="All" :source="dataTable" :columns="tableColumns" :hovered="false">
+    <template #no="item">
+      {{ item.index + 1 }}
+    </template>
+    <template #waktu="item">
+      {{ DateTime.fromISO(item.data.createAt).toFormat('HH:mm:ss') }}
+    </template>
+    <template #actions="item">
+      <div class="flex items-center" v-if="item.data.teacherId === teacherLoginId">
+        <button class="text-white flex" @click="edit(item.data)">
+          <EditIcon />
+        </button>
+        <button @click="confirmDelete(item.data)" class="text-white flex">
+          <DeleteIcon />
+        </button>
+      </div>
+    </template>
+  </VTTableNew>
+
+  <VTModal class="modal opacity-[99%]" v-if="modal" :size="'3xl'" @close="modal = false" :persistent="true">
     <template #header>
-      <FwbHeading tag="h3" class="text-lg pb-3 font-bold">
+      <h3 tag="h3" class="text-lg pb-3 font-bold">
         {{ formTitle }} Catatan Kejadian
-      </FwbHeading>
+      </h3>
     </template>
 
     <template #body>
       <form class="flex flex-col gap-3" @submit.prevent="saveJurnal(model)">
         <VTInput v-model="model.createAt" label="Waktu" :type="'datetime-local'" required />
-        <FwbInput v-model="model.title" label="Judul" type="text" required></FwbInput>
-        <FwbTextarea v-model="model.content" label="Kejadian" required></FwbTextarea>
+        <VTInput v-model="model.title" label="Judul" type="text" required></VTInput>
+        <VTTextArea v-model="model.content" label="Kejadian" required></VTTextArea>
         <div class="flex justify-end gap-2">
-          <FwbButton :color="'alternative'" @click="modal = false">Batal</FwbButton>
-          <FwbButton type="submit">Simpan</FwbButton>
+          <VTButton :color="'alternative'" @click="modal = false">Batal</VTButton>
+          <VTButton type="submit">Simpan</VTButton>
         </div>
       </form>
     </template>
-  </FwbModal>
+  </VTModal>
 
 </template>
 
 <script setup lang="ts">
 import PageHeader from '@/components/PageHeader.vue'
-
-import {
-  FwbTable,
-  FwbTableCell,
-  FwbTableRow,
-  FwbTableBody,
-  FwbTableHeadCell,
-  FwbTableHead,
-  FwbModal, FwbHeading,
-  FwbInput,
-  FwbTextarea,
-  FwbButton
-} from 'flowbite-vue'
-import { ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import AddIcon from '@/components/icons/AddIcon.vue';
 import type DailyJournal from '@/models/DailyJournal';
-import { DialogService, PicketService } from '@/services';
+import { PicketService } from '@/services';
 import { EditIcon, DeleteIcon } from '@/components/icons';
 import Helper from '@/commons/helper';
 import AuthService from '@/services/AuthService';
 import { DateTime } from 'luxon';
 import VTInput from '@/components/VTInput/VTInput.vue';
-import { VTToastService } from '@ocph23/vtocph23';
-
+import { VTButton, VTDialogService, VTModal, VTTableNew, VTTextArea, VTToastService } from '@ocph23/vtocph23';
+import type { VTTableColumn, VTTableSource } from '@ocph23/vtocph23/components/VTTable/index.js';
 
 const props = defineProps({ data: Array<DailyJournal>, canAdd: Boolean })
 const datas = ref<DailyJournal[]>();
@@ -93,6 +68,27 @@ const formTitle = ref('Tambah');
 
 const modal = ref(false);
 datas.value = props.data || [];
+
+
+const dataTable = reactive<VTTableSource<DailyJournal>>({
+  totalRecords: datas.value ? datas.value.length : 0,
+} as VTTableSource<DailyJournal>);
+
+
+
+onMounted(() => {
+  dataTable.data = datas.value as DailyJournal[];
+});
+
+
+const tableColumns = [
+  { title: 'No', name: 'no', type: 'Custome', headerClass: 'w-10 text-center', rowClass: 'text-center' },
+  { title: 'Waktu', name: 'waktu', type: 'Custome' },
+  { title: 'Judul', propName: 'title' },
+  { title: 'Kejadian', propName: 'content' },
+  { title: 'Dibuat Oleh', propName: 'teacherName' },
+  { title: 'Aksi', name: 'actions', type: 'Custome', headerClass: 'text-center h-5' },
+] as VTTableColumn[];
 
 
 const teacherLoginId = AuthService.getTeacherId();
@@ -127,7 +123,7 @@ const saveJurnal = async (journal: DailyJournal) => {
 
 
 const confirmDelete = (journal: DailyJournal) => {
-  DialogService.showDialog("Yakin hapus data catatan/kejadian ini ? ", journal, 'danger').then(async () => {
+  VTDialogService.asyncShowDialog('Perhatian', "Yakin hapus data catatan/kejadian ini ? ", journal, 'danger').then(async () => {
     const response = await PicketService.deleteJournal(journal.id);
     if (response.isSuccess) {
       const i = datas.value?.indexOf(journal);

@@ -8,36 +8,31 @@
       </button>
     </div>
   </PageHeader>
-  <fwb-table>
-    <fwb-table-head>
-      <fwb-table-head-cell>No</fwb-table-head-cell>
-      <fwb-table-head-cell>Nama</fwb-table-head-cell>
-      <fwb-table-head-cell>Kelas/Jurusan</fwb-table-head-cell>
-      <fwb-table-head-cell>Masuk</fwb-table-head-cell>
-      <fwb-table-head-cell>Pulang</fwb-table-head-cell>
-      <fwb-table-head-cell>Status</fwb-table-head-cell>
-      <fwb-table-head-cell></fwb-table-head-cell>
-    </fwb-table-head>
-    <fwb-table-body>
-      <fwb-table-row v-for="(absen, index) in datas" :key="absen.id">
-        <fwb-table-cell>
-          {{ index + 1 }}
-        </fwb-table-cell>
-        <fwb-table-cell>{{ absen.studentName }}</fwb-table-cell>
-        <fwb-table-cell>{{ absen.className }} - {{ absen.departmentName }}</fwb-table-cell>
-        <fwb-table-cell>{{ DateTime.fromJSDate(new Date(absen.timeIn)).toFormat("HH:mm:ss") }}</fwb-table-cell>
-        <fwb-table-cell>{{ absen.timeOut ? DateTime.fromJSDate(new Date(absen.timeOut)).toFormat("HH:mm:ss") : "-"
-        }}</fwb-table-cell>
-        <fwb-table-cell>{{ Helper.getAttendanceStatus(absen.status) }}</fwb-table-cell>
-        <fwb-table-cell>
-          <button @click="confirmDelete(absen)" class="text-white flex">
-            <DeleteIcon />
-          </button>
-        </fwb-table-cell>
 
-      </fwb-table-row>
-    </fwb-table-body>
-  </fwb-table>
+  <VTTableNew ref="vtTable" :source="dataTable" :columns="tableColumns" :hovered="false">
+    <template #no="item">
+      {{ item.index + 1 }}
+    </template>
+    <template #classDepartment="item">
+      {{ item.data.className }} - {{ item.data.departmentName }}
+    </template>
+    <template #timeIn="item">
+      {{ DateTime.fromJSDate(new Date(item.data.timeIn)).toFormat("HH:mm:ss") }}
+    </template>
+    <template #timeOut="item">
+      {{ item.data.timeOut ? DateTime.fromJSDate(new Date(item.data.timeOut)).toFormat("HH:mm:ss") : "-" }}
+    </template>
+    <template #status="item">
+      {{ Helper.getAttendanceStatus(item.data.status) }}
+    </template>
+    <template #actions="item">
+      <div class="flex items-center">
+        <button @click="confirmDelete(item.data)" class="text-white flex">
+          <DeleteIcon />
+        </button>
+      </div>
+    </template>
+  </VTTableNew>
 
   <FwbModal class="modal opacity-[99%]" v-if="modal" :size="'3xl'" :persistent="true">
     <template #header>
@@ -70,25 +65,20 @@ import type { Student, StudentAttendance, Picket } from '@/models';
 
 import {
   FwbSelect,
-  FwbTable,
-  FwbTableCell,
-  FwbTableRow,
-  FwbTableBody,
-  FwbTableHeadCell,
-  FwbTableHead,
   FwbModal,
   FwbHeading, FwbTextarea, FwbButton
 } from 'flowbite-vue'
 import { forEach, groupBy } from 'lodash';
-import { ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import AddIcon from '@/components/icons/AddIcon.vue';
-import AutoComplete from '@/components/AutoComplete.vue';
 import type StudentAttendanceRequest from '@/models/Requests/StudentAttendanceRequest';
-import { DialogService, StudentAttendanceService } from '@/services';
+import { StudentAttendanceService } from '@/services';
 import DeleteIcon from '@/components/icons/DeleteIcon.vue';
 import { DateTime } from 'luxon';
 import VTInput from '@/components/VTInput/VTInput.vue';
-import { VTToastService } from '@ocph23/vtocph23';
+import { VTDialogService, VTTableNew, VTToastService } from '@ocph23/vtocph23';
+import type { VTTableColumn, VTTableSource } from '@ocph23/vtocph23/components/VTTable/index.js';
+import AutoComplete from '@/components/AutoComplete.vue';
 
 const props = defineProps<{ picket: Picket, canAdd: boolean }>()
 const model = ref<StudentAttendanceRequest>({} as StudentAttendanceRequest);
@@ -107,6 +97,31 @@ const attendanceStatus = [
   { value: '1', name: 'Hadir' },
 ]
 
+const vtTable = ref<InstanceType<typeof VTTableNew> | null>();
+
+const dataTable = reactive<VTTableSource<StudentAttendance>>({
+  totalRecords: 0,
+} as VTTableSource<StudentAttendance>);
+
+
+
+onMounted(() => {
+  dataTable.data = source as StudentAttendance[];
+});
+
+
+const tableColumns = [
+  { title: 'No', name: 'no', type: 'Custome', headerClass: 'w-10 text-center', rowClass: 'text-center' },
+
+  { title: 'Nama', propName: 'studentName' },
+  { title: 'Kelas/Jurusan', name: 'classDepartment', type: 'Custome' },
+  { title: 'Masuk', name: 'timeIn', type: 'Custome' },
+  { title: 'Pulang', name: 'timeOut', type: 'Custome' },
+  { title: 'Status', name: 'status', type: 'Custome' },
+  { title: 'Aksi', name: 'actions', type: 'Custome', headerClass: 'text-center h-5' },
+] as VTTableColumn[];
+
+
 
 const dataKelas = groupBy(source, item => `${item.className}-${item.departmentName}`);
 
@@ -116,7 +131,6 @@ forEach(dataKelas, (value, key) => {
   dataKelasOptions.push({ name: key, value: key })
 });
 
-const datas = ref<StudentAttendance[]>([])
 const handleClassChange = (event: Event) => {
   const target = event.target as HTMLInputElement
   const x = source?.map(item => {
@@ -124,7 +138,8 @@ const handleClassChange = (event: Event) => {
   })
 
   if (x) {
-    datas.value = x.filter(item => item !== undefined) as StudentAttendance[]
+    dataTable.data = x.filter(item => item !== undefined) as StudentAttendance[]
+    vtTable.value?.refresh()
   }
 
 }
@@ -141,7 +156,7 @@ const save = async (request: StudentAttendanceRequest) => {
   const response = await StudentAttendanceService.create(request);
   if (response.isSuccess) {
     const data = response.data as StudentAttendance;
-    datas.value?.push(data);
+    dataTable.data?.push(data);
     modal.value = false;
     VTToastService.success("Berhasil Menambahkan Absen");
   } else {
@@ -151,12 +166,12 @@ const save = async (request: StudentAttendanceRequest) => {
 
 
 const confirmDelete = (attendance: StudentAttendance) => {
-  DialogService.showDialog("Yakin hapus data absen ini ? ", attendance, 'danger').then(async () => {
+  VTDialogService.asyncShowDialog('Perhatian', "Yakin hapus data absen ini ? ", attendance, 'danger').then(async () => {
     const response = await StudentAttendanceService.delete(attendance.id);
     if (response.isSuccess) {
-      const i = datas.value?.indexOf(attendance);
+      const i = dataTable.data?.indexOf(attendance);
       if (i !== undefined && i !== -1) {
-        datas.value?.splice(i, 1);
+        dataTable.data?.splice(i, 1);
       }
       VTToastService.success("Berhasil Menghapus Data Absen")
     } else {

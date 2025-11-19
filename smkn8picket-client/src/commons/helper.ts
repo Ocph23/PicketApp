@@ -1,6 +1,5 @@
 import type { AxiosError, AxiosResponse } from 'axios'
 import { type ErrorDetail, type ErrorResponse, type RequestResponse } from '@/commons'
-import { DateTime } from 'luxon';
 
 const Helper = {
   getResult: (response: unknown): RequestResponse => {
@@ -97,20 +96,28 @@ const Helper = {
     }
   },
 
-  getWeartherString: (value: number) => {
-    switch (value) {
-      case 0:
-        return 'Cerah'
-      case 1:
-        return 'Mendung'
-      case 2:
-        return 'Gerimis'
-      case 3:
-        return 'Hujan'
-      default:
-        return 'Cerah'
-    }
-  },
+
+  wheatherOptions: [
+    { value: 0, name: 'Cerah' },
+    { value: 1, name: 'Mendung' },
+    { value: 2, name: 'Gerimis' },
+    { value: 3, name: 'Hujan' }
+  ],
+
+  // getWeartherString: (value: number) => {
+  //   switch (value) {
+  //     case 0:
+  //       return 'Cerah'
+  //     case 1:
+  //       return 'Mendung'
+  //     case 2:
+  //       return 'Gerimis'
+  //     case 3:
+  //       return 'Hujan'
+  //     default:
+  //       return 'Cerah'
+  //   }
+  // },
 
   readDetailError: (error: ErrorResponse): string => {
     let message: string = ''
@@ -170,9 +177,9 @@ const Helper = {
       'Desember']
   },
 
-  getDateTimeString: (date: Date, format: string) => {
-    return DateTime.fromJSDate(date).toFormat(format)
-  },
+  // getDateTimeString: (date: Date, format: string) => {
+  //   return DateTime.fromJSDate(date).toFormat(format)
+  // },
 
   getTeacherAvatar: (photo: string) => {
     if (photo) return `${import.meta.env.VITE_API_URL}/photos/teacher/${photo}`

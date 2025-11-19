@@ -4,33 +4,35 @@
       <AddIcon @click="createNew" class="w-7 h-7" />
     </button>
   </PageHeader>
-  <fwb-table>
-    <fwb-table-head>
-      <fwb-table-head-cell>No</fwb-table-head-cell>
-      <fwb-table-head-cell>Waktu</fwb-table-head-cell>
-      <fwb-table-head-cell>Nama</fwb-table-head-cell>
-      <fwb-table-head-cell>Kelas/Jurusan</fwb-table-head-cell>
-      <fwb-table-head-cell>Status</fwb-table-head-cell>
-      <fwb-table-head-cell>Catatan/Alasan</fwb-table-head-cell>
-    </fwb-table-head>
-    <fwb-table-body>
-      <fwb-table-row v-for="(absen, index) in datas" :key="absen.studentId">
-        <fwb-table-cell>
-          {{ index + 1 }}
-        </fwb-table-cell>
-        <fwb-table-cell>{{ absen.time }}</fwb-table-cell>
-        <fwb-table-cell>{{ absen.studentName }}</fwb-table-cell>
-        <fwb-table-cell>{{ absen.classRoomName }}-{{ absen.departmentName }}</fwb-table-cell>
-        <fwb-table-cell>{{ Helper.getAttendanceStatus(absen.attendanceStatus) }}</fwb-table-cell>
-        <fwb-table-cell>{{ absen.description }}</fwb-table-cell>
-        <fwb-table-cell>
-          <button @click="confirmDelete(absen)" class="text-white flex">
-            <DeleteIcon />
-          </button>
-        </fwb-table-cell>
-      </fwb-table-row>
-    </fwb-table-body>
-  </fwb-table>
+
+  <VTTableNew ref="vtTable" method="All" :source="dataTable" :columns="tableColumns" :hovered="false">
+    <template #no="item">
+      {{ item.index + 1 }}
+    </template>
+    <template #time="item">
+      {{ item.data.time }}
+    </template>
+    <template #studentName="item">
+      {{ item.data.studentName }}
+    </template>
+    <template #classDepartment="item">
+      {{ item.data.classRoomName }}-{{ item.data.departmentName }}
+    </template>
+    <template #attendanceStatus="item">
+      {{ Helper.getAttendanceStatus(item.data.attendanceStatus) }}
+    </template>
+    <template #description="item">
+      {{ item.data.description }}
+    </template>
+    <template #actions="item">
+      <div class="flex items-center">
+        <button @click="confirmDelete(item.data)" class="text-white flex">
+          <DeleteIcon />
+        </button>
+      </div>
+    </template>
+  </VTTableNew>
+
 
   <FwbModal class="modal opacity-[99%]" v-if="modal" :size="'3xl'" :persistent="true">
     <template #header>
@@ -64,22 +66,23 @@
 
 import PageHeader from '@/components/PageHeader.vue';
 
-import { FwbTable, FwbSelect, FwbTableRow, FwbInput, FwbTextarea, FwbButton, FwbHeading, FwbTableHead, FwbTableBody, FwbTableCell, FwbTableHeadCell, FwbModal } from 'flowbite-vue'
+import { FwbSelect, FwbTextarea, FwbButton, FwbHeading, FwbModal } from 'flowbite-vue'
 
 import { Helper } from '@/commons'
-import { ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import type LateAndComeHomeEarlyRequest from '@/models/LateAndComeHomeEarly';
 import AutoComplete from '@/components/AutoComplete.vue';
-import { DialogService, PicketService, ToastService } from '@/services';
+import { PicketService } from '@/services';
 import AddIcon from '@/components/icons/AddIcon.vue';
 import type { LateAndComeHomeEarlyResponse } from '@/models/LateAndComeHomeEarly';
 import type { Student } from '@/models';
 import DeleteIcon from '@/components/icons/DeleteIcon.vue';
 import { DateTime } from 'luxon';
 import VTInput from '@/components/VTInput/VTInput.vue';
+import { VTDialogService, VTTableNew, VTToastService } from '@ocph23/vtocph23';
+import type { VTTableColumn, VTTableSource } from '@ocph23/vtocph23/components/VTTable/index.js';
 
 const props = defineProps({ data: Array<LateAndComeHomeEarlyResponse>, canAdd: Boolean })
-const datas = props.data as LateAndComeHomeEarlyResponse[];
 const modal = ref(false);
 const model = ref<LateAndComeHomeEarlyRequest>({} as LateAndComeHomeEarlyRequest);
 const studentSelected = ref({} as Student);
@@ -95,6 +98,28 @@ const attendanceStatus = [
 
 
 
+const vtTable = ref<InstanceType<typeof VTTableNew> | null>();
+
+const dataTable = reactive<VTTableSource<LateAndComeHomeEarlyResponse>>({
+  totalRecords: 0,
+} as VTTableSource<LateAndComeHomeEarlyResponse>);
+
+onMounted(() => {
+  dataTable.data = props.data as LateAndComeHomeEarlyResponse[];
+});
+
+
+const tableColumns = [
+  { title: 'No', name: 'no', type: 'Custome', headerClass: 'w-10 text-center', rowClass: 'text-center' },
+
+  { title: 'Waktu', name: 'time', type: 'Custome' },
+  { title: 'Nama Siswa', name: 'studentName', type: 'Custome' },
+  { title: 'Kelas', name: 'classDepartment', type: 'Custome' },
+  { title: 'Status Absen', name: 'attendanceStatus', type: 'Custome' },
+  { title: 'Catatan/Alasan', name: 'description', type: 'Custome' },
+  { title: 'Aksi', name: 'actions', type: 'Custome', headerClass: 'text-center h-5' },
+] as VTTableColumn[];
+
 
 const createNew = () => {
   model.value = {} as LateAndComeHomeEarlyRequest;
@@ -109,7 +134,7 @@ const save = async (request: LateAndComeHomeEarlyRequest) => {
   const response = await PicketService.addLateOrComeHomeEarly(request);
   if (response.isSuccess) {
     const data = response.data as LateAndComeHomeEarlyResponse;
-    datas?.push(data);
+    dataTable.data.push(data);
     modal.value = false;
     VTToastService.success("Berhasil Menambahkan Catatan Kejadian");
   } else {
@@ -119,12 +144,12 @@ const save = async (request: LateAndComeHomeEarlyRequest) => {
 
 
 const confirmDelete = (attendance: LateAndComeHomeEarlyResponse) => {
-  DialogService.showDialog("Yakin hapus data  ? ", attendance, 'danger').then(async () => {
+  VTDialogService.asyncShowDialog('Perhatian', "Yakin hapus data  ? ", attendance, 'danger').then(async () => {
     const response = await PicketService.deleteLateOrComeHomeEarly(attendance.id);
     if (response.isSuccess) {
-      const i = datas?.indexOf(attendance);
+      const i = dataTable.data?.indexOf(attendance);
       if (i !== undefined && i !== -1) {
-        datas?.splice(i, 1);
+        dataTable.data?.splice(i, 1);
       }
       VTToastService.success("Berhasil Menghapus Data ")
     } else {

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Helper } from "@/commons";
-import type { Pagination, } from "@/models";
+import type { Pagination, Picket, } from "@/models";
 import type DailyJournal from "@/models/DailyJournal";
 import type LateAndComeHomeEarlyRequest from "@/models/LateAndComeHomeEarly";
 
@@ -27,6 +27,11 @@ const PicketService = {
     return Helper.getResult(response);
 
   },
+  putPicket: async (id: number, picket: Picket) => {
+    const response = await axios.put(`${controller}/${id}`, picket);
+    return Helper.getResult(response);
+  },
+
   postJournal: async (model: DailyJournal) => {
     const response = await axios.post(`${controller}/deilyjournal`, model);
     return Helper.getResult(response);

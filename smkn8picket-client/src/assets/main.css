@@ -12,7 +12,7 @@
   #main,
   #header,
   #footer,
-  #right-side,
+  #rightSide,
   #sidebar {
     display: none !important;
   }

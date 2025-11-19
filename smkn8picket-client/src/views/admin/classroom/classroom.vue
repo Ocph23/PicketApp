@@ -1,7 +1,8 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <AdminLayout>
     <VTCard title="Data Kelas">
-      <template #right-side>
+      <template #rightSide>
         <div class="flex items-center gap-2">
           <AddIcon class="w-7 h-7" @click="showModalx" />
         </div>
@@ -163,7 +164,6 @@ import {
   ClassRoomService,
   DepartmentService,
   TeacherService,
-  DialogService,
   SchoolYearService,
 } from '@/services'
 import { Helper, type ErrorResponse, type RequestResponse } from '@/commons'
@@ -179,7 +179,7 @@ import {
 import { InformationCircleIcon } from '@heroicons/vue/24/solid'
 import type ClassRoomFromLastClassRequest from '@/models/Requests/ClassRoomFromLastClassRequest'
 import VTInput from '@/components/VTInput/VTInput.vue'
-import { VTCard, VTTable, VTToastService, VTToolTip, type VTTableColumn } from '@ocph23/vtocph23'
+import { VTCard, VTDialogService, VTTable, VTToastService, VTToolTip, type VTTableColumn } from '@ocph23/vtocph23'
 
 const vtTable = ref<InstanceType<typeof VTTable> | null>(null);
 const data = reactive({
@@ -367,7 +367,7 @@ const editClassroom = (classRoom: ClassRoom) => {
 }
 
 const deleteData = (id: number) => {
-  DialogService.showDialog('Yakin hapus data ? ', null, 'danger').then(async () => {
+  VTDialogService.asyncShowDialog('Perhatian', 'Yakin hapus data ? ', null, 'danger').then(async () => {
     const deleted = await ClassRoomService.delete(id)
     if (deleted) {
       VTToastService.success('Data berhasil di hapus.')
@@ -379,11 +379,10 @@ const deleteData = (id: number) => {
 
 
 const confirmCreateNewClassRoom = (classRoom: ClassRoom) => {
-  DialogService.showDialog(
+  VTDialogService.asyncShowDialog('Perhatian',
     `Apakah Anda yakin membuat kelas baru untuk ${classRoom.className}-${classRoom.departmentInitial} | ${classRoom.departmentName} ?`,
     classRoom,
     'warning',
-    3000,
     'Batal',
     'Yakin',
   ).then(() => {

@@ -45,7 +45,6 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import {
-  ToastService,
   ClassRoomService,
   DepartmentService,
   SchoolYearService,
@@ -66,6 +65,7 @@ import {
 } from 'flowbite-vue'
 import { InformationCircleIcon } from '@heroicons/vue/24/solid'
 import WaliKelasLayout from '@/components/layouts/WaliKelasLayout.vue'
+import { VTToastService } from '@ocph23/vtocph23'
 
 
 const data = reactive({

@@ -1,9 +1,8 @@
 <template>
   <AdminLayout>
     <VTCard title="DATA ABSEN GURU & STAF" class="no-print relative overflow-x-auto mt-1 p-3">
-      <template #right-side>
-        <VTIconPrint :size="'xl'" class="text-orange-300 cursor-pointer " @click="print">
-
+      <template #rightSide>
+        <VTIconPrint :color="'warning'" :size="'xl'" class="cursor-pointer" @click="print">
         </VTIconPrint>
       </template>
 
@@ -32,13 +31,12 @@
           <fwb-table-head-cell class="w-5" rowspan="2">No</fwb-table-head-cell>
           <fwb-table-head-cell rowspan="2">Nama</fwb-table-head-cell>
           <fwb-table-head-cell class="text-center"
-            :colspan="(source?.pickets?.length ?? 1) + 1">Tanggal</fwb-table-head-cell>
+            :colspan="(source?.pickets?.length ?? 1)">Tanggal</fwb-table-head-cell>
         </fwb-table-row>
         <fwb-table-row>
           <fwb-table-head-cell class="text-center" v-for="item in source?.pickets" :key="item.id ?? 0">
             {{ new Date(item.date).getDate() }}
           </fwb-table-head-cell>
-          <fwb-table-head-cell class="w-1"></fwb-table-head-cell>
         </fwb-table-row>
         <fwb-table-body>
           <fwb-table-row v-for="(data, index) in displayData" :key="index">
@@ -47,9 +45,6 @@
             <fwb-table-cell class="text-center" v-for="item in data.items" :key="item.picketId">
               {{ Helper.getAttendanceStatus(item.status, true) }}
             </fwb-table-cell>
-            <fwb-table-head-cell class="w-1">
-
-            </fwb-table-head-cell>
           </fwb-table-row>
         </fwb-table-body>
       </fwb-table>
@@ -74,7 +69,6 @@ import TeacherAttendanceReportPrint from '@/views/shared/TeacherAttendanceReport
 
 import {
   FwbButton,
-  FwbHeading,
   FwbSelect,
   FwbTable,
   FwbTableBody,

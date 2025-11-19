@@ -23,15 +23,14 @@
             {{ index + 1 }}
           </fwb-table-cell>
           <fwb-table-cell>
-            {{ Helper.getIndonesiaDay(new Date(absen.picketDate).getDay()) }},
-            {{ Helper.getDateTimeString(new Date(absen.picketDate), 'dd-MM-yyyy') }}
+            {{ DateTime.fromJSDate(absen.picketDate).setLocale('id').toFormat('cccc, dd LLLL yyyy') }}
           </fwb-table-cell>
           <fwb-table-cell>{{ Helper.getAttendanceStatus(absen.status) }}</fwb-table-cell>
           <fwb-table-cell> <span v-if="absen.status == 1 || absen.status == 2">{{ DateTime.fromJSDate(new
             Date(absen.timeIn)).toFormat("HH:mm:ss") }}</span>
           </fwb-table-cell>
           <fwb-table-cell>{{ absen.timeOut ? DateTime.fromJSDate(new Date(absen.timeOut)).toFormat("HH:mm:ss") : "-"
-            }}</fwb-table-cell>
+          }}</fwb-table-cell>
           <fwb-table-cell>
 
           </fwb-table-cell>

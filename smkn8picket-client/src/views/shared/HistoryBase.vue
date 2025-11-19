@@ -6,77 +6,35 @@
       </router-link>
     </PageHeader>
     <div class="my-2 flex items-center sm:justify-between"></div>
-    <VTTableNew :columns="columns" :source="dataTable" v-on:on-change="onTableChange"> </VTTableNew>
+    <VTTableNew :method="'Paginate'" :columns="columns" :source="dataTable" v-on:on-change="onTableChange">
+      <template #nomor="item">
+        {{ item.index + 1 }}
+      </template>
+      <template #tanggal="item">
+        {{ DateTime.fromISO(item.data.picket.date).setLocale('id').toFormat('cccc, dd LLLL yyyy') }}
+      </template>
+      <template #cuaca="item">
+        {{ Helper.getWeartherString(item.data.weather) }}
+      </template>
+      <template #actions="item">
+        <router-link :to="isPiket ? `/piket/history/${item.data.id}` : `/admin/history/${item.data.id}`">
+          <button class="text-white flex">
+            <DetailIcon />
+          </button>
+        </router-link>
+      </template>
 
-    <fwb-table class="w-full">
-      <fwb-table-head>
-        <fwb-table-head-cell>No</fwb-table-head-cell>
-        <fwb-table-head-cell>Tanggal</fwb-table-head-cell>
-        <fwb-table-head-cell>Cuaca</fwb-table-head-cell>
-        <fwb-table-head-cell>Jam Mulai</fwb-table-head-cell>
-        <fwb-table-head-cell>Jam Selesai</fwb-table-head-cell>
-        <fwb-table-head-cell>Dibuka Oleh</fwb-table-head-cell>
-        <fwb-table-head-cell>
-          <span class="sr-only"></span>
-        </fwb-table-head-cell>
-      </fwb-table-head>
-      <fwb-table-body>
-        <fwb-table-row v-for="(department, index) in dataTable.data" :key="index">
-          <fwb-table-cell class="w-[20px]">{{ index + 1 }}</fwb-table-cell>
-          <fwb-table-cell>
-            {{ Helper.getIndonesiaDay(new Date(department.date).getDay()) }},
-            {{ Helper.getDateTimeString(new Date(department.date), 'dd-MM-yyyy') }}
-          </fwb-table-cell>
-          <fwb-table-cell>
-            {{ Helper.getWeartherString(department.weather) }}
-          </fwb-table-cell>
-          <fwb-table-cell>{{ department.startAt }}</fwb-table-cell>
-          <fwb-table-cell>{{ department.endAt }}</fwb-table-cell>
-          <fwb-table-cell>{{ department.createdName }}</fwb-table-cell>
-          <fwb-table-cell>
-            <router-link
-              :to="isPiket ? `/piket/history/${department.id}` : `/admin/history/${department.id}`"
-            >
-              <button class="text-white flex">
-                <DetailIcon />
-              </button>
-            </router-link>
-          </fwb-table-cell>
-        </fwb-table-row>
-        <fwb-table-row>
-          <fwb-table-cell colspan="7" class="!px-0 !py-0">
-            <PaginationView
-              v-if="paginateState.paginateResult"
-              :paginate="data.paginate"
-              @onChangePage="getData"
-            >
-            </PaginationView>
-          </fwb-table-cell>
-        </fwb-table-row>
-      </fwb-table-body>
-    </fwb-table>
+    </VTTableNew>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { PicketService } from '@/services'
 import { Helper } from '@/commons'
 import { DetailIcon } from '@/components/icons'
-import type { Pagination, Picket, Teacher } from '@/models'
+import type { Pagination } from '@/models'
 import type { PaginateResponse } from '@/models/Responses'
-import {
-  FwbInput,
-  FwbSelect,
-  FwbTable,
-  FwbTableCell,
-  FwbTableRow,
-  FwbTableBody,
-  FwbTableHeadCell,
-  FwbTableHead,
-} from 'flowbite-vue'
-import PaginationView from '@/components/PaginationView.vue'
-import PaginationStore from '@/stores/PaginationStore'
 import PageHeader from '@/components/PageHeader.vue'
 import AuthService from '@/services/AuthService'
 import { VTTableNew } from '@ocph23/vtocph23'
@@ -85,8 +43,9 @@ import type {
   VTTablePagination,
   VTTableSource,
 } from '@ocph23/vtocph23/components/VTTable/index.js'
+import { DateTime } from 'luxon'
 
-const dataTable = reactive<VTTableSource<History>>({
+const dataTable = ref<VTTableSource<History>>({
   data: [],
   totalRecords: 0,
   paginate: {
@@ -95,32 +54,28 @@ const dataTable = reactive<VTTableSource<History>>({
     searchTerm: '',
     sortOrder: 'asc',
     columnOrder: '',
-  },
+  } as VTTablePagination,
 })
 
 const columns = [
   { title: 'no', name: 'nomor', type: 'Custome' },
   { title: 'Tanggal', name: 'tanggal', type: 'Custome' },
   { title: 'Cuaca', name: 'cuaca', type: 'Custome' },
-  { title: 'Jam Mulai', propName: 'startDae' },
+  { title: 'Jam Mulai', propName: 'startDate' },
   { title: 'Jam Selesai', propName: 'endDate' },
+  { title: 'Aksi', name: 'actions', type: 'Custome' },
 ] as VTTableColumn[]
 
+
+onMounted(() => {
+  getData(dataTable.value.paginate as VTTablePagination)
+})
+
 const onTableChange = (paginate: VTTablePagination) => {
-  dataTable.paginate = paginate
+  dataTable.value.paginate = paginate
   getData(paginate)
 }
 
-const paginateState = PaginationStore()
-
-const data = reactive({
-  pageSizes: [
-    { value: '10', name: '10' },
-    { value: '20', name: '20' },
-    { value: '50', name: '50' },
-    { value: '100', name: '100' },
-  ],
-})
 
 const isPiket = ref(false)
 
@@ -139,8 +94,8 @@ const getData = async (vtPaginate: VTTablePagination) => {
   const result = await PicketService.Pageninate(paginate)
   if (result.isSuccess) {
     const paginateResult = result.data as PaginateResponse
-    dataTable.data = paginateResult.data as History[]
-    dataTable.totalRecords = paginateResult.totalRecords
+    dataTable.value.data = paginateResult.data as History[]
+    dataTable.value.totalRecords = paginateResult.totalRecords
   }
 }
 </script>

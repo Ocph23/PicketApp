@@ -1,7 +1,7 @@
 <template>
   <AdminLayout>
     <VTCard title="Data Tahun Ajaran">
-      <template #right-side>
+      <template #rightSide>
         <AddIcon @click="editModal(null)" class="w-7 h-7 cursor-pointer" />
       </template>
       <VTTable :table-name="'tabel_ta'" :bordered="true" ref="vtTable" :source="data.schoolYears"
@@ -70,7 +70,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
-import { DialogService, SchoolYearService } from '@/services'
+import { SchoolYearService } from '@/services'
 import { AddIcon } from '@/components/icons'
 import type { SchoolYear } from '@/models'
 import {
@@ -78,6 +78,7 @@ import {
   VTButtonAction,
   VTButtonSave,
   VTCard,
+  VTDialogService,
   VTIconCheck,
   VTIconDetail,
   VTInput,
@@ -192,11 +193,11 @@ const deleteData = async (schoolYear: SchoolYear) => {
 }
 
 const confirmDelete = (schoolYear: SchoolYear) => {
-  DialogService.showDialog(
+  VTDialogService.asyncShowDialog(
+    'Perhatian',
     `Apakah Anda yakin ingin menghapus Tahun Ajaran ${schoolYear.name} ?`,
     schoolYear,
     'warning',
-    3000,
     'Batal',
     'Hapus',
   ).then(() => {

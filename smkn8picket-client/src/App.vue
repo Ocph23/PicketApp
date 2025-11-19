@@ -2,7 +2,6 @@
 import { RouterView } from 'vue-router'
 import './commons/axioInterceptors'
 import { VTBusyProgressView, VTDialogView, VTToastView } from '@ocph23/vtocph23';
-
 </script>
 
 <template>

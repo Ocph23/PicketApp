@@ -36,7 +36,7 @@ import type { LoginRequest } from '@/models/Requests'
 import type { AuthResponse, } from '@/models'
 import { FwbCard, FwbHeading, FwbInput } from 'flowbite-vue'
 import { Helper } from '@/commons'
-import {  ToastService } from '@/services'
+import { VTToastService } from '@ocph23/vtocph23'
 
 const loginRequest = ref({} as LoginRequest)
 const errorMessage = ref('')

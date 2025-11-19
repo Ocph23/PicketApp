@@ -2,7 +2,7 @@
 <template>
   <AdminLayout>
     <VTCard title="Data Guru & Staff">
-      <template #right-side>
+      <template #rightSide>
         <AddIcon class="w-7 h-7" @click="showModal = true" />
       </template>
       <VTTable ref="vtTable" :table-name="'tabel-guru'" :bordered="true" :source="data.teachers" :columns="[
@@ -172,7 +172,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import AdminLayout from '@/components/layouts/AdminLayout.vue'
-import { TeacherService, DialogService } from '@/services'
+import { TeacherService } from '@/services'
 import { Helper, type ErrorResponse, type RequestResponse } from '@/commons'
 import { EditIcon, DeleteIcon, AddIcon } from '@/components/icons'
 import { FwbButton, FwbCheckbox } from 'flowbite-vue'
@@ -182,6 +182,7 @@ import {
   VTButton,
   VTButtonSave,
   VTCard,
+  VTDialogService,
   VTInput,
   VTModal,
   VTSelect,
@@ -259,11 +260,11 @@ const deleteData = async (teacher: Teacher) => {
 }
 
 const confirmDelete = (teacher: Teacher) => {
-  DialogService.showDialog(
+  VTDialogService.asyncShowDialog(
+    'Perhatian',
     `Apakah Anda yakin ingin menghapus ${teacher.name} ?`,
     teacher,
     'danger',
-    3000,
     'Batal',
     'Hapus',
   ).then(() => {
@@ -275,11 +276,11 @@ const setAdminConfirm = async (target: unknown) => {
   const tg = target as { target: { _modelValue: boolean } }
   try {
     if (tg.target._modelValue === true) {
-      const dialogResult = await DialogService.showDialog(
+      const dialogResult = await VTDialogService.asyncShowDialog(
+        'Perhatian',
         `Apakah Anda yakin mengubah status admin ?`,
         teacher,
         'warning',
-        3000,
         'Batal',
         'Ya',
       )
@@ -292,11 +293,11 @@ const setAdminConfirm = async (target: unknown) => {
         }
       }
     } else if (tg.target._modelValue === false) {
-      const dialogResult = await DialogService.showDialog(
+      const dialogResult = await VTDialogService.asyncShowDialog(
+        'Perhatian',
         `Apakah Anda yakin akan menghapus status admin ?`,
         teacher,
         'warning',
-        3000,
         'Batal',
         'Ya',
       )
@@ -319,11 +320,11 @@ const lockConfirm = async (target: unknown) => {
   const tg = target as { target: { _modelValue: boolean } }
   try {
     if (tg.target._modelValue === true) {
-      const dialogResult = await DialogService.showDialog(
+      const dialogResult = await VTDialogService.asyncShowDialog(
+        'Perhatian',
         `Apakah Anda yakin mengaktifkan user  ?`,
         teacher,
         'warning',
-        3000,
         'Batal',
         'Ya',
       )
@@ -335,11 +336,11 @@ const lockConfirm = async (target: unknown) => {
         }
       }
     } else if (tg.target._modelValue === false) {
-      const dialogResult = await DialogService.showDialog(
+      const dialogResult = await VTDialogService.asyncShowDialog(
+        'Perhatian',
         `Apakah Anda yakin akan menonaktifkan user ?`,
         teacher,
         'warning',
-        3000,
         'Batal',
         'Ya',
       )
@@ -365,11 +366,11 @@ const lockConfirm = async (target: unknown) => {
 // }
 
 const confirmresetPassword = () => {
-  DialogService.showDialog(
+  VTDialogService.asyncShowDialog(
+    'Perhatian',
     `Apakah Anda yakin ingin mereset password untuk user ${teacher.profile.name} ?`,
     teacher,
     'warning',
-    3000,
     'Batal',
     'Reset',
   ).then(() => {

@@ -1,6 +1,6 @@
 <template>
   <VTCard title="Data Siswa">
-    <template #right-side>
+    <template #rightSide>
       <router-link :to="{ name: 'addSiswa' }">
         <AddIcon class="w-7 h-7" />
       </router-link>
@@ -57,7 +57,7 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { DialogService, StudentService } from '@/services'
+import { StudentService } from '@/services'
 import { Helper } from '@/commons'
 import { AddIcon, EditIcon, DeleteIcon } from '@/components/icons'
 import PaginationStore from '@/stores/PaginationStore'
@@ -67,7 +67,7 @@ import type { PaginateResponse } from '@/models/Responses'
 import { DateTime } from 'luxon'
 import DetailIcon from '@/components/icons/DetailIcon.vue'
 import AuthService from '@/services/AuthService'
-import { VTCard, VTTableNew, VTToastService } from '@ocph23/vtocph23'
+import { VTCard, VTDialogService, VTTableNew, VTToastService } from '@ocph23/vtocph23'
 import type {
   VTTableColumn,
   VTTablePagination,
@@ -144,11 +144,11 @@ const deleteData = async (student: Student) => {
 }
 
 const confirmDelete = (student: Student) => {
-  DialogService.showDialog(
+  VTDialogService.asyncShowDialog(
+    'Perhatian',
     `Apakah Anda yakin ingin menghapus ${student.name} ?`,
     student,
     'danger',
-    3000,
     'Batal',
     'Hapus',
   ).then(() => {

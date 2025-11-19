@@ -12,7 +12,8 @@
     <div class="">
       <div class="flex">
         <label class="labelTitle dark:text-white">Tanggal</label>
-        <label class="labelValue dark:text-white">: {{ Helper.getDateTimeString(new Date(piket.date), 'dd-MM-yyyy') }}
+        <label class="labelValue dark:text-white">:
+          {{ DateTime.fromISO(piket.date).toFormat('dd-MM-yyyy') }}
         </label>
       </div>
       <div class="flex">
@@ -28,7 +29,7 @@
         <label class="labelValue dark:text-white">: {{ piket.createdName }}</label>
       </div>
     </div>
-
+    <hr class="mb-5" />
     <h6 class="mt-5 text-sm">Catatan Peristiwa/Kegiatan</h6>
     <table class="table-print w-full">
       <thead>
@@ -73,7 +74,7 @@
         <tr v-for="(absen, index) in kehadiran" :key="index">
           <td>{{ index + 1 }}</td>
           <td v-for="(item, index2) in absen" :key="index2" :class="index2 === 0 ? 'text-left' : 'text-center'">{{ item
-            }}</td>
+          }}</td>
         </tr>
       </tbody>
     </table>
@@ -118,6 +119,7 @@ import LogoApp from '@/components/LogoApp.vue';
 import type { Picket } from '@/models';
 import { FwbHeading } from 'flowbite-vue';
 import { forEach, groupBy } from 'lodash';
+import { DateTime } from 'luxon';
 
 
 const props = defineProps<{ data: Picket }>();

@@ -52,10 +52,10 @@
 <script setup lang="ts">
 import { FwbSidebar, FwbSidebarItem } from 'flowbite-vue'
 import { AcademicCapIcon, HomeIcon, ClockIcon, ClipboardDocumentCheckIcon, LockClosedIcon } from '@heroicons/vue/24/solid'
-import { DialogService } from '@/services';
+import { VTDialogService } from '@ocph23/vtocph23';
 
 const logout = () => {
-  DialogService.showDialog('Yakin keluar ?', null, 'warning').then(() => {
+  VTDialogService.asyncShowDialog('Perhatian', 'Yakin keluar ?', null, 'danger').then(() => {
     localStorage.removeItem('authToken')
     window.location.href = '/login'
   })
