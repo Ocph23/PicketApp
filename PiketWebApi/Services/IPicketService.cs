@@ -225,12 +225,45 @@ namespace PiketWebApi.Services
                 StudentsLateAndComeHomeEarly = Enumerable.Empty<LateAndGoHomeEarlyResponse>().ToList()
             };
 
-            var students = await studentService.GetAllStudentWithClass();
+            var studentIds = response.StudentAttendances.Select(x => x.Student.Id)
+                .Concat(response.LateAndComeHomeEarly.Select(x => x.Student.Id))
+                .Distinct()
+                .ToList();
 
-            if (!students.IsError && response.StudentAttendances.Any())
+            var studentsWithClass = new List<StudentClassRoom>();
+            if (studentIds.Any())
+            {
+                var schoolYearActive = await schoolYearService.GetActiveSchoolYear();
+                if (!schoolYearActive.IsError)
+                {
+                    studentsWithClass = await dbContext.ClassRooms
+                        .Include(x => x.SchoolYear)
+                        .Include(x => x.Department)
+                        .Include(x => x.Students)
+                        .ThenInclude(x => x.Student)
+                        .Where(x => x.SchoolYear.Id == schoolYearActive.Value.Id 
+                            && x.Students.Any(s => studentIds.Contains(s.Student.Id)))
+                        .SelectMany(x => x.Students.Select(s => new StudentClassRoom
+                        {
+                            Gender = s.Student.Gender,
+                            Id = s.Student.Id,
+                            Name = s.Student.Name,
+                            NIS = s.Student.NIS,
+                            NISN = s.Student.NISN,
+                            Photo = s.Student.Photo,
+                            ClassRoomId = x.Id,
+                            ClassRoomName = x.Name,
+                            DepartmenId = x.Department.Id,
+                            DepartmenName = x.Department.Name,
+                        }))
+                        .ToListAsync();
+                }
+            }
+
+            if (response.StudentAttendances.Any())
             {
                 result.StudentAttendance = (from x in response.StudentAttendances
-                                            join s in students.Value on x.Student.Id equals s.Id into sGroup
+                                            join s in studentsWithClass on x.Student.Id equals s.Id into sGroup
                                             from sx in sGroup.DefaultIfEmpty()
                                             select new StudentAttendanceResponse(
                                                 x.Id, x.PicketId,
@@ -242,7 +275,7 @@ namespace PiketWebApi.Services
                                             )).ToList();
 
                 result.StudentsLateAndComeHomeEarly = (from x in response.LateAndComeHomeEarly
-                                                       join s in students.Value on x.Student.Id equals s.Id into sGroup
+                                                       join s in studentsWithClass on x.Student.Id equals s.Id into sGroup
                                                        from sx in sGroup.DefaultIfEmpty()
                                                        select
                                                        new LateAndGoHomeEarlyResponse

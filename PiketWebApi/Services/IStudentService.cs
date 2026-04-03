@@ -296,8 +296,8 @@ public class StudentService : IStudentService
         try
         {
             var schoolYearActive = await schoolYearService.GetActiveSchoolYear();
-            if (schoolYearService == null)
-                return Error.Failure("Belum Ada Tahun Ajaran Aktif !");
+            if (schoolYearActive.IsError)
+                return schoolYearActive.Errors;
 
 
             var result = await cacheService.GetAsync<StudentClassRoom>($"student-withclass-{studentId}", async () =>
@@ -423,16 +423,17 @@ public class StudentService : IStudentService
     {
         try
         {
-            var student = dbContext.Students.SingleOrDefault(x => x.Id == id);
+            var student = await dbContext.Students.SingleOrDefaultAsync(x => x.Id == id);
             if (student == null)
                 return Error.NotFound("Data siswa tidak ditemukan.");
 
-            var user = userManager.FindByIdAsync(student.UserId!).Result;
+            var user = await userManager.FindByIdAsync(student.UserId!);
             if (user == null)
                 return Error.NotFound("User siswa tidak ditemukan.");
 
-            var token = userManager.GeneratePasswordResetTokenAsync(user).Result;
-            var resetPassResult = userManager.ResetPasswordAsync(user, token, "Password@123").Result;
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var defaultPassword = Environment.GetEnvironmentVariable("DEFAULT_PASSWORD") ?? "ChangeMe@2026!Secure";
+            var resetPassResult = await userManager.ResetPasswordAsync(user, token, defaultPassword);
             if (!resetPassResult.Succeeded)
             {
                 var errors = resetPassResult.Errors.Select(e => Error.Failure(e.Code, e.Description));

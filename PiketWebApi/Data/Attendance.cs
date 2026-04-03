@@ -10,6 +10,6 @@ namespace PiketWebApi.Data
         public DateTime? TimeOut { get; set; }
         public AttendanceStatus AttendanceStatus { get; set; } = AttendanceStatus.Hadir;
         public string? Description { get; set; }
-        public DateTime CreateAt { get; set; } = DateTime.Now;
+        public DateTime CreateAt { get; set; } = DateTime.UtcNow;
     }
 }

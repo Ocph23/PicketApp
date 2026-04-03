@@ -12,6 +12,7 @@ namespace PiketWebApi.Services
     public interface IClassRoomService
     {
         Task<ErrorOr<bool>> AddStudentToClassRoom(int classroomId, Student student);
+        Task<ErrorOr<AddStudentsResult>> AddStudentsToClassRoom(int classroomId, List<int> studentIds);
         Task<ErrorOr<ClassRoomResponse>> CreateClassRoomFromLastClass(ClassRoomFromLastClassRequest req);
         Task<ErrorOr<bool>> DeleteClassRoom(int id);
         Task<ErrorOr<IEnumerable<ClassRoomResponse>>> GetAllClassRoom();
@@ -362,6 +363,85 @@ namespace PiketWebApi.Services
             {
                 throw;
             }
+        }
+
+        public async Task<ErrorOr<AddStudentsResult>> AddStudentsToClassRoom(int classroomId, List<int> studentIds)
+        {
+            var schoolYearActive = dbContext.SchoolYears.SingleOrDefault(x => x.Actived);
+            if (schoolYearActive == null)
+                return Error.Failure("SchoolYear", "Tahun ajaran baru belum dibuka.");
+
+            var classroom = dbContext.ClassRooms.Include(x => x.Students)
+                .ThenInclude(x => x.Student)
+                .SingleOrDefault(x => x.Id == classroomId);
+            if (classroom == null)
+                return Error.Failure("Class Room", "Data Kelas Tidak Ditemukan");
+
+            var successCount = 0;
+            var failedCount = 0;
+            var errors = new List<string>();
+
+            //student register on other class
+            var studentExistsQuery = from x in dbContext.ClassRooms
+                            .Include(x => x.Department)
+                            .Include(x => x.Students)
+                            .ThenInclude(x => x.Student)
+                            .Where(x => x.SchoolYear.Id == schoolYearActive.Id &&
+                            x.Students.Any(x => studentIds.Contains(x.Student.Id)))
+                                     select x;
+
+            var studentsInOtherClasses = studentExistsQuery.ToList();
+            var existingStudentIds = new HashSet<int>();
+            foreach (var classRoom in studentsInOtherClasses)
+            {
+                foreach (var member in classRoom.Students)
+                {
+                    if (studentIds.Contains(member.Student.Id))
+                    {
+                        existingStudentIds.Add(member.Student.Id);
+                        errors.Add($"{member.Student.Name} sudah terdaftar di kelas {classRoom.Name}-{classRoom.Department.Initial}");
+                        failedCount++;
+                    }
+                }
+            }
+
+            // Filter out students that are already in other classes
+            var validStudentIds = studentIds.Where(id => !existingStudentIds.Contains(id)).ToList();
+
+            // Also check if student is already in this classroom
+            var existingInThisClassroom = classroom.Students
+                .Where(m => validStudentIds.Contains(m.Student.Id))
+                .Select(m => m.Student.Id)
+                .ToHashSet();
+
+            foreach (var id in existingInThisClassroom)
+            {
+                var student = dbContext.Students.Find(id);
+                if (student != null)
+                {
+                    errors.Add($"{student.Name} sudah terdaftar di kelas ini");
+                    failedCount++;
+                }
+                validStudentIds.Remove(id);
+            }
+
+            // Add valid students
+            foreach (var studentId in validStudentIds)
+            {
+                var student = new Student { Id = studentId };
+                dbContext.Entry(student).State = EntityState.Unchanged;
+
+                var member = new ClassRoomMember { Student = student };
+                classroom.Students.Add(member);
+                successCount++;
+            }
+
+            if (successCount > 0)
+            {
+                dbContext.SaveChanges();
+            }
+
+            return await Task.FromResult(new AddStudentsResult(successCount, failedCount, errors));
         }
 
         public async Task<ErrorOr<bool>> RemoveStudentFromClassRoom(int classroomId, int studentId)

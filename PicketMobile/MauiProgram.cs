@@ -15,6 +15,16 @@ namespace PicketMobile
             builder.Services.AddSingleton<IPicketService, PicketService>();
             builder.Services.AddSingleton<IScheduleService, ScheduleService>();
             builder.Services.AddSingleton<IStudentService, StudentService>();
+            builder.Services.AddHttpClient<IPicketService, PicketService>(client =>
+            {
+                client.BaseAddress = new Uri(Preferences.Get("url", "http://localhost:5001"));
+                client.DefaultRequestHeaders.Add("Content-Type", "application/json; charset=utf-8");
+                var token = Preferences.Get("token", null);
+                if (!string.IsNullOrEmpty(token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                }
+            });
             builder.UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
             {

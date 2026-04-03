@@ -19,11 +19,7 @@ const clickMenu = () => {
 <template class="no-print">
   <Header id="header" @on-click-menu="clickMenu"></Header>
   <Sidebar v-if="showMenu" @on-click-menu="clickMenu"></Sidebar>
-  <div
-    :class="menuClass"
-    class="min-h-screen p-8 pt-20 bg-[#ffffff] shadow-md dark:bg-gray-600"
-    id="xbody"
-  >
+  <div :class="menuClass" class="min-h-screen p-8 pt-20 bg-[#ffffff] shadow-md dark:bg-gray-600" id="xbody">
     <slot></slot>
   </div>
 </template>

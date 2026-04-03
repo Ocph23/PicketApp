@@ -67,9 +67,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicyName, policy =>
     {
-        policy.WithOrigins("*")
+        policy.SetIsOriginAllowed(origin => true)
         .AllowAnyHeader()
-        .AllowAnyMethod();
+        .AllowAnyMethod()
+        .AllowCredentials();
     });
 });
 
@@ -78,14 +79,16 @@ string connectionStingName = "piketdb";
 var connectionString = builder.Configuration.GetConnectionString(connectionStingName) ??
     throw new InvalidOperationException($"Connection string {connectionStingName} not found.");
 
-builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddDateOnlyTimeOnlyStringConverters();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(connectionString);
-    options.EnableSensitiveDataLogging(true);
-    options.EnableDetailedErrors(true);
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableSensitiveDataLogging(true);
+        options.EnableDetailedErrors(true);
+    }
 });
 
 

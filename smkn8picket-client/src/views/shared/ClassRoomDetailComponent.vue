@@ -38,10 +38,10 @@
           class="transition rounded text-black m-3  w-6 items-center text-center">
           <AddIcon class="w-7 h-7" />
         </button>
-        <fwb-button :color="'yellow'" type="submit" class="flex flex-row items-center justify-center p-0"
-          @click="print">
-          <PrinterIcon class="w-7 h-7 text-amber-300"></PrinterIcon>
-        </fwb-button>
+        <VTButton @click="print" class="cursor-pointer ">
+          <PrinterIcon class="w-7 h-7 text-yellow-400 hover:text-yellow-600  transition-all duration-200"></PrinterIcon>
+        </VTButton>
+
       </div>
     </div>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-1">
@@ -93,8 +93,9 @@
       </template>
       <template #body>
         <div class="form-control">
-          <AutoComplete placeholder="cari siswa" label="Nama Siswa" :service="'student'" v-model="form">
-          </AutoComplete>
+          {{ selectedStudents }}
+          <VTAutocomplete placeholder="cari siswa" label="Nama Siswa" :sources="studentOptions"
+            v-model="selectedStudents" :multiple="true" @search="handleSearch" />
         </div>
       </template>
       <template #footer>
@@ -113,8 +114,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { ClassRoomService, SchoolYearService } from '@/services'
-import AutoComplete from '@/components/AutoComplete.vue'
+import { ClassRoomService, SchoolYearService, StudentService } from '@/services'
 import { Helper, type ErrorResponse } from '@/commons'
 import { AddIcon, DeleteIcon } from '@/components/icons'
 import { type ClassRoom, type SchoolYear, type Student } from '@/models'
@@ -138,7 +138,9 @@ import { PrinterIcon } from '@heroicons/vue/24/solid'
 import { DateTime } from 'luxon'
 import AuthService from '@/services/AuthService'
 import PrintStore from '@/stores/PrintModelStore';
-import { VTDialogService, VTToastService } from '@ocph23/vtocph23'
+import { VTDialogService, VTToastService, VTAutocomplete } from '@ocph23/vtocph23'
+import type { SelectOption, VTButton } from '@ocph23/vtocph23'
+import type AddStudentsToClassroomResponse from '@/models/Responses/AddStudentsToClassroomResponse'
 const printStore = PrintStore();
 
 const props = defineProps({
@@ -170,9 +172,24 @@ const data = reactive({
 })
 
 const classroom = ref({} as ClassRoom)
-const form = ref({ id: 0, name: '' } as Student)
+// const form = ref({ id: 0, name: '' } as Student)
+const selectedStudents = ref<number[]>([])
+const studentOptions = ref<SelectOption[]>([])
 const showModal = ref(false)
 const showPrint = ref(false)
+
+const handleSearch = async (query: string) => {
+  if (query && query.length >= 2) {
+    const response = await StudentService.search(query)
+    if (response.isSuccess && response.data) {
+      const students = response.data as Student[]
+      studentOptions.value = students.map((student) => ({
+        value: student.id,
+        name: student.name
+      }))
+    }
+  }
+}
 
 
 try {
@@ -199,46 +216,57 @@ const print = () => {
 
 const addClassroom = async () => {
   try {
-    const requestBody = {
-      id: form.value.id,
+    if (selectedStudents.value.length === 0) {
+      VTToastService.error('Pilih minimal 1 siswa untuk ditambahkan')
+      return
     }
 
-    if (form.value.id) {
-      ClassRoomService.addStudentToClass(classroom.value.id, requestBody).then((response) => {
-        if (response.isSuccess) {
-          const student = {
-            id: form.value.id,
-            nis: form.value.nis,
-            nisn: form.value.nisn,
-            name: form.value.name,
-            gender: form.value.gender,
-            email: form.value.email,
-            placeOfBorn: form.value.placeOfBorn,
-            dateOfBorn: form.value.dateOfBorn
-          } as unknown as Student
-          classroom.value.students.push(student)
-          showModal.value = false
-          resetForm()
-          VTToastService.success('Data berhasil tambahkan')
-        } else {
-          data.error = response.error as ErrorResponse;
-          VTToastService.error(Helper.readDetailError(data.error))
+    const studentIds = selectedStudents.value
+    const response = await ClassRoomService.addStudentsToClass(classroom.value.id, studentIds)
+
+    if (response.isSuccess) {
+      const result = response.data as AddStudentsToClassroomResponse;
+      const successCount = result.successCount || 0
+      const failedCount = result.failedCount || 0
+
+      // Refresh classroom data to get updated student list
+      const refreshResponse = await ClassRoomService.getById(props.classroomId)
+      if (refreshResponse.isSuccess) {
+        classroom.value = refreshResponse.data as ClassRoom
+      }
+
+      showModal.value = false
+      selectedStudents.value = []
+      studentOptions.value = []
+
+      if (failedCount === 0) {
+        VTToastService.success(`Berhasil menambahkan ${successCount} siswa`)
+      } else {
+        VTToastService.warning(`Berhasil menambahkan ${successCount} siswa, ${failedCount} gagal`)
+        if (result.errors && result.errors.length > 0) {
+          result.errors.forEach((error: string) => {
+            VTToastService.warning(error)
+          })
         }
-      })
+      }
+    } else {
+      VTToastService.error('Gagal menambahkan siswa')
     }
   } catch (error) {
     const errorResult = error as ErrorResult
-    console.error('Error adding student to classroom:', errorResult)
-    alert('Failed  add student to classroom. Please check the input data.')
+    console.error('Error adding students to classroom:', errorResult)
+    VTToastService.error('Terjadi kesalahan saat menambahkan siswa')
   }
 }
 
-// Function to reset the form
-const resetForm = () => {
-  form.value = {
-    id: 0,
-  } as Student
-}
+// // Function to reset the form
+// const resetForm = () => {
+//   form.value = {
+//     id: 0,
+//   } as Student
+//   selectedStudents.value = []
+//   studentOptions.value = []
+// }
 
 // function ketuaKelasOnchange(tes) {
 //   data.ketuaText = tes.target.value;

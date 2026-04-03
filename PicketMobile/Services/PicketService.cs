@@ -1,4 +1,4 @@
-﻿using PicketMobile.Models;
+using PicketMobile.Models;
 using SharedModel.Requests;
 using SharedModel.Responses;
 using System.Net.Http.Json;
@@ -21,176 +21,103 @@ namespace PicketMobile.Services
 
     public class PicketService : IPicketService
     {
-        private static PicketResponse picket;
+        private static PicketResponse? picket;
+        private readonly HttpClient _httpClient;
+
+        public PicketService(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
         public async Task<PicketModel> Create(PicketModel model)
         {
-            try
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync($"api/picket", model);
+            if (response.IsSuccessStatusCode)
             {
-                using var client = new RestClient();
-                HttpResponseMessage response = await client.PostAsJsonAsync($"api/picket", model);
-                if (response.IsSuccessStatusCode)
-                {
-                    var stringContent = await response.Content.ReadAsStringAsync();
-                    var result = await response.GetResultAsync<PicketModel>();
-                    if (result != null)
-                        return result;
-                }
-                throw new SystemException(await client.Error(response));
+                var result = await response.GetResultAsync<PicketModel>();
+                if (result != null)
+                    return result;
             }
-            catch (Exception ex)
-            {
-                throw new SystemException(ex.Message);
-            }
+            throw new HttpRequestException(await _httpClient.Error(response));
         }
+
         public async Task<PicketResponse> GetPicketToday()
         {
-            try
+            if (picket != null && DateOnly.FromDateTime(picket.CreateAt) == DateOnly.FromDateTime(DateTime.UtcNow))
+                return picket;
+
+            HttpResponseMessage response = await _httpClient.GetAsync($"api/picket");
+            if (response.IsSuccessStatusCode)
             {
-
-                if (picket != null && DateOnly.FromDateTime(picket.CreateAt) == DateOnly.FromDateTime(DateTime.Now))
-                    return picket;
-
-                using var client = new RestClient();
-                HttpResponseMessage response = await client.GetAsync($"api/picket");
-                if (response.IsSuccessStatusCode)
-                {
-                    picket = await response.GetResultAsync<PicketResponse>();
-                    return picket;
-
-                }
-                throw new SystemException(await client.Error(response));
+                picket = await response.GetResultAsync<PicketResponse>();
+                return picket;
             }
-            catch (Exception ex)
-            {
-                throw new SystemException(ex.Message);
-            }
+            throw new HttpRequestException(await _httpClient.Error(response));
         }
+
         public async Task<bool> DeleteToComeHomeEarly(int studentGoHomeErly)
         {
-            try
-            {
-                using var client = new RestClient();
-                var response = await client.DeleteAsync($"/picket/removehomeearly");
-                if (response.IsSuccessStatusCode)
-                    return true;
-                return false;
-            }
-            catch (Exception ex)
-            {
-                throw new SystemException(ex.Message);
-            }
+            var response = await _httpClient.DeleteAsync($"/picket/removehomeearly");
+            return response.IsSuccessStatusCode;
         }
 
         public async Task<bool> DeleteToLate(int studentTolateId)
         {
-            try
-            {
-                using var client = new RestClient();
-                var response = await client.DeleteAsync($"/picket/removelate");
-                if (response.IsSuccessStatusCode)
-                    return true;
-                return false;
-            }
-            catch (Exception ex)
-            {
-                throw new SystemException(ex.Message);
-            }
+            var response = await _httpClient.DeleteAsync($"/picket/removelate");
+            return response.IsSuccessStatusCode;
         }
 
         public async Task<LateAndGoHomeEarlyResponse> AddLateandEarly(StudentToLateAndEarlyRequest model)
         {
-            try
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync($"/api/picket/lateandearly", model);
+            if (response.IsSuccessStatusCode)
             {
-                using var client = new RestClient();
-
-                var data = client.GenerateHttpContent(model);
-
-
-                HttpResponseMessage response = await client.PostAsJsonAsync($"/api/picket/lateandearly", model);
-                if (response.IsSuccessStatusCode)
+                var result = JsonSerializer.Deserialize<LateAndGoHomeEarlyResponse>(await response.Content.ReadAsStringAsync(), Helper.JsonOption);
+                if (result != null)
                 {
-                    var stringContent = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<LateAndGoHomeEarlyResponse>(stringContent,Helper.JsonOption);
-                    if (result != null)
+                    if (picket != null && picket.StudentsLateAndComeHomeEarly != null)
                     {
-                        if(picket !=null && picket.StudentsLateAndComeHomeEarly != null)
-                        {
-                            picket.StudentsLateAndComeHomeEarly.Add(result);
-                        }
-                        return result; 
+                        picket.StudentsLateAndComeHomeEarly.Add(result);
                     }
+                    return result;
                 }
-                throw new SystemException(await client.Error(response));
             }
-            catch (Exception ex)
-            {
-                throw new SystemException(ex.Message);
-            }
+            throw new HttpRequestException(await _httpClient.Error(response));
         }
 
         public async Task<bool> Put(int id, PicketRequest model)
         {
-            try
+            HttpResponseMessage response = await _httpClient.PutAsJsonAsync($"api/picket/{id}", model);
+            if (response.IsSuccessStatusCode)
             {
-                using var client = new RestClient();
-                var x = client.GenerateHttpContent(model);
-                HttpResponseMessage response = await client.PutAsJsonAsync($"api/picket/{id}", model);
-                if (response.IsSuccessStatusCode)
-                {
-                    var stringContent = await response.Content.ReadAsStringAsync();
-                    var result = await response.GetResultAsync<bool>();
-                    if (result)
-                        return result;
-                }
-                throw new SystemException(await client.Error(response));
+                var result = await response.GetResultAsync<bool>();
+                if (result)
+                    return result;
             }
-            catch (Exception ex)
-            {
-                throw new SystemException(ex.Message);
-            }
+            throw new HttpRequestException(await _httpClient.Error(response));
         }
 
         public async Task<PaginationResponse<PicketResponse>> Get(PaginationRequest req)
         {
-            try
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync($"api/picket/paginate", req);
+            if (response.IsSuccessStatusCode)
             {
-                using var client = new RestClient();
-                HttpResponseMessage response = await client.PostAsJsonAsync($"api/picket/paginate", req);
-                if (response.IsSuccessStatusCode)
-                {
-                    var stringContent = await response.Content.ReadAsStringAsync();
-                    var result = await response.GetResultAsync<PaginationResponse<PicketResponse>>();
-                    if (result != null)
-                        return result;
-                }
-                throw new SystemException(await client.Error(response));
+                var result = await response.GetResultAsync<PaginationResponse<PicketResponse>>();
+                if (result != null)
+                    return result;
             }
-            catch (Exception ex)
-            {
-                throw new SystemException(ex.Message);
-            }
+            throw new HttpRequestException(await _httpClient.Error(response));
         }
-
-     
 
         public async Task<PicketResponse> GetById(int id)
         {
-            try
+            HttpResponseMessage response = await _httpClient.GetAsync($"api/picket/{id}");
+            if (response.IsSuccessStatusCode)
             {
-                using var client = new RestClient();
-                HttpResponseMessage response = await client.GetAsync($"api/picket/{id}");
-                if (response.IsSuccessStatusCode)
-                {
-                    picket = await response.GetResultAsync<PicketResponse>();
-                    return picket;
-
-                }
-                throw new SystemException(await client.Error(response));
+                picket = await response.GetResultAsync<PicketResponse>();
+                return picket;
             }
-            catch (Exception ex)
-            {
-                throw new SystemException(ex.Message);
-            }
+            throw new HttpRequestException(await _httpClient.Error(response));
         }
     }
 }

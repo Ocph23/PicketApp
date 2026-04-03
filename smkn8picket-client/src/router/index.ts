@@ -206,43 +206,66 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach(async (to: { matched: { path: string }[]; path: string }) => {
+router.beforeEach(async (to) => {
   const token = localStorage.getItem('authToken')
-  const auth = JSON.parse(token as string) as AuthResponse
-  // const publicPages = ['/login', '/walikelas/login']
-  // const walikelasPages = ['/walikelas', '/walikelas/kelas', '/walikelas/siswa']
-  // const teacherPiketPages = ['/gurupiket', '/gurupiket/piket', '/gurupiket/siswa']
 
+  // 🚀 BELUM LOGIN
+  if (!token) {
+    // biarkan akses ke login
+    if (to.path === '/login') {
+      return
+    }
+
+    // selain login → paksa ke login
+    return '/login'
+  }
+
+  // 🚀 PARSE TOKEN
+  let auth: AuthResponse | null = null
+  try {
+    auth = JSON.parse(token) as AuthResponse
+  } catch {
+    localStorage.removeItem('authToken')
+    return '/login'
+  }
+
+  // 🚀 ROOT REDIRECT
   if (to.path === '/') {
-    if (auth && auth.isAdmin) {
+    if (auth?.isAdmin) {
       return '/admin'
-    } else if (auth && auth.roles.includes('HomeRoomTeacher')) {
+    } else if (auth?.roles.includes('HomeRoomTeacher')) {
       return '/walikelas/home'
-    } else if (auth && auth.roles.includes('PicketTeacher')) {
+    } else if (auth?.roles.includes('PicketTeacher')) {
       return '/piket/pikethariini'
     } else {
       return '/login'
     }
   }
 
-  if (auth && to.matched.find((x) => x.path == '/admin')) {
-    if (auth.loginAs != 'Administrator') {
+  // 🚀 CEGAH USER LOGIN BALIK KE LOGIN PAGE
+  if (to.path === '/login') {
+    return '/'
+  }
+
+  // 🚀 AUTHORIZATION CHECK
+  if (to.matched.find((x) => x.path === '/admin')) {
+    if (auth.loginAs !== 'Administrator') {
       VTToastService.error('Maaf anda tidak memiliki akses ke halaman ini')
-      return '/login'
+      return '/'
     }
   }
 
-  if (auth && to.matched.find((x) => x.path == '/walikelas')) {
-    if (auth.loginAs != 'WaliKelas') {
+  if (to.matched.find((x) => x.path === '/walikelas')) {
+    if (auth.loginAs !== 'WaliKelas') {
       VTToastService.error('Maaf anda tidak memiliki akses ke halaman ini')
-      return '/login'
+      return '/'
     }
   }
 
-  if (auth && to.matched.find((x) => x.path == '/piket')) {
+  if (to.matched.find((x) => x.path === '/piket')) {
     if (!auth.isTeacherPicket) {
       VTToastService.error('Maaf anda tidak memiliki akses ke halaman ini')
-      return '/login'
+      return '/'
     }
   }
 })

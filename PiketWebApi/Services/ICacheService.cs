@@ -52,7 +52,12 @@ public class CacheService : ICacheService
     public Task SetAsync<T>(string key, T value, CancellationToken token = default) where T : class
     {
         string cacheValue = JsonSerializer.Serialize(value, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        return _cacheProvider.SetStringAsync(key, cacheValue, token);
+        var options = new DistributedCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1),
+            SlidingExpiration = TimeSpan.FromMinutes(30)
+        };
+        return _cacheProvider.SetStringAsync(key, cacheValue, options, token);
     }
 
     public Task RemoveAsync(string key, CancellationToken token = default)

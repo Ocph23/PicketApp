@@ -36,7 +36,6 @@ namespace PicketMobile.Services
         {
             if (token != null)
             {
-                this.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token);
                 this.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
         }

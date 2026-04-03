@@ -15,7 +15,6 @@ namespace PiketWebApi
     {
         public static IServiceCollection AddOcphAuthServe(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -35,21 +34,25 @@ namespace PiketWebApi
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
             });
-            var key = Encoding.UTF8.GetBytes(configuration["AppSettings:Secret"]!);
+
+            var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "PiketApp";
+            var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "PiketAppUsers";
+            var secret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "ChangeMe@2026!Secure";
+            var key = Encoding.UTF8.GetBytes(secret);
             services.AddAuthentication
                 (options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                
+
             }
             ).AddJwtBearer(o =>
             {
                 o.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidIssuer = configuration["AppSettings:Issuer"],
-                    ValidAudience = configuration["AppSettings:Audience"],
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = true,
                     ValidateAudience = true,
@@ -97,8 +100,11 @@ namespace PiketWebApi
         public static async Task<ClaimsPrincipal> GetAuthenticationStateAsync(string? token, IConfiguration configuration)
         {
             if (string.IsNullOrEmpty(token))
-                throw new SystemException(); ;
+                throw new SystemException();
 
+            var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "PiketApp";
+            var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "PiketAppUsers";
+            var secret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? "ChangeMe@2026!Secure";
             IdentityModelEventSource.ShowPII = true;
             ClaimsIdentity identity = new ClaimsIdentity();
             var user = new ClaimsPrincipal(identity);
@@ -106,18 +112,15 @@ namespace PiketWebApi
             try
             {
                 ArgumentNullException.ThrowIfNullOrEmpty(nameof(token));
-
-                string issuer = "https://chatapp.apspapua.com/";
                 await Task.Delay(100);
                 var tokenHandler = new JwtSecurityTokenHandler();
-
-                var key = Encoding.UTF8.GetBytes(configuration["AppSettings:Secret"]!);
+                var key = Encoding.UTF8.GetBytes(secret);
 
                 SecurityToken validatedToken = null;
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
-                    ValidIssuer = configuration["AppSettings:Issuer"],
-                    ValidAudience = configuration["AppSettings:Audience"],
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = true,
                     ValidateAudience = true,

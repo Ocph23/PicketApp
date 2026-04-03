@@ -10,8 +10,8 @@ namespace PiketWebApi.Data
     {
         public int Id { get; set; }
         public Student? Student { get; set; }
-        public DateTime CreateAt { get; set; } = DateTime.Now;
-        public TimeSpan? Time { get; set; } = DateTime.Now.TimeOfDay;
+        public DateTime CreateAt { get; set; } = DateTime.UtcNow;
+        public TimeSpan? Time { get; set; } = DateTime.UtcNow.TimeOfDay;
         public AttendanceStatus AttendanceStatus { get; set; }
         public LateAndGoHomeEarlyAttendanceStatus LateAndGoHomeEarlyStatus { get; set; }
         public string? Description { get; set; }

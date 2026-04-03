@@ -56,20 +56,31 @@ namespace PiketWebApi.Api
                 return Results.BadRequest("File directory does not exist.");
             }
 
+            // Sanitize filename to prevent path traversal
+            string sanitizedFileName = Path.GetFileName(fileName);
+
             // Build the full file path
-            string filePath = Path.Combine(fileDirectory, fileName);
+            string filePath = Path.Combine(fileDirectory, sanitizedFileName);
+
+            // Ensure the resolved path is within the allowed directory
+            string canonicalPath = Path.GetFullPath(filePath);
+            string canonicalDir = Path.GetFullPath(fileDirectory);
+            if (!canonicalPath.StartsWith(canonicalDir, StringComparison.OrdinalIgnoreCase))
+            {
+                return Results.Forbid();
+            }
 
             // Check if the file exists
             if (!System.IO.File.Exists(filePath))
             {
-                return Results.BadRequest("File not found.");
+                return Results.NotFound("File not found.");
             }
 
             // Read the file content
             var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
 
             // Return the file as a download
-            return Results.File(fileBytes, "application/octet-stream", fileName);
+            return Results.File(fileBytes, "application/octet-stream", sanitizedFileName);
         }
 
         private static async Task<IResult> GetAllStudentWithPanitate(HttpContext context, IStudentService studentService, PaginationRequest req)

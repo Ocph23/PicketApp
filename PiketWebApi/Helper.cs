@@ -46,8 +46,8 @@ namespace PiketWebApi
 
         public static async Task<ErrorOr<ApplicationUser>> CreateUser(UserManager<ApplicationUser> userManager, ApplicationUser user, string role)
         {
-            //var user = new ApplicationUser { Email = model.Email, EmailConfirmed = true, Name = model.Name, UserName = model.Email };
-            var createResult = await userManager.CreateAsync(user, "Password@123");
+            var defaultPassword = Environment.GetEnvironmentVariable("DEFAULT_PASSWORD") ?? "ChangeMe@2026!Secure";
+            var createResult = await userManager.CreateAsync(user, defaultPassword);
             if (createResult.Succeeded)
             {
                 await userManager.AddToRoleAsync(user, role);
@@ -55,7 +55,7 @@ namespace PiketWebApi
             }
 
             var errors = from x in createResult.Errors
-                         select Error.Failure(x.Code, x.Description);
+                          select Error.Failure(x.Code, x.Description);
 
 
             return errors.ToList();

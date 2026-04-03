@@ -61,7 +61,8 @@ namespace PiketWebApi.Api
                 if (email != null && await userManager.FindByEmailAsync(email) is ApplicationUser user)
                 {
                     var token = await userManager.GeneratePasswordResetTokenAsync(user);
-                    await userManager.ResetPasswordAsync(user, token, "Password@123");
+                    var defaultPassword = Environment.GetEnvironmentVariable("DEFAULT_PASSWORD") ?? "ChangeMe@2026!Secure";
+                    await userManager.ResetPasswordAsync(user, token, defaultPassword);
                     return Results.Ok();
                 }
 
@@ -211,15 +212,13 @@ namespace PiketWebApi.Api
         private static async Task<IResult> LoginAction(HttpContext context,
            SharedModel.Requests.LoginRequest request,
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, IConfiguration _config,
+            SignInManager<ApplicationUser> signInManager,
             ApplicationDbContext dbContext
             )
         {
             try
             {
                 var students = dbContext.Students.ToList();
-                AppSettings _appSettings = new AppSettings();
-                _config.GetSection("AppSettings").Bind(_appSettings);
                 var result = await signInManager.PasswordSignInAsync(request.Username.ToUpper(), request.Password, false, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
@@ -229,7 +228,7 @@ namespace PiketWebApi.Api
                     if (!await userManager.IsEmailConfirmedAsync(user))
                         throw new SystemException("Email Belum diverifikasi , Silahkan Hubungi Administrator");
                     var roles = await userManager.GetRolesAsync(user);
-                    var token = await user.GenerateToken(_appSettings, roles);
+                    var token = await user.GenerateToken(roles);
                     Profile? profile = null;
                     if (roles.Contains("Teacher"))
                     {
@@ -271,13 +270,13 @@ namespace PiketWebApi.Api
 
     public static class AuthServiceExtention
     {
-        public static Task<string> GenerateToken<ApplicationUser>(this ApplicationUser tuser, AppSettings _appSettings, IList<string>? roles = null)
+        public static Task<string> GenerateToken<ApplicationUser>(this ApplicationUser tuser, IList<string>? roles = null)
         {
 
             var user = tuser as IdentityUser;
-            var issuer = _appSettings.Issuer;
-            var audience = _appSettings.Audience;
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "PiketApp";
+            var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "PiketAppUsers";
+            var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET") ?? "ChangeMe@2026!Secure");
 
             IList<Claim>? claims = new List<Claim>() {
                 new Claim("id", user.Id),

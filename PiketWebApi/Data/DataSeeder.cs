@@ -27,15 +27,12 @@ namespace PiketWebApi.Data
 
             if (!dbcontext.Users.Any())
             {
+                var adminPassword = Environment.GetEnvironmentVariable("DEFAULT_PASSWORD") ?? "ChangeMe@2026!Secure";
                 var user = new ApplicationUser("admin@picket.smkn8tikjayapura.sch.id") { Name = "Admin", Email = "admin@picket.smkn8tikjayapura.sch.id", EmailConfirmed = true };
-                var result = await userManager.CreateAsync(user, "Password@123");
+                var result = await userManager.CreateAsync(user, adminPassword);
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, "Admin");
-                }
-                else
-                {
-                    await userManager.DeleteAsync(user);
                 }
             }
 
@@ -66,23 +63,20 @@ namespace PiketWebApi.Data
 
                 foreach (var teacher in dtos)
                 {
+                    var teacherPassword = Environment.GetEnvironmentVariable("DEFAULT_PASSWORD") ?? "ChangeMe@2026!Secure";
                     var user = new ApplicationUser(teacher.Email) { Name = teacher.Name, Email = teacher.Email, EmailConfirmed = true };
-                    var result = await userManager.CreateAsync(user, "Password@123");
+                    var result = await userManager.CreateAsync(user, teacherPassword);
                     if (result.Succeeded)
                     {
                         await userManager.AddToRoleAsync(user, "Teacher");
                         teacher.UserId = user.Id;
                         await dbcontext.Teachers.AddAsync(teacher);
                     }
-                    else
-                    {
-                        await userManager.DeleteAsync(user);
-                    }
                 }
             }
 
 
-            if(!dbcontext.Students.Any())
+            if (!dbcontext.Students.Any())
             {
                 CancellationToken ct = default;
                 var jsonFilePath = Path.Combine(AppContext.BaseDirectory, "Data", "student.json");

@@ -26,6 +26,7 @@ namespace PiketWebApi.Api
             group.MapPut("/{id}", PutClassRoom);
             group.MapDelete("/{id}", DeleteClassRoom);
             group.MapPost("/addstudent/{classroomId}", AddStudentToClassRoom);
+            group.MapPost("/addstudents/{classroomId}", AddStudentsToClassRoom);
             group.MapDelete("/removestudent/{classroomId}/{studentId}", RemoveStudentFromClassRoom);
             return group.WithTags("classroom").RequireAuthorization(); ;
         }
@@ -81,6 +82,12 @@ namespace PiketWebApi.Api
         private static async Task<IResult> AddStudentToClassRoom(HttpContext context, IClassRoomService classRoomService, int classroomId, Student student)
         {
             var result = await classRoomService.AddStudentToClassRoom(classroomId, student);
+            return result.Match(items => Results.Ok(items), errors => Results.BadRequest(result.CreateProblemDetail(context)));
+        }
+
+        private static async Task<IResult> AddStudentsToClassRoom(HttpContext context, IClassRoomService classRoomService, int classroomId, AddStudentsToClassRequest req)
+        {
+            var result = await classRoomService.AddStudentsToClassRoom(classroomId, req.StudentIds);
             return result.Match(items => Results.Ok(items), errors => Results.BadRequest(result.CreateProblemDetail(context)));
         }
 

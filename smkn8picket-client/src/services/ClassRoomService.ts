@@ -30,6 +30,10 @@ const ClassRoomService = {
     const response = await axios.post(`${controller}/addstudent/${classroomId}`, model);
     return Helper.getResult(response);
   },
+  addStudentsToClass: async (classroomId: number, studentIds: number[]) => {
+    const response = await axios.post(`${controller}/addstudents/${classroomId}`, { studentIds });
+    return Helper.getResult(response);
+  },
   put: async (id: number, model: ClassRoomRequest) => {
     const response = await axios.put(`${controller}/${id}`, model);
     return Helper.getResult(response);

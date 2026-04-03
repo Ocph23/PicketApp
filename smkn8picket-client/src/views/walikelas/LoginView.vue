@@ -31,7 +31,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AuthService from '@/services/AuthService'
-import axios from 'axios'
 import type { LoginRequest } from '@/models/Requests'
 import type { AuthResponse, } from '@/models'
 import { FwbCard, FwbHeading, FwbInput } from 'flowbite-vue'
@@ -49,7 +48,6 @@ const login = async () => {
       const auth = response.data as AuthResponse
       auth.isAdmin = false;
       auth.isTeacherPicket = false;
-      axios.defaults.headers.common['Authorization'] = auth ? 'Bearer ' + auth.token : ''
       if (auth.roles.includes('HomeRoomTeacher')) {
         auth.isHomeRoomTeacher = true;
         localStorage.setItem('authToken', JSON.stringify(auth))

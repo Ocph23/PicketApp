@@ -1,12 +1,35 @@
 .vs
 
-
-**\obj
-**\bin
+**/obj
+**/bin
 
 *.csproj.user
 
-**\node_modules
+**/node_modules
 
-**\.wwebjs_auth
-**\.wwebjs_cache
+**/.wwebjs_auth
+**/.wwebjs_cache
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+appsettings.*.json
+*.keystore
+*.keystore.pass
+*.pfx
+*.p12
+
+# Sensitive configuration
+secrets/
+config/secrets/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

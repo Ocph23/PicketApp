@@ -1,13 +1,26 @@
 import { VTToastService } from '@ocph23/vtocph23'
 import axios, { AxiosError, type AxiosResponse } from 'axios'
 
-const authString = localStorage.getItem('authToken')
-const auth = JSON.parse(authString!)
 axios.defaults.baseURL = import.meta.env.VITE_API_URL + '/api'
 axios.defaults.headers.common['Content-Type'] = 'application/json'
-axios.defaults.headers.common['Authorization'] = auth ? 'Bearer ' + auth.token : ''
-axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-axios.defaults.headers.put['Access-Control-Allow-Origin'] = '*';
+axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*'
+axios.defaults.headers.put['Access-Control-Allow-Origin'] = '*'
+
+// Interceptor to attach token on each request
+axios.interceptors.request.use((config) => {
+  const authString = localStorage.getItem('authToken')
+  if (authString) {
+    try {
+      const auth = JSON.parse(authString)
+      if (auth?.token) {
+        config.headers.Authorization = `Bearer ${auth.token}`
+      }
+    } catch {
+      // ignore parse error
+    }
+  }
+  return config
+})
 
 const onNotFound = () => {
   VTToastService.error('Alamat URL Tidak Ditemukan.')

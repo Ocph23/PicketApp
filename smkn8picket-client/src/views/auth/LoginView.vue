@@ -48,6 +48,7 @@
               class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
               Login
             </button>
+            <p>user : admin@picket.smkn8tikjayapura.sch.id password:ChangeMe@2026!Secure </p>
             <p v-if="errorMessage" class="text-red-500 text-center mt-4">
               {{ errorMessage }}
             </p>
@@ -61,7 +62,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AuthService from '@/services/AuthService'
-import axios from 'axios'
 import type { LoginRequest } from '@/models/Requests'
 import type { AuthResponse, Schedule } from '@/models'
 import { FwbHeading, FwbSelect } from 'flowbite-vue'
@@ -82,7 +82,6 @@ const login = async () => {
     if (response.isSuccess) {
       const auth = response.data as AuthResponse
       auth.loginAs = loginAs.value // Store the selected login type in auth
-      axios.defaults.headers.common['Authorization'] = auth ? 'Bearer ' + auth.token : ''
       if (loginAs.value === 'Piket') {
         if (auth.profile == null || auth.profile.id == null) {
           VTToastService.error('Maaf anda belum terdaftar sebagai guru')

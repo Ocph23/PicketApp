@@ -1,24 +1,24 @@
-﻿using Azure.AI.OpenAI;
+using Azure.AI.OpenAI;
 using Azure.Identity;
 using Microsoft.Extensions.AI;
 using ModelContextProtocol.Client;
 
 // Create an IChatClient using Azure OpenAI.
-//IChatClient client =
-//    new ChatClientBuilder(
-//        new AzureOpenAIClient(new Uri("<your-azure-openai-endpoint>"),
-//        new DefaultAzureCredential())
-//        .GetChatClient("gpt-4o").AsIChatClient())
-//    .UseFunctionInvocation()
-//    .Build();
+IChatClient client =
+    new ChatClientBuilder(
+        new AzureOpenAIClient(new Uri("<your-azure-openai-endpoint>"),
+        new DefaultAzureCredential())
+        .GetChatClient("gpt-4o").AsIChatClient())
+    .UseFunctionInvocation()
+    .Build();
 
 // Create the MCP client
 // Configure it to start and connect to your MCP server.
 IMcpClient mcpClient = await McpClientFactory.CreateAsync(
     new StdioClientTransport(new()
     {
-        Command = "dotnet run",
-        Arguments = ["--project", "D:\\smk8\\PicketApp\\PiketWebApi\\PiketWebApi.csproj"],
+        Command = "dotnet",
+        Arguments = ["run", "--project", "..\\PiketWebApi\\PiketWebApi.csproj"],
         Name = "Minimal MCP Server",
     }));
 
