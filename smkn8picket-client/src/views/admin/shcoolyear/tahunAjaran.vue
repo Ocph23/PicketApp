@@ -18,7 +18,7 @@
             </VTButtonAction>
             <VTButtonAction :type="'delete'" :style="'danger'" @click="confirmDelete(row.data)" class="text-white flex">
             </VTButtonAction>
-            <router-link :to="`/admin/Jadwal/${row.id}`">
+            <router-link :to="`/admin/Jadwal/${row.data.id}`">
               <VTButtonAction :type="'default'" :style="'info'" class="text-white flex">
                 <VTIconDetail />
               </VTButtonAction>

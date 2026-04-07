@@ -6,6 +6,7 @@
           <div class="flex flex-col justify-center items-center">
             <img :src="Helper.infoSekolah.logo" class="w-1/5 m-5" alt="SMK Logo" />
             <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2">
+              {{ Helper.infoSekolah.url }}
               SITEM INFORMASI SEKOLAH
             </FwbHeading>
             <FwbHeading tag="h3" class="w-auto text-xl font-bold mb-2">

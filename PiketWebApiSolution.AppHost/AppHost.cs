@@ -2,13 +2,15 @@ using Google.Protobuf.WellKnownTypes;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-// ?? Tambahkan Docker Compose environment (opsional)
-//builder.AddDockerComposeEnvironment("compose")
-//       .WithDashboard(dashboard =>
-//       {
-//           dashboard.WithHostPort(8181)
-//                    .WithForwardedHeaders(enabled: true);
-//       });
+int picketApiPort = 5001;
+
+// Tambahkan Docker Compose environment (opsional)
+builder.AddDockerComposeEnvironment("env")
+  .WithDashboard(dashboard =>
+  {
+      dashboard.WithHostPort(8181)
+                .WithForwardedHeaders(enabled: true);
+  });
 
 // ?? PostgreSQL + Database
 //var backupPath = Path.GetFullPath(@"D:\smk8\PicketApp\pgadmin_backups");
@@ -20,7 +22,7 @@ var postgres = builder.AddPostgres("db")
     // var backupPathX = "/mnt/d/smk8/PicketApp/pgadmin_backups";
     //     pgadmin.WithVolume($"{backupPathX}:/backups"); // <--- tambahkan volume ini
     // })
-    .WithDataVolume("picket_volume");
+    .WithDataVolume("picketdb_volume");
 
 var db = postgres.AddDatabase("piketdb");
 
@@ -31,8 +33,16 @@ var redis = builder.AddRedis("cache");
 var picketapi = builder.AddProject<Projects.PiketWebApi>("piketapi")
     .WithReference(redis)
     .WithReference(db)
-    .WaitFor(db);
-
+    .WithEnvironment("JWT_SECRET", "O0ywQA1xv4h1EXL4cnsQ4ReHEoqwMuejtXB4KxOeTCB4nOpV4yVegegbEgtzsZWfl5wlBWBY5kpUPVsEmkVr3V9sxvOPmT4YR3PvUCiw7s1xMrSoCMVqnG7VlSeO469Z")
+    .WithEnvironment("JWT_ISSUER", $"https://localhost:{picketApiPort.ToString()}")
+    .WithEnvironment("JWT_AUDIENCE", $"https://localhost:{picketApiPort.ToString()}")
+    .WithEnvironment("DEFAULT_PASSWORD", "Password@123")
+    .WithEnvironment("PIKETAPI_PORT", picketApiPort.ToString())
+    .WaitFor(db)
+    .WaitFor(redis)
+    .WithEndpoint(port: picketApiPort)
+    .WithExternalHttpEndpoints()
+    ;
 
 //DEV TUNNEL
 //var tunnel = builder.AddDevTunnel("mytunnel")
@@ -42,22 +52,13 @@ var picketapi = builder.AddProject<Projects.PiketWebApi>("piketapi")
 
 
 var viteApp = builder.AddViteApp("admin-client", "../smkn8picket-client")
-    .WithReference(picketapi).WithBun(); 
-
-//builder.AddNpmApp("admin-client", "../smkn8picket-client")
-//   .WaitFor(picketapi)
-//   .WithReference(picketapi)
-//   .WithEndpoint(
-//     name: "https",
-//     scheme: "https",
-//     port: 5173, targetPort: 5173, isProxied: false)
-//   .PublishAsDockerFile();
-
-// builder.AddNpmApp("adminclient", "../smkn8picket-client", "start")
-//     .WithEnvironment("VITE_API_URL", picketapi.GetEndpoint("https"))
-//     .WithHttpEndpoint(name: "vue-client", port: 5173, isProxied: false);
+    .WithReference(picketapi)
+    .WithBun()
+    .WaitFor(picketapi)
+    .WithEnvironment("VITE_API_URL", picketapi.GetEndpoint("http"))
+    .WithEnvironment("VITE_LOGO", "/smk.png")
+    .WithExternalHttpEndpoints();
 
 
-// ?? Bangun dan jalankan aplikasi Aspire
 
 builder.Build().Run();

@@ -104,20 +104,20 @@ const Helper = {
     { value: 3, name: 'Hujan' }
   ],
 
-  // getWeartherString: (value: number) => {
-  //   switch (value) {
-  //     case 0:
-  //       return 'Cerah'
-  //     case 1:
-  //       return 'Mendung'
-  //     case 2:
-  //       return 'Gerimis'
-  //     case 3:
-  //       return 'Hujan'
-  //     default:
-  //       return 'Cerah'
-  //   }
-  // },
+  getWeartherString: (value: number) => {
+    switch (value) {
+      case 0:
+        return 'Cerah'
+      case 1:
+        return 'Mendung'
+      case 2:
+        return 'Gerimis'
+      case 3:
+        return 'Hujan'
+      default:
+        return 'Cerah'
+    }
+  },
 
   readDetailError: (error: ErrorResponse): string => {
     let message: string = ''
@@ -201,6 +201,7 @@ const Helper = {
     })
   },
   infoSekolah: {
+    url: import.meta.env.VITE_API_URL,
     nama_sekolah: import.meta.env.VITE_NAMA_SEKOLAH,
     alamat_sekolah: import.meta.env.VITE_ALAMAT_SEKOLAH,
     no_telp: import.meta.env.VITE_NO_TELP,

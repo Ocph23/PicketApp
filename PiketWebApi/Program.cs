@@ -190,16 +190,33 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 
+// var photosPath = Path.Combine(builder.Environment.ContentRootPath, "photos");
+// try
+// {
+//     if (!Directory.Exists(photosPath))
+//     {
+//         Directory.CreateDirectory(photosPath);
+//     }
+// }
+// catch (UnauthorizedAccessException)
+// {
+//     Console.WriteLine($"Warning: No permission to create photos directory at {photosPath}");
+// }
+// catch (IOException ex)
+// {
+//     Console.WriteLine($"Warning: Could not create photos directory: {ex.Message}");
+// }
+
+
 app.UseCors(corsPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseStaticFiles();    //Serve files from wwwroot
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-            Path.Combine(builder.Environment.ContentRootPath, "photos")),
-    RequestPath = "/photos"
-});
+app.UseStaticFiles();
+// app.UseStaticFiles(new StaticFileOptions
+// {
+//     FileProvider = new PhysicalFileProvider(photosPath),
+//     RequestPath = "/photos"
+// });
 app.MapGroup("/api/auth").MapAuthApi().WithOpenApi().WithTags("auth");
 app.MapGroup("/api/teacher").MapTeacherApi().WithOpenApi();
 app.MapGroup("/api/student").MapStudentApi().WithOpenApi();

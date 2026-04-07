@@ -1,0 +1,91 @@
+services:
+  piketwebapi:
+    container_name: picketwebapi
+    build:
+      context: .
+      dockerfile: PiketWebApi/Dockerfile
+    image: picketwebapi
+    ports:
+      - 5001:5001
+    volumes:
+      - picketwebapi_data:/app/photos
+    environment:
+      - ASPNETCORE_URLS=http://+:5001
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+      redis-server:
+        condition: service_healthy
+        restart: true
+
+  # whatsapp:
+  #   container_name: whatsapp
+  #   image: 230279/whatsapp:1.0.1
+  #   restart: always
+  #   # build:
+  #   #   context: WhatsApp
+  #   #   dockerfile: ./Dockerfile
+  #   environment:
+  #     NODE_ENV: production
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #       restart: true
+  #   ports:
+  #     - 3000:3000
+
+  smkn8picketclient:
+    container_name: smkn8picketclient
+    image: smkn8picketclient
+    restart: always
+    build:
+      context: smkn8picket-client
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+      VITE_API_URL: http://localhost:5001
+      VITE_LOGO: /smk.png
+    ports:
+      - 0.0.0.0:8080:80
+
+  redis-server:
+    container_name: redis-server
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  db:
+    image: postgres
+    container_name: postgres_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@app.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-changeme}
+    ports:
+      - "5050:80"
+
+volumes:
+  picketwebapi_data:
+  postgres_data:
