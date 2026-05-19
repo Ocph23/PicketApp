@@ -39,37 +39,29 @@
 		https://aka.ms/MauiTemplateUnpackaged -->
 		<WindowsPackageType>None</WindowsPackageType>
 
-		<SupportedOSPlatformVersion
-			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 			15.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion
-			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
 			15.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion
-			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 			21.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion
-			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 			10.0.17763.0</SupportedOSPlatformVersion>
-		<TargetPlatformMinVersion
-			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 			10.0.17763.0</TargetPlatformMinVersion>
-		<SupportedOSPlatformVersion
-			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">
 			6.5</SupportedOSPlatformVersion>
 		<AndroidSigningKeyStore>Ocph23.keystore</AndroidSigningKeyStore>
 	</PropertyGroup>
 
-	<PropertyGroup
-		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
 		<AndroidKeyStore>True</AndroidKeyStore>
 		<AndroidSigningStorePass>Sony@7777</AndroidSigningStorePass>
 		<AndroidSigningKeyAlias>Ocph23</AndroidSigningKeyAlias>
 		<AndroidSigningKeyPass>Sony@7777</AndroidSigningKeyPass>
 	</PropertyGroup>
 
-	<PropertyGroup
-		Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
 		<AndroidKeyStore>True</AndroidKeyStore>
 		<AndroidSigningStorePass>Sony@7777</AndroidSigningStorePass>
 		<AndroidSigningKeyAlias>Ocph23</AndroidSigningKeyAlias>
@@ -82,8 +74,7 @@
 		<MauiIcon Include="Resources\AppIcon\iconsmkn8.svg" BaseSize="125,125" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\logosplash.png" Color="#F7F8F3"
-			BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\logosplash.png" Color="#F7F8F3" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -101,12 +92,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui" Version="12.2.0" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.120" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.10" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="14.1.1" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.60" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.8" />
 		<PackageReference Include="The49.Maui.BottomSheet" Version="8.0.3" />
-		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.6.0" />
+		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.7.4" />
 	</ItemGroup>
 
 	<ItemGroup>

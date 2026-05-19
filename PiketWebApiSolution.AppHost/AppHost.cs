@@ -12,6 +12,8 @@ builder.AddDockerComposeEnvironment("env")
                 .WithForwardedHeaders(enabled: true);
   });
 
+
+
 // ?? PostgreSQL + Database
 //var backupPath = Path.GetFullPath(@"D:\smk8\PicketApp\pgadmin_backups");
 //Directory.CreateDirectory(backupPath);
@@ -29,10 +31,24 @@ var db = postgres.AddDatabase("piketdb");
 // ?? Redis
 var redis = builder.AddRedis("cache");
 
+
+//whatsapp
+var whatsapp = builder.AddDockerfile("whatsapp", "../WhatsApp")
+    .WithReference(db)
+    .WithEnvironment("DATABASE_URL", "postgresql://postgres:${DB_PASSWORD}@db:5432/piketdb")
+    .WithVolume("whatsapp_auth", "/usr/src/app/.wwebjs_auth")
+    .WithHttpEndpoint(port: 3000, targetPort: 3000)
+    .WithExternalHttpEndpoints()
+    .PublishAsDockerComposeService((resource, service) =>
+    {
+        service.Name = "whatsapp";
+    });
+
 // ?? ASP.NET Core Web API
 var picketapi = builder.AddProject<Projects.PiketWebApi>("piketapi")
     .WithReference(redis)
-    .WithReference(db)
+    .WithReference(db)          
+    .WithEnvironment("WHATSAPP_API_URL", whatsapp.GetEndpoint("http"))
     .WithEnvironment("JWT_SECRET", "O0ywQA1xv4h1EXL4cnsQ4ReHEoqwMuejtXB4KxOeTCB4nOpV4yVegegbEgtzsZWfl5wlBWBY5kpUPVsEmkVr3V9sxvOPmT4YR3PvUCiw7s1xMrSoCMVqnG7VlSeO469Z")
     .WithEnvironment("JWT_ISSUER", $"https://localhost:{picketApiPort.ToString()}")
     .WithEnvironment("JWT_AUDIENCE", $"https://localhost:{picketApiPort.ToString()}")
@@ -42,7 +58,10 @@ var picketapi = builder.AddProject<Projects.PiketWebApi>("piketapi")
     .WaitFor(redis)
     .WithEndpoint(port: picketApiPort)
     .WithExternalHttpEndpoints()
-    ;
+    .PublishAsDockerComposeService((resource, service) =>
+    {
+        service.Name = "picketapi";
+    });
 
 //DEV TUNNEL
 //var tunnel = builder.AddDevTunnel("mytunnel")
@@ -51,13 +70,22 @@ var picketapi = builder.AddProject<Projects.PiketWebApi>("piketapi")
 //                    ;
 
 
-var viteApp = builder.AddViteApp("admin-client", "../smkn8picket-client")
+
+
+//var bunApp = builder.AddBunApp("picket-admin-client", "../smkn8picket-client")
+//    .WithHttpEndpoint(port: 3000, env: "PORT");
+
+var adminclient = builder.AddBunApp("picket-admin-client", "../smkn8picket-client", "dev")
     .WithReference(picketapi)
-    .WithBun()
     .WaitFor(picketapi)
-    .WithEnvironment("VITE_API_URL", picketapi.GetEndpoint("http"))
-    .WithEnvironment("VITE_LOGO", "/smk.png")
-    .WithExternalHttpEndpoints();
+    //.WithEnvironment("VITE_API_URL", picketapi.GetEndpoint("http"))
+    //.WithEnvironment("VITE_LOGO", "/smk.png")
+    .WithExternalHttpEndpoints()
+    .PublishAsDockerComposeService((resource, service) =>
+    {
+        service.Name = "picket-admin-client";
+    });
+;
 
 
 

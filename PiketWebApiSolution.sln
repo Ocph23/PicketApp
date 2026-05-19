@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11205.157 d18.0
+VisualStudioVersion = 18.0.11205.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PiketWebApi", "PiketWebApi\PiketWebApi.csproj", "{59444ACA-D03C-4B8B-9168-7DFDC83C74BD}"
 EndProject
@@ -21,6 +21,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiketWebApiSolution.AppHost", "PiketWebApiSolution.AppHost\PiketWebApiSolution.AppHost.csproj", "{806355E6-DC93-4773-8590-A2681B49E082}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiketWebApiSolution.ServiceDefaults", "PiketWebApiSolution.ServiceDefaults\PiketWebApiSolution.ServiceDefaults.csproj", "{62572E24-197B-EAA6-9600-CFD08E99E896}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "whatsapp", "WhatsApp\whatsapp.esproj", "{CCA410FA-501C-37A5-DA46-D0F01E81E958}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,12 @@ Global
 		{62572E24-197B-EAA6-9600-CFD08E99E896}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62572E24-197B-EAA6-9600-CFD08E99E896}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62572E24-197B-EAA6-9600-CFD08E99E896}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCA410FA-501C-37A5-DA46-D0F01E81E958}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA410FA-501C-37A5-DA46-D0F01E81E958}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA410FA-501C-37A5-DA46-D0F01E81E958}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{CCA410FA-501C-37A5-DA46-D0F01E81E958}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA410FA-501C-37A5-DA46-D0F01E81E958}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCA410FA-501C-37A5-DA46-D0F01E81E958}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

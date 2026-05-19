@@ -59,12 +59,15 @@ services:
     #   dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
+      WWEBJS_AUTH_PATH: /usr/src/app/.wwebjs_auth
+      DATABASE_URL: postgresql://postgres:password123@db:5432/piketdb
     depends_on:
-      db:
-        condition: service_healthy
-        restart: true
+      - db
     ports:
       - 3000:3000
+    volumes:
+      - whatsapp_auth:/usr/src/app/.wwebjs_auth
 
 volumes:
   postgres_data:
+  whatsapp_auth:

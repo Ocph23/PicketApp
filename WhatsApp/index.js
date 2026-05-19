@@ -17,9 +17,12 @@ app.engine('handlebars', engine());
 
 const qrCode = {};
 
+const authPath = process.env.WWEBJS_AUTH_PATH || '/usr/src/app/.wwebjs_auth';
 
 const client = new Client({
-  authStrategy: new LocalAuth(),
+  authStrategy: new LocalAuth({
+    dataPath: authPath,
+  }),
   // Set puppeteer options for running in a docker container
   puppeteer: {
     executablePath: '/usr/bin/google-chrome-stable',
@@ -118,7 +121,7 @@ async function registerNomorTelepon(nomorTelepon, nis) {
       return;
     }
     const student = result1.rows[0];
-    await query(
+    await db.query(
       'UPDATE "Students" SET "ParentPhoneNumber" = $1 WHERE "Id" = $2',
       [telp, student.Id]
     );
@@ -133,10 +136,23 @@ async function registerNomorTelepon(nomorTelepon, nis) {
 }
 
 
+app.get('/kirim/:nomor/:pesan', (req, res) => {
+    const { nomor, pesan } = req.params;
+    const address = `${nomor}@c.us`;
+    client.sendMessage(address, pesan).then((result) => {
+        console.log(result);
+        res.send(`Message sent to ${address}`);
+    });
+    res.send(`User ID: ${userId}`);
+});
+
+
 app.get("/qrcode", async (req, res) => {
   console.log(qrCode);
   res.render('qrcode', { qrCode });
 });
+
+
 
 
 app.post("/absen", async (req, res) => {
