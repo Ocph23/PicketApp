@@ -24,16 +24,16 @@ services:
       dockerfile: PiketWebApi/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:5001
-      ASPNETCORE_HTTP_PORTS: "5001"
+      ASPNETCORE_URLS: http://+:${PIKETAPI_PORT:-5001}
+      ASPNETCORE_HTTP_PORTS: "${PIKETAPI_PORT:-5001}"
       ConnectionStrings__piketdb: "Host=db;Port=5432;Username=postgres;Password=password123;Database=piketdb"
       ConnectionStrings__cache: "redis,password=password123"
-      JWT_SECRET: "O0ywQA1xv4h1EXL4cnsQ4ReHEoqwMuejtXB4KxOeTCB4nOpV4yVegegbEgtzsZWfl5wlBWBY5kpUPVsEmkVr3V9sxvOPmT4YR3PvUCiw7s1xMrSoCMVqnG7VlSeO469Z"
-      JWT_ISSUER: "https://localhost:5001"
-      JWT_AUDIENCE: "https://localhost:5001"
+      JWT_SECRET: ${JWT_SECRET:-change-this-to-a-long-random-secret}
+      JWT_ISSUER: ${JWT_ISSUER:-http://localhost:${PIKETAPI_PORT:-5001}}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:-https://localhost:${PIKETAPI_PORT:-5001}}
       DEFAULT_PASSWORD: "Password@123"
     ports:
-      - "5001:5001"
+      - "${PIKETAPI_PORT:-5001}:${PIKETAPI_PORT:-5001}"
     depends_on:
       - db
       - cache
@@ -43,10 +43,10 @@ services:
       context: ./smkn8picket-client
       dockerfile: Dockerfile
     environment:
-      VITE_API_URL: "http://localhost:5001"
-      VITE_LOGO: "/smk.png"
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:${PIKETAPI_PORT:-5001}/api}
+      VITE_LOGO: ${VITE_LOGO:-/smk.png}
     ports:
-      - "8000:80"
+      - "${ADMIN_CLIENT_PORT:-8000}:80"
     depends_on:
       - piketapi
 

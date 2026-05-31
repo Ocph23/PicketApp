@@ -10,6 +10,7 @@ namespace PiketWebApi.Api
         {
             group.MapGet("/", GetPickerToday);
             group.MapPost("/paginate", GetAllWithPanitate);
+            group.MapGet("/by-date/{date}", GetByDate);
             group.MapGet("/{id}", GetById);
             group.MapPost("/", PostPicket);
             group.MapPut("/{id}", PutPicket);
@@ -49,6 +50,12 @@ namespace PiketWebApi.Api
         private static async Task<IResult> GetById(HttpContext context, IPicketService picketService, int id)
         {
             var result = await picketService.GetById(id);
+            return result.Match(items => Results.Ok(items), errors => Results.BadRequest(result.CreateProblemDetail(context)));
+        }
+
+        private static async Task<IResult> GetByDate(HttpContext context, IPicketService picketService, DateOnly date)
+        {
+            var result = await picketService.GetByDate(date);
             return result.Match(items => Results.Ok(items), errors => Results.BadRequest(result.CreateProblemDetail(context)));
         }
 

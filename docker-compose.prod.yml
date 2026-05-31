@@ -11,7 +11,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-piketdb}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-piketdb}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -51,7 +55,7 @@ services:
     image: ${ADMIN_CLIENT_IMAGE:?set ADMIN_CLIENT_IMAGE}
     restart: unless-stopped
     environment:
-      VITE_API_URL: ${VITE_API_URL:-http://localhost:5001}
+      VITE_API_URL: ${VITE_API_URL:-http://${PUBLIC_DOMAIN:-localhost}}
       VITE_LOGO: ${VITE_LOGO:-/smk.png}
     depends_on:
       piketapi:

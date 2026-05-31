@@ -1,7 +1,10 @@
 import { VTToastService } from '@ocph23/vtocph23'
 import axios, { AxiosError, type AxiosResponse } from 'axios'
 
-axios.defaults.baseURL = import.meta.env.VITE_API_URL + '/api'
+const runtimeEnv = (window as Window & { __ENV__?: Record<string, string> }).__ENV__
+const apiBaseUrl = runtimeEnv?.VITE_API_URL ?? window.location.origin
+
+axios.defaults.baseURL = apiBaseUrl + '/api'
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*'
 axios.defaults.headers.put['Access-Control-Allow-Origin'] = '*'

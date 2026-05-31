@@ -1,6 +1,9 @@
 import type { AxiosError, AxiosResponse } from 'axios'
 import { type ErrorDetail, type ErrorResponse, type RequestResponse } from '@/commons'
 
+const runtimeEnv = (window as Window & { __ENV__?: Record<string, string> }).__ENV__
+const getEnv = (key: string, fallback = '') => runtimeEnv?.[key] ?? import.meta.env[key] ?? fallback
+
 const Helper = {
   getResult: (response: unknown): RequestResponse => {
     if (!response) {
@@ -182,11 +185,11 @@ const Helper = {
   // },
 
   getTeacherAvatar: (photo: string) => {
-    if (photo) return `${import.meta.env.VITE_API_URL}/photos/teacher/${photo}`
+    if (photo) return `${getEnv('VITE_API_URL')}/photos/teacher/${photo}`
     return '/man.png'
   },
   getStudentAvatar: (photo: string) => {
-    if (photo) return `${import.meta.env.VITE_API_URL}/photos/student/${photo}`
+    if (photo) return `${getEnv('VITE_API_URL')}/photos/student/${photo}`
     return '/man.png'
   },
   fileToBase64: (file: Blob) => {
@@ -201,15 +204,15 @@ const Helper = {
     })
   },
   infoSekolah: {
-    url: import.meta.env.VITE_API_URL,
-    nama_sekolah: import.meta.env.VITE_NAMA_SEKOLAH,
-    alamat_sekolah: import.meta.env.VITE_ALAMAT_SEKOLAH,
-    no_telp: import.meta.env.VITE_NO_TELP,
-    email: import.meta.env.VITE_EMAIL,
-    kota: import.meta.env.VITE_KOTA,
-    provinsi: import.meta.env.VITE_PROVINSI,
-    kode_pos: import.meta.env.VITE_KODE_POS,
-    logo: import.meta.env.VITE_LOGO,
+    url: getEnv('VITE_API_URL', window.location.origin),
+    nama_sekolah: getEnv('VITE_NAMA_SEKOLAH'),
+    alamat_sekolah: getEnv('VITE_ALAMAT_SEKOLAH'),
+    no_telp: getEnv('VITE_NO_TELP'),
+    email: getEnv('VITE_EMAIL'),
+    kota: getEnv('VITE_KOTA'),
+    provinsi: getEnv('VITE_PROVINSI'),
+    kode_pos: getEnv('VITE_KODE_POS'),
+    logo: getEnv('VITE_LOGO'),
   }
 }
 

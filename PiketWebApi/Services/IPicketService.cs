@@ -24,6 +24,7 @@ namespace PiketWebApi.Services
         Task<ErrorOr<PicketResponse>> GetPicketToday();
         Task<ErrorOr<bool>> UpdatePicket(int id, PicketRequest picket);
         Task<ErrorOr<PicketResponse>> GetById(int id);
+        Task<ErrorOr<PicketResponse>> GetByDate(DateOnly date);
         Task<ErrorOr<PaginationResponse<PicketResponse>>> GetWithPaginate(PaginationRequest req);
         Task<ErrorOr<bool>> RemoveDailyJournal(int model);
         Task<ErrorOr<DailyJournalResponse>> AddDailyJournal(DailyJournalRequest model);
@@ -354,6 +355,29 @@ namespace PiketWebApi.Services
 
                 var response = await GeneratePicketResponse(ppicketToday);
                 return picketToday = response.Value;
+            }
+            catch (Exception ex)
+            {
+                throw new SystemException(ex.Message);
+            }
+        }
+
+        public async Task<ErrorOr<PicketResponse>> GetByDate(DateOnly date)
+        {
+            try
+            {
+                var picket = dbContext.Picket
+                    .Include(x => x.CreatedBy)
+                    .Include(x => x.DailyJournals).ThenInclude(x => x.Teacher)
+                    .Include(x => x.LateAndComeHomeEarly).ThenInclude(x => x.Student)
+                    .Include(x => x.StudentAttendances).ThenInclude(x => x.Student)
+                    .FirstOrDefault(x => x.Date == date);
+
+                if (picket == null)
+                    return Error.NotFound("Picket", "Data piket tidak ditemukan.");
+
+                var response = await GeneratePicketResponse(picket);
+                return response.Value;
             }
             catch (Exception ex)
             {

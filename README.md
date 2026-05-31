@@ -64,6 +64,12 @@ Nginx listens on port `80` and routes:
 
 Set `PUBLIC_DOMAIN` in `.env.production` to your real domain name.
 
+The frontend now uses runtime config:
+
+- if `VITE_API_URL` is set, it is used
+- otherwise it falls back to `window.location.origin`
+- the API calls then use `${origin}/api`
+
 ## Services
 
 - `piketapi` on port `5001`
