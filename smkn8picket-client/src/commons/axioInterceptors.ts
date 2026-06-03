@@ -1,8 +1,9 @@
 import { VTToastService } from '@ocph23/vtocph23'
 import axios, { AxiosError, type AxiosResponse } from 'axios'
+import { Helper } from '.'
 
 const runtimeEnv = (window as Window & { __ENV__?: Record<string, string> }).__ENV__
-const apiBaseUrl = runtimeEnv?.VITE_API_URL ?? window.location.origin
+const apiBaseUrl = runtimeEnv?.VITE_API_URL ?? Helper.infoSekolah.url?? window.location.origin
 
 axios.defaults.baseURL = apiBaseUrl + '/api'
 axios.defaults.headers.common['Content-Type'] = 'application/json'

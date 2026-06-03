@@ -4,9 +4,9 @@ services:
   db:
     image: postgres:15
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password123
-      POSTGRES_DB: piketdb
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgrespassword123}
+      POSTGRES_DB: ${POSTGRES_DB:-piketdb}
     ports:
       - "5432:5432"
     volumes:
@@ -16,7 +16,7 @@ services:
     image: redis:7
     ports:
       - "6379:6379"
-    command: redis-server --requirepass password123
+    command: redis-server --requirepass ${REDIS_PASSWORD:-redispassword123}
 
   piketapi:
     build:
@@ -26,8 +26,8 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:${PIKETAPI_PORT:-5001}
       ASPNETCORE_HTTP_PORTS: "${PIKETAPI_PORT:-5001}"
-      ConnectionStrings__piketdb: "Host=db;Port=5432;Username=postgres;Password=password123;Database=piketdb"
-      ConnectionStrings__cache: "redis,password=password123"
+      ConnectionStrings__piketdb: "Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD:-postgrespassword123};Database=${POSTGRES_DB:-piketdb}"
+      ConnectionStrings__cache: "redis,password=${REDIS_PASSWORD:-redispassword123}"
       JWT_SECRET: ${JWT_SECRET:-change-this-to-a-long-random-secret}
       JWT_ISSUER: ${JWT_ISSUER:-http://localhost:${PIKETAPI_PORT:-5001}}
       JWT_AUDIENCE: ${JWT_AUDIENCE:-https://localhost:${PIKETAPI_PORT:-5001}}
@@ -51,12 +51,9 @@ services:
       - piketapi
 
   whatsapp:
-    container_name: whatsapp
-    image: 230279/whatsapp:1.0.1
-    restart: always
-    # build:
-    #   context: WhatsApp
-    #   dockerfile: ./Dockerfile
+    build:
+      context: ./WhatsApp
+      dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
       WWEBJS_AUTH_PATH: /usr/src/app/.wwebjs_auth

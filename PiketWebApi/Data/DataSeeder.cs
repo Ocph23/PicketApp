@@ -34,6 +34,13 @@ namespace PiketWebApi.Data
                 {
                     await userManager.AddToRoleAsync(user, "Admin");
                 }
+
+                user = new ApplicationUser("absenapp@picket.smkn8tikjayapura.sch.id") { Name = "Absen App", Email = "absenapp@picket.smkn8tikjayapura.sch.id", EmailConfirmed = true };
+                result = await userManager.CreateAsync(user, adminPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, "Admin");
+                }
             }
 
             if (!dbcontext.Departments.Any())

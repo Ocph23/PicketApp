@@ -1,12 +1,6 @@
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
 EXPOSE 5001
-EXPOSE 5002
-
-# Install native dependencies for PostgreSQL (Kerberos/GSSAPI)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgssapi-krb5-2 \
-    && rm -rf /var/lib/apt/lists/*
 
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
@@ -28,8 +22,8 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-# Ensure photos directory exists with proper permissions
-RUN mkdir -p /app/photos && chmod -R 777 /app/photos
+# Ensure photos directory exists with app ownership
+RUN mkdir -p /app/photos && chown -R app:app /app/photos && chmod -R 775 /app/photos
 
 ENV ASPNETCORE_URLS=http://+:5001
 

@@ -51,6 +51,45 @@ namespace PiketWebApi
             }
         }
 
+        public static async Task<(bool, Teacher?)> IsAdminOrTeacherPicket(this IHttpContextAccessor http, UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext)
+        {
+            try
+            {
+                var userClaim = http.HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+                var id = userClaim?.Value.ToString();
+                var user = await userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
+                var teacher = dbContext.Teachers.SingleOrDefault(x => x.UserId == user.Id);
+
+                if (isAdmin)
+                {
+                    return (true, teacher);
+                }
+
+                if (teacher == null)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                var schedule = dbContext.Schedules.Where(x => x.DayOfWeek == DateTime.Now.DayOfWeek && x.Teacher.Id == teacher.Id)
+                    .Include(x => x.Teacher);
+
+                if (!schedule.Any())
+                    throw new SystemException();
+
+                return (true, teacher);
+            }
+            catch (Exception)
+            {
+                return (false, null);
+            }
+        }
+
         public static List<Error> GetErrors(this ValidationResult? validateResult)
         {
             List<Error> errors = new();

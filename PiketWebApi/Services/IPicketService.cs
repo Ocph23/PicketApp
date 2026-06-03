@@ -8,6 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PiketWebApi.Abstractions;
 using PiketWebApi.Data;
 using PiketWebApi.Validators;
+using SharedModel;
 using SharedModel.Models;
 using SharedModel.Requests;
 using SharedModel.Responses;
@@ -21,6 +22,7 @@ namespace PiketWebApi.Services
         Task<ErrorOr<LateAndGoHomeEarlyResponse>> AddStudentToLateComeHomeSoEarly(StudentToLateAndEarlyRequest late);
         Task<ErrorOr<bool>> RemoveStudentToLateComeHomeSoEarly(int id);
         Task<ErrorOr<PicketResponse>> CreateNewPicket();
+        Task<ErrorOr<PicketResponse>> OpenPicketByDate(DateOnly date);
         Task<ErrorOr<PicketResponse>> GetPicketToday();
         Task<ErrorOr<bool>> UpdatePicket(int id, PicketRequest picket);
         Task<ErrorOr<PicketResponse>> GetById(int id);
@@ -53,6 +55,12 @@ namespace PiketWebApi.Services
 
         public async Task<ErrorOr<PicketResponse>> CreateNewPicket()
         {
+            var dateNow = DateOnly.FromDateTime(DateTime.Now.ToUniversalTime());
+            return await OpenPicketByDate(dateNow);
+        }
+
+        public async Task<ErrorOr<PicketResponse>> OpenPicketByDate(DateOnly date)
+        {
             try
             {
                 var schoolYearActive = await schoolYearService.GetActiveSchoolYear();
@@ -61,20 +69,53 @@ namespace PiketWebApi.Services
                     return schoolYearActive.Errors;
                 }
 
-                DateOnly dateNow = DateOnly.FromDateTime(DateTime.Now.ToUniversalTime());
-                var userClaim = await http.IsTeacherPicket(userManager, dbContext);
+                var userClaim = await http.IsAdminOrTeacherPicket(userManager, dbContext);
                 if (!userClaim.Item1)
                     return Error.Unauthorized("Picket", "Maaf, Anda tidak sedang piket/anda tidak memiliki akses !");
 
-                var ppicketToday = dbContext.Picket.SingleOrDefault(x => x.Date == dateNow);
-                if (ppicketToday == null)
+                var picket = dbContext.Picket
+                    .Include(x => x.CreatedBy)
+                    .Include(x => x.DailyJournals).ThenInclude(x => x.Teacher)
+                    .Include(x => x.LateAndComeHomeEarly).ThenInclude(x => x.Student)
+                    .Include(x => x.StudentAttendances).ThenInclude(x => x.Student)
+                    .FirstOrDefault(x => x.Date == date);
+
+                if (picket == null)
                 {
-                    ppicketToday = Picket.Create(userClaim.Item2, schoolYearActive.Value);
-                    dbContext.Entry(ppicketToday.CreatedBy).State = EntityState.Unchanged;
-                    dbContext.Picket.Add(ppicketToday);
+                    picket = new Picket
+                    {
+                        CreateAt = DateTime.Now.ToUniversalTime(),
+                        CreatedBy = userClaim.Item2,
+                        Date = date,
+                        StartAt = new TimeSpan(7, 15, 0),
+                        EndAt = new TimeSpan(15, 00, 0),
+                        Weather = Weather.Cerah,
+                        SchoolYear = schoolYearActive.Value
+                    };
+
+                    if (picket.CreatedBy != null)
+                    {
+                        dbContext.Entry(picket.CreatedBy).State = EntityState.Unchanged;
+                    }
+
+                    dbContext.Picket.Add(picket);
                     dbContext.SaveChanges();
+
+                    picket = dbContext.Picket
+                        .Include(x => x.CreatedBy)
+                        .Include(x => x.DailyJournals).ThenInclude(x => x.Teacher)
+                        .Include(x => x.LateAndComeHomeEarly).ThenInclude(x => x.Student)
+                        .Include(x => x.StudentAttendances).ThenInclude(x => x.Student)
+                        .FirstOrDefault(x => x.Date == date);
                 }
-                return await GetPicketToday();
+
+                if (picket == null)
+                {
+                    return Error.Failure("Maaf , Terjadi Kesalahan!");
+                }
+
+                var response = await GeneratePicketResponse(picket);
+                return response.Value;
             }
             catch (Exception)
             {
@@ -215,9 +256,9 @@ namespace PiketWebApi.Services
             var result = new PicketResponse()
             {
                 CreateAt = response.CreateAt,
-                CreatedId = response.CreatedBy.Id,
-                CreatedName = response.CreatedBy.Name,
-                CreatedNumber = response.CreatedBy.RegisterNumber,
+                CreatedId = response.CreatedBy?.Id ?? 0,
+                CreatedName = response.CreatedBy?.Name ?? "Administrator",
+                CreatedNumber = response.CreatedBy?.RegisterNumber ?? string.Empty,
                 Date = response.Date,
                 EndAt = response.EndAt,
                 Id = response.Id,
@@ -325,7 +366,7 @@ namespace PiketWebApi.Services
                 result.Weather = model.Weather;
                 result.StartAt = model.StartAt;
                 result.EndAt = model.EndAt;
-                if (result.CreatedBy.Id != model.CreatedId)
+                if (result.CreatedBy != null && result.CreatedBy.Id != model.CreatedId)
                 {
                     result.CreatedBy = new Teacher { Id = model.Id };
                     dbContext.Entry(result.CreatedBy).State = EntityState.Unchanged;
@@ -405,9 +446,9 @@ namespace PiketWebApi.Services
                     .Select(x => new PicketResponse()
                     {
                         CreateAt = x.CreateAt,
-                        CreatedId = x.CreatedBy.Id,
-                        CreatedName = x.CreatedBy.Name,
-                        CreatedNumber = x.CreatedBy.RegisterNumber,
+                        CreatedId = x.CreatedBy != null ? x.CreatedBy.Id : 0,
+                        CreatedName = x.CreatedBy != null ? x.CreatedBy.Name : "Administrator",
+                        CreatedNumber = x.CreatedBy != null ? x.CreatedBy.RegisterNumber : string.Empty,
                         Date = x.Date,
                         EndAt = x.EndAt,
                         Id = x.Id,

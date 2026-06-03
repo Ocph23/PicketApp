@@ -1,7 +1,19 @@
 <template>
   <VTCard :title="picketId ? 'Detail Piket ' : 'Piket Hari Ini'" class="no-print">
     <template #rightSide>
-      <PrinterIcon class="w-8 h-8 cursor-pointer text-amber-400" @click="print"></PrinterIcon>
+      <div class="flex items-center gap-3">
+        <VTInput
+          v-if="isAdminOrPicket && !picketId"
+          v-model="selectedDate"
+          type="date"
+          label="Tanggal"
+          class="w-52"
+        />
+        <VTButton v-if="isAdminOrPicket && !picketId" color="alternative" @click="() => openPicketByDate()">
+          Buka Piket
+        </VTButton>
+        <PrinterIcon class="w-8 h-8 cursor-pointer text-amber-400" @click="print"></PrinterIcon>
+      </div>
     </template>
 
 
@@ -10,14 +22,14 @@
         <div>{{ systemMessage }}</div>
       </div>
       <div class="flex justify-center" v-if="isAdminOrPicket">
-        <button @click="openPicket"
+        <button @click="() => openPicketByDate()"
           class="w-1/2 btn-close text-white  bg-amber-500  m-2 mt-5 p-5 rounded-lg shadow-md cursor-pointer"
           aria-label="Close">
           Buka Piket
         </button>
       </div>
     </div>
-    <div>
+    <div v-if="hasPicketData">
       <div class="flex justify-between rounded-lg shadow-md">
         <div class="space-y-3 p-4 ">
           <div class="flex">
@@ -102,7 +114,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { ref, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { Helper } from '@/commons'
 
 import { PicketService } from '@/services'
@@ -133,14 +145,53 @@ const showPrint = ref(false)
 const isAdminOrPicket = ref(false);
 const route = useRoute()
 const picketId: number = Number(route.params.id)
+const routeDate = computed(() => {
+  const value = route.query.date
+  return typeof value === 'string' && value.length > 0 ? value : ''
+})
+const selectedDate = ref(routeDate.value || DateTime.now().toISODate() || '')
+const hasPicketData = computed(() => !!data.picket?.date)
 
-const openPicket = async () => {
-  const response: RequestResponse = await PicketService.openPicket()
+const setPicketNotOpenedMessage = () => {
+  const readableDate = DateTime.fromISO(selectedDate.value || DateTime.now().toISODate() || '')
+    .setLocale('id')
+    .toFormat('cccc, dd LLLL yyyy')
+  systemMessage.value = `Piket pada ${readableDate} belum dibuka.`
+  showMessage.value = true
+}
+
+const loadPicketByDate = async (date = selectedDate.value) => {
+  if (!date) {
+    VTToastService.error('Tanggal belum dipilih')
+    return
+  }
+
+  selectedDate.value = date
+  const response: RequestResponse = await PicketService.getByDate(date)
+  if (!response.isSuccess) {
+    setPicketNotOpenedMessage()
+    return
+  }
+
+  data.picket = response.data as Picket
+  showMessage.value = false
+}
+
+const openPicketByDate = async () => {
+  const date = selectedDate.value
+  if (!date) {
+    VTToastService.error('Tanggal belum dipilih')
+    return
+  }
+
+  selectedDate.value = date
+  const response: RequestResponse = await PicketService.openPicketByDate(date)
   if (response.isSuccess) {
     data.picket = response.data as Picket
     showMessage.value = false;
   } else {
     VTToastService.error(response.error != null ? response.error.detail : '')
+    setPicketNotOpenedMessage()
   }
 }
 
@@ -149,13 +200,14 @@ onMounted(async () => {
   let response: RequestResponse = { isSuccess: false, data: null, error: null }
   if (picketId) {
     response = await PicketService.getById(picketId)
+  } else if (selectedDate.value) {
+    response = await PicketService.getByDate(selectedDate.value)
   } else {
     response = await PicketService.get()
   }
 
   if (!response.isSuccess) {
-    systemMessage.value = `Piket hari ini,  ${DateTime.fromISO(data.picket.date).setLocale('id').toFormat('cccc, dd LLLL yyyy')} belum dibuka.`
-    showMessage.value = true
+    setPicketNotOpenedMessage()
   } else {
     data.picket = response.data as Picket
     showMessage.value = false

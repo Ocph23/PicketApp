@@ -8,7 +8,8 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // https://vite.dev/config/
 
 
-const picketapiUrl = process.env.PIKETAPI_HTTPS || process.env.PIKETAPI_HTTP;
+const picketapiUrl = process.env.VITE_API_URL || process.env.API_URL || 'http://localhost:5001';
+console.log(`Using API URL: ${picketapiUrl}`);
 export default defineConfig({
   plugins: [
     vue(),

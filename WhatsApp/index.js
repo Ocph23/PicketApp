@@ -18,6 +18,7 @@ app.engine('handlebars', engine());
 const qrCode = {};
 
 const authPath = process.env.WWEBJS_AUTH_PATH || '/usr/src/app/.wwebjs_auth';
+const chromeBin = process.env.CHROME_BIN || '/usr/bin/chromium';
 
 const client = new Client({
   authStrategy: new LocalAuth({
@@ -25,7 +26,7 @@ const client = new Client({
   }),
   // Set puppeteer options for running in a docker container
   puppeteer: {
-    executablePath: '/usr/bin/google-chrome-stable',
+    executablePath: chromeBin,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   },
 });
@@ -143,7 +144,6 @@ app.get('/kirim/:nomor/:pesan', (req, res) => {
         console.log(result);
         res.send(`Message sent to ${address}`);
     });
-    res.send(`User ID: ${userId}`);
 });
 
 

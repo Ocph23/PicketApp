@@ -13,6 +13,11 @@ const PicketService = {
     return Helper.getResult(response);
   },
 
+  getByDate: async (date: string) => {
+    const response = await axios.get(`${controller}/by-date/${date}`);
+    return Helper.getResult(response);
+  },
+
   getById: async (id: number) => {
     const response = await axios.get(`${controller}/${id}`);
     return Helper.getResult(response);
@@ -26,6 +31,10 @@ const PicketService = {
     const response = await axios.post(`${controller}`, {});
     return Helper.getResult(response);
 
+  },
+  openPicketByDate: async (date: string) => {
+    const response = await axios.post(`${controller}/open/${date}`, {});
+    return Helper.getResult(response);
   },
   putPicket: async (id: number, picket: Picket) => {
     const response = await axios.put(`${controller}/${id}`, picket);

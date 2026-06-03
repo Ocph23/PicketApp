@@ -11,7 +11,7 @@
         {{ item.index + 1 }}
       </template>
       <template #tanggal="item">
-        {{ DateTime.fromISO(item.data.picket.date).setLocale('id').toFormat('cccc, dd LLLL yyyy') }}
+        {{ item.data?.date ? DateTime.fromISO(item.data.date).setLocale('id').toFormat('cccc, dd LLLL yyyy') : '-' }}
       </template>
       <template #cuaca="item">
         {{ Helper.getWeartherString(item.data.weather) }}
@@ -61,8 +61,8 @@ const columns = [
   { title: 'no', name: 'nomor', type: 'Custome' },
   { title: 'Tanggal', name: 'tanggal', type: 'Custome' },
   { title: 'Cuaca', name: 'cuaca', type: 'Custome' },
-  { title: 'Jam Mulai', propName: 'startDate' },
-  { title: 'Jam Selesai', propName: 'endDate' },
+  { title: 'Jam Mulai', propName: 'startAt' },
+  { title: 'Jam Selesai', propName: 'endAt' },
   { title: 'Aksi', name: 'actions', type: 'Custome' },
 ] as VTTableColumn[]
 
