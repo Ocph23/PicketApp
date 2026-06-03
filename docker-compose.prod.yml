@@ -38,7 +38,7 @@ services:
       ASPNETCORE_URLS: http://+:5001
       ASPNETCORE_HTTP_PORTS: "5001"
       ConnectionStrings__piketdb: Host=db;Port=5432;Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-change-me};Database=${POSTGRES_DB:-piketdb};GSS Encryption Mode=Disable
-      ConnectionStrings__cache: redis,password=${REDIS_PASSWORD:-change-me}
+      ConnectionStrings__cache: cache,password=${REDIS_PASSWORD:-change-me}
       JWT_SECRET: ${JWT_SECRET:-change-me}
       JWT_ISSUER: ${JWT_ISSUER:-http://localhost:5001}
       JWT_AUDIENCE: ${JWT_AUDIENCE:-http://localhost:5001}

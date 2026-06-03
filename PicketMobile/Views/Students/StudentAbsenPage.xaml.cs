@@ -1,11 +1,12 @@
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using PicketMobile.Models;
 using PicketMobile.Services;
 using SharedModel;
+using System.Security.Cryptography.X509Certificates;
 using ZXing.Net.Maui;
-using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace PicketMobile.Views.Students;
 
@@ -39,9 +40,19 @@ public partial class StudentAbsenPage : ContentPage
         vm.LastScan = first.Value;
 
     }
-    private void BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
+    private async Task BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
     {
+        var cert = new X509Certificate2("appabsen-qr-local-ca.cer", "Password@123");
 
+        var handler = new HttpClientHandler();
+        handler.ClientCertificates.Add(cert);
+
+        using var httpClient = new HttpClient(handler);
+
+        var response = await httpClient.GetAsync("https://192.168.1.15:5056");
+        var content = await response.Content.ReadAsStringAsync();
+
+        Console.WriteLine(content);
     }
 
     private void Button_Clicked(object sender, EventArgs e)

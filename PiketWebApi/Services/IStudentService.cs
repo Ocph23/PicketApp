@@ -88,7 +88,7 @@ public class StudentService : IStudentService
             {
                 List<StudentClassRoom> list = new List<StudentClassRoom>();
                 foreach (var item in dbContext.ClassRooms
-                    .Include(x => x.SchoolYear)
+                    .Include(x => x.SchoolYear) 
                     .Include(x => x.Department).Include(x => x.Students)
                     .ThenInclude(x => x.Student)
                     .Where(x => x.SchoolYear.Id == schoolYearActive.Value.Id))
