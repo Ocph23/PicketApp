@@ -35,7 +35,7 @@ internal class LoginPageViewModel : BaseNotify
         };
 
 
-        UserName = "27181656";
+        UserName = "0093665416";
         Password = "Password@123";
 
     }
@@ -94,7 +94,7 @@ internal class LoginPageViewModel : BaseNotify
         set { SetProperty(ref password, value); }
     }
 
-    private string url = Preferences.Get("url", "http://localhost:5001");
+    private string url = Preferences.Get("url", "http://api.piket.smkn8.tik");
     public string URL
     {
         get { return url; }

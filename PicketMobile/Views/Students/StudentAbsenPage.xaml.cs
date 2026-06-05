@@ -1,10 +1,4 @@
-using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
-using PicketMobile.Models;
-using PicketMobile.Services;
-using SharedModel;
 using System.Security.Cryptography.X509Certificates;
 using ZXing.Net.Maui;
 
@@ -29,15 +23,37 @@ public partial class StudentAbsenPage : ContentPage
 
     private async void cameraBarcodeReaderView_BarcodesDetected(object sender, ZXing.Net.Maui.BarcodeDetectionEventArgs e)
     {
-        vm.IsDetecting = false;
-        var first = e.Results?.FirstOrDefault();
-        if (first is null || first.Value == vm.LastScan)
+        try
         {
-            vm.IsDetecting = true;
-            return;
+            vm.IsDetecting = false;
+            var first = e.Results?.FirstOrDefault();
+            if (first is null || first.Value == vm.LastScan)
+            {
+                vm.IsDetecting = true;
+                return;
+            }
+            Vibration.Default.Vibrate();
+            vm.LastScan = first.Value;
+
+            var certPath = Path.Combine(AppContext.BaseDirectory, "appabsen_qr_local_ca.cer");
+
+            var cert = new X509Certificate2(certPath, "Password@123");
+
+            var handler = new HttpClientHandler();
+            handler.ClientCertificates.Add(cert);
+
+            using var httpClient = new HttpClient(handler);
+
+            var response = await httpClient.GetAsync("https://192.168.10.3:5056");
+            var content = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(content);
+
         }
-        Vibration.Default.Vibrate();
-        vm.LastScan = first.Value;
+        catch (Exception ex)
+        {
+          await DisplayAlert("Error", ex.Message, "OK");
+        }
 
     }
     private async Task BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
@@ -49,7 +65,7 @@ public partial class StudentAbsenPage : ContentPage
 
         using var httpClient = new HttpClient(handler);
 
-        var response = await httpClient.GetAsync("https://192.168.1.15:5056");
+        var response = await httpClient.GetAsync("https://192.168.10.3:5056");
         var content = await response.Content.ReadAsStringAsync();
 
         Console.WriteLine(content);

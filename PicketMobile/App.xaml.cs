@@ -13,20 +13,46 @@ namespace PicketMobile
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            string token = Preferences.Get(key: "token", null);
-            if (string.IsNullOrEmpty(token))
+            try
             {
-                return new Window(new LoginPage());
-            }
-            else
-            {
-                IAccountService service = ServiceHelper.GetService<IAccountService>()!;
+                string token = Preferences.Get("token", null);
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return new Window(new LoginPage());
+                }
+
+                IAccountService? service = ServiceHelper.GetService<IAccountService>();
+
+                if (service == null)
+                {
+                    return new Window(new LoginPage());
+                }
+
                 if (service.UserInRole("Student"))
+                {
                     return new Window(new StudentShell());
-                else
-                    return new Window(new AppShell());
+                }
 
+                return new Window(new AppShell());
+            }
+            catch (Exception ex)
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Application.Current!.Windows[0].Page.DisplayAlert(
+                        "Error",
+                        ex.ToString(),
+                        "OK");
+                });
 
+                return new Window(new ContentPage
+                {
+                    Content = new Label
+                    {
+                        Text = ex.ToString()
+                    }
+                });
             }
         }
     }
