@@ -91,7 +91,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Remove="appabsen_qr_local_ca.cer" />
 		<None Remove="Resources\AppIcon\iconsmkn8.svg" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiAsset Include="appabsen_qr_local_ca.cer">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </MauiAsset>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -209,12 +216,6 @@
 
 	<ItemGroup>
 		<Folder Include="Test\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="appabsen_qr_local_ca.cer">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
 	</ItemGroup>
 
 </Project>

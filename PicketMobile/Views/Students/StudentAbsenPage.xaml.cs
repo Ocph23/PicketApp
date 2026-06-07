@@ -1,5 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using PicketMobile.Models;
+using SharedModel.Responses;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Text.Json;
 using ZXing.Net.Maui;
 
 namespace PicketMobile.Views.Students;
@@ -11,7 +15,7 @@ public partial class StudentAbsenPage : ContentPage
     public StudentAbsenPage()
     {
         InitializeComponent();
-        BindingContext =vm = new StudentAbsenViewModel(); ;
+        BindingContext = vm = new StudentAbsenViewModel(); ;
         cameraBarcodeReaderView.Options = new BarcodeReaderOptions
         {
             Formats = BarcodeFormats.TwoDimensional,
@@ -33,26 +37,54 @@ public partial class StudentAbsenPage : ContentPage
                 return;
             }
             Vibration.Default.Vibrate();
-            vm.LastScan = first.Value;
 
-            var certPath = Path.Combine(AppContext.BaseDirectory, "appabsen_qr_local_ca.cer");
+            QRCodeModel qrcode = JsonSerializer.Deserialize<QRCodeModel>(first.Value, Helper.JsonOption);
 
-            var cert = new X509Certificate2(certPath, "Password@123");
+            using var stream = await FileSystem.OpenAppPackageFileAsync("appabsen_qr_local_ca.cer");
 
-            var handler = new HttpClientHandler();
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+
+            var cert = new X509Certificate2(ms.ToArray(), "Password@123");
+
+            var handler = new HttpClientHandler() {
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
             handler.ClientCertificates.Add(cert);
 
-            using var httpClient = new HttpClient(handler);
+            using var httpClient = new HttpClient(handler) {  BaseAddress = new Uri("https://192.168.1.9:5056") };
 
-            var response = await httpClient.GetAsync("https://192.168.10.3:5056");
-            var content = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine(content);
+            string? profileString = Preferences.Get("profile", null);
+            if (!string.IsNullOrEmpty(profileString))
+            {
+                var profile = JsonSerializer.Deserialize<StudentResponse>(profileString, Helper.JsonOption)!;
+                var request = new AbsenRequestModel
+                {
+                    SessionId = qrcode.SessionId,
+                    NomorKartu =profile.NISN ?? profile.NIS,
+                    DeviceId = DeviceInfo.Name
+                };
 
+                var response = await httpClient.PostAsync("/api/qr-attendance", new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json"));
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var qRAbsenResponse = JsonSerializer.Deserialize<QRAbsenResponse>(responseContent, Helper.JsonOption);
+                if(response.IsSuccessStatusCode)
+                {
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    DisplayAlert("Absen Berhasil", qRAbsenResponse?.Message ?? "Berhasil melakukan absen", "OK"));
+                }
+                else
+                {
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    DisplayAlert("Absen Gagal", qRAbsenResponse?.Message ?? "Gagal melakukan absen", "OK"));
+                }
+            }
         }
         catch (Exception ex)
         {
-          await DisplayAlert("Error", ex.Message, "OK");
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            DisplayAlert("Error", ex.Message, "OK"));
         }
 
     }
