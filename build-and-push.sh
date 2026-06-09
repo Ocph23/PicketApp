@@ -25,16 +25,16 @@ docker build -t "$PIKETAPI_IMAGE" -f PiketWebApi/Dockerfile .
 echo "Building $ADMIN_CLIENT_IMAGE"
 docker build -t "$ADMIN_CLIENT_IMAGE" -f smkn8picket-client/Dockerfile ./smkn8picket-client
 
-echo "Building $WHATSAPP_IMAGE"
-docker build -t "$WHATSAPP_IMAGE" -f WhatsApp/Dockerfile ./WhatsApp
-
 echo "Pushing $PIKETAPI_IMAGE"
 docker push "$PIKETAPI_IMAGE"
 
 echo "Pushing $ADMIN_CLIENT_IMAGE"
 docker push "$ADMIN_CLIENT_IMAGE"
 
-echo "Pushing $WHATSAPP_IMAGE"
-docker push "$WHATSAPP_IMAGE"
+# echo "Building $WHATSAPP_IMAGE"
+# docker build -t "$WHATSAPP_IMAGE" -f WhatsApp/Dockerfile ./WhatsApp
+
+# echo "Pushing $WHATSAPP_IMAGE"
+# docker push "$WHATSAPP_IMAGE"
 
 echo "Done."
