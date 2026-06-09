@@ -36,7 +36,9 @@
           <div class="mb-4">
             <VTInput label="Parent Phone Number" type="text" v-model="data.form.parentPhoneNumber" />
           </div>
-
+          <div class="mb-4">
+            <VTSelect  :options="Helper.getStudentStatus" label="Status" type="text" v-model="data.form.status" required />
+          </div>
           <div class="mb-4">
             <fwb-textarea label="Catatan" placeholder="tulis jika ada catatan" v-model="data.form.address" />
           </div>
@@ -81,6 +83,7 @@ const data = reactive({
     address: '',
     userId: '',
     parentPhoneNumber: '',
+    status:1
   },
   error: {} as ErrorResponse,
 })
@@ -190,6 +193,7 @@ const setForm = (student: Student) => {
   data.form.email = student.email
   data.form.address = student.address
   data.form.parentPhoneNumber = student.parentPhoneNumber
+  data.form.status = student.status
   imageSrc.value = Helper.getStudentAvatar(student.photo)
 }
 
@@ -205,6 +209,7 @@ function collectStudent(form: {
   address: string
   userId: string
   parentPhoneNumber: string
+  status: number
 }): Student {
   const student = {} as Student
   student.dateOfBorn = DateTime.fromJSDate(new Date(form.dateOfBorn)).toISODate()
@@ -218,6 +223,12 @@ function collectStudent(form: {
   student.userId = form.userId
   student.parentPhoneNumber = form.parentPhoneNumber
   student.placeOfBorn = form.placeOfBorn
+  student.status = form.status
   return student
 }
 </script>
+
+
+<style scoped>
+ 
+</style>

@@ -3,6 +3,23 @@
 @tailwind utilities;
 
 /*  npx tailwindcss -i ./src/assets/main.css -o ./src/assets/main.output.css --watch   */
+
+
+div[type=text] {
+    appearance: none;
+    background-color: none !important;
+    border-color: none !important;
+    border-width: 0px;
+    border-radius: 0;
+    padding: 0;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    --tw-shadow: 0 0 #0000;
+}
+
+
+
+
 .print-only {
   display: none !important;
 }

@@ -347,7 +347,7 @@ public class StudentService : IStudentService
             if (!validateResult.IsValid)
                 return validateResult.GetErrors();
 
-            IQueryable<Student> iq = dbContext.Students.Where(x => x.Status == SharedModel.StudentStatus.Aktif);
+            IQueryable<Student> iq = dbContext.Students;
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
                 iq = iq.Where(x => x.Name.ToLower().Contains(request.SearchTerm.ToLower()) ||

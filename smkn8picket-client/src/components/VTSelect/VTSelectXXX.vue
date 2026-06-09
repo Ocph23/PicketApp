@@ -1,4 +1,4 @@
-<template>
+<!--<template>
   <div>
     <label>
       <span v-if="label" :class="labelClasses">
@@ -96,4 +96,4 @@ const labelClasses = computed(() => {
 
   return twMerge(baseLabelClasses, classByStatus)
 })
-</script>
+</script>-->

@@ -39,6 +39,14 @@ const Helper = {
     { value: 3, name: 'Lainnya' }
   ],
 
+  getStudentStatus: [
+    { value: 1, name: 'Aktif' },
+    { value: 2, name: 'Pindah' },
+    { value: 3, name: 'Tamat' },
+    { value: 4, name: 'Keluar' },
+    { value: 0, name: 'Tanpa Status' },
+  ],
+
   getAttendanceStatus: (value: number, isInitial: boolean = false) => {
     switch (value) {
       case 0:
